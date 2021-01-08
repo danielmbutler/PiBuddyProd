@@ -16,8 +16,6 @@ class PiAdapter(val IP: String): Item<GroupieViewHolder>(){
 
 
 
-
-
     }
 
     override fun getLayout(): Int {

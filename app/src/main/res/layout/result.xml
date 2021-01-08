@@ -125,34 +125,6 @@
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-    <EditText
-        android:id="@+id/editTextTextPersonName4"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="4dp"
-        android:clickable="false"
-        android:ems="10"
-        android:inputType="none"
-        android:text="Historical Values"
-        android:textAlignment="center"
-        android:textStyle="bold"
-         />
-    <TextView
-        android:id="@+id/AwsResultTextView"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="4dp"
-        android:overScrollMode="always"
-        android:paddingBottom="8dp"
-        android:text="wgoiwgruoewgruoewvfweuivfewuogfowuevfuewivfuweigruwegrweurgewrguoewrgweuvfeuiwfvweuirvgewugroeroewufvivfewfiwevkfuewivcehskvsyvhskfiewvscy"
-        android:textSize="12sp"
-        android:padding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ResultsTitle"
-        app:layout_constraintVertical_bias="0.059" />
-
 
 
 </LinearLayout>

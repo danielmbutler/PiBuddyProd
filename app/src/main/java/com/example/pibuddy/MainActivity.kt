@@ -47,12 +47,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // slider
+
+       if(intent.getStringExtra("IPAddress") != null ) {
+          val IP =  intent.getStringExtra("IPAddress")
+
+           IPAddressText.setText(IP)
+
+       }
+
+
 
         ScanButton.setOnClickListener {
             val intent = Intent(this, Scan_Activity::class.java)
             startActivity(intent)
         }
+
+        //// slider
 
         var drawer: DrawerLayout? = null
 
@@ -81,17 +91,10 @@ class MainActivity : AppCompatActivity() {
             0
         ) // 0 - for private mode
 
+       //get all preferences
 
-
-//        //check for cached successful values
-//       val savedIp       = pref.getString("IPAddress", null)
-//        val savedUser     = pref.getString("Username", null)
-//        val savedPassword = pref.getString("Password", null)
-//
-//        //get all preferences
-//
               val keys: Map<String, *> = pref.getAll()
-//
+
        for ((key, value) in keys) {
            Log.d("map values", key + ": " + value.toString())
            val testnavView = findViewById(R.id.nav_viewer) as NavigationView
@@ -202,7 +205,6 @@ class MainActivity : AppCompatActivity() {
                             DiskSpaceTextView.setMovementMethod(ScrollingMovementMethod());
 
                             //null titles so you cant edit
-                            editTextTextPersonName4.keyListener = null
                             editTextTextPersonName3.keyListener = null
                             editTextTextPersonName2.keyListener = null
                             editTextTextPersonName.keyListener = null

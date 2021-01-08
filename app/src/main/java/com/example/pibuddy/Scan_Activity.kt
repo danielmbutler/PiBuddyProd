@@ -2,22 +2,23 @@ package com.example.pibuddy
 
 import PiAdapter
 import android.content.Context
+import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.pibuddy.utilities.isPortOpen
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_scan_.*
 import kotlinx.coroutines.*
 import org.apache.commons.net.util.SubnetUtils
 import java.math.BigInteger
-
 
 
 class Scan_Activity : AppCompatActivity() {
@@ -45,11 +46,24 @@ class Scan_Activity : AppCompatActivity() {
         return allIps
 
     }
+    private var cancelled = "running"
 
+    @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_)
 
+
+        Scan_Stop_Button.setOnClickListener {
+            cancelled = "STOP"
+
+            Scan_Stop_Button.text = "Restart Scan"
+            Scan_Stop_Button.setOnClickListener {
+                val intent = intent
+                finish()
+                startActivity(intent)
+            }
+        }
 
         GlobalScope.launch(Dispatchers.IO) {
             val netAddresses = async { NetworkScanIP() }
@@ -67,39 +81,80 @@ class Scan_Activity : AppCompatActivity() {
 
                 //set item click listener for recyclerview
 
+                adapter.setOnItemClickListener{ item: Item<GroupieViewHolder>, view: View ->
+
+                    val IP = item as PiAdapter
+                    Log.d(TAG, IP.IP)
+
+                    intent= Intent(this@Scan_Activity,MainActivity ::class.java)
+
+                    intent.putExtra("IPAddress", IP.IP)
+
+                    startActivity(intent)
+
+                    cancelled = "STOP"
+                    finish()
+
+
+                }
+
+
                 refreshRecyclerViewMessages()
 
             }
 
+
             netAddresses.await().forEach {
+                Log.d(TAG, cancelled)
+
                 val pingtest = async {
                     isPortOpen(
                         it.toString(),
                         22,
                         1000
                     )
+
+
                 }
-                Log.d("pingtest", it.toString() + " " + pingtest.await())
-                addresscount--
-                Log.d("IPCount", (addresscount).toString())
+                val messagetext = "Scan Stopped"
 
-                if(pingtest.await() == "false" ){
-                    Log.d(TAG, "${it.toString()} + is available")
+                if(cancelled == "STOP"){
+                    pingtest.cancel()
+                    withContext(Dispatchers.Main) {
+                        Scanning_Text_View.setText(messagetext)
+                        Scan_View_text_dot_loader.visibility = INVISIBLE
+                    }
+                } else{
+                    Log.d("pingtest", it.toString() + " " + pingtest.await())
+                    addresscount--
+                    Log.d("IPCount", (addresscount).toString())
+
+                    if(pingtest.await() == "false" ){
+                        Log.d(TAG, "${it.toString()} + is available")
+                        withContext(Dispatchers.Main){
+
+
+
+                            IPs.add(it)
+                            refreshRecyclerViewMessages()
+                        }
+                    }
+
                     withContext(Dispatchers.Main){
+                        if(cancelled != "STOP"){
+                            val addtext = "Scanning for Devices with port 22 open ...... $addresscount addresses remaining"
+                            Scanning_Text_View.setText(addtext)
+                        } else {
+                            Scanning_Text_View.setText(messagetext)
+                            Scan_View_text_dot_loader.visibility = INVISIBLE
+                        }
 
 
-
-                        IPs.add(it)
-                        refreshRecyclerViewMessages()
                     }
                 }
 
-                withContext(Dispatchers.Main){
 
-                    val addtext = "Scanning for Devices with port 22 open ...... $addresscount addresses remaining"
-                    Scanning_Text_View.setText(addtext)
 
-                }
             }
         }
     }
@@ -116,6 +171,7 @@ class Scan_Activity : AppCompatActivity() {
 
         }
     }
+
 
 
 }
