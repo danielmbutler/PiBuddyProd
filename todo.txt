@@ -1,0 +1,6 @@
+button to remove shared preferences
+add custom command
+redo result layout
+redesign
+real phone test
+release
