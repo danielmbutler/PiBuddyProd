@@ -2,24 +2,26 @@ package com.example.pibuddy
 
 
 import android.content.Intent
+import android.content.SharedPreferences.Editor
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.pibuddy.Dialogs.CustomCommand
 import com.example.pibuddy.utilities.executeRemoteCommand
-import com.google.android.material.navigation.NavigationView
 import com.example.pibuddy.utilities.isPortOpen
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.result.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,6 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    lateinit var clearbutton: Button
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,31 +83,36 @@ class MainActivity : AppCompatActivity() {
         val mNavigationView = findViewById<View>(R.id.nav_viewer) as NavigationView
         mNavigationView.bringToFront();
 
-
-
-
-
-
-
         val pref = applicationContext.getSharedPreferences(
             "Connection",
             0
         ) // 0 - for private mode
 
+
+
+
+
+
+
+
        //get all preferences
 
               val keys: Map<String, *> = pref.getAll()
+              var ItemId = 0
+
+        val menu = mNavigationView.menu
 
        for ((key, value) in keys) {
+           ItemId ++
            Log.d("map values", key + ": " + value.toString())
-           val testnavView = findViewById(R.id.nav_viewer) as NavigationView
-           val menu = testnavView.menu
-           menu.add(0,0,0,"$key").setOnMenuItemClickListener {
+
+           menu.add(0,ItemId,0, key).setOnMenuItemClickListener {
 
                    Log.d("onclick listner", key)
+               Log.d("onclick listner", it.itemId.toString())
 
                    pref.getString(this.title.toString(), null)
-                   var strJson = pref.getString(key, null)
+                   val strJson = pref.getString(key, null)
 
                    val jresponse = JSONObject(strJson)
                    val UsernameFromJson = jresponse.getString("Username")
@@ -119,16 +127,37 @@ class MainActivity : AppCompatActivity() {
                    }
 
 
+
                    drawer.closeDrawer(GravityCompat.START);
                    true
+
                }.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_computer))
 
+
            }
+        //set click listner for draw button
+
+        val headerview = mNavigationView.getHeaderView(0)
+        val button =  headerview.findViewById<Button>(R.id.Nav_Header_Clear_Connection_Button)
+        button.setOnClickListener {
+            for (i in 0 until menu?.size() ) {
+                menu?.removeItem(i)
+                menu?.removeItem(0)
+                menu.removeGroup(0)
+            }
+            val editor: Editor = pref.edit()
+            editor.clear()
+            editor.apply()
+            drawer.closeDrawers()
+        }
+
+
+
 
 
             ConnectButton.setOnClickListener {
             ConnectButton.text = "Connect"
-            var validationtest = nullcheck()
+            val validationtest = nullcheck()
 
             Log.d("Nullcheck", validationtest + IPAddressText.text)
 
@@ -169,12 +198,13 @@ class MainActivity : AppCompatActivity() {
                                 "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
                             )
                         }
+                        //"awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
                         val MemUsage = async {
                             executeRemoteCommand(
                                 UsernameText.text,
                                 PasswordText.text,
                                 IPAddressText.text,
-                                "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
+                                "hostname"
                             )
                         }
                         val CpuUsage = async {
@@ -186,55 +216,21 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
 
-                        val results     = LoggedInUsers.await()
-                        val diskspace   = DiskSpace.await()
-                        val memusage    = MemUsage.await()
-                        val cpuusage     = CpuUsage.await()
+
                         withContext(Dispatchers.Main) {
-                            setContentView(R.layout.result)
 
+                            var intent = Intent(this@MainActivity,  Result_Activity::class.java)
+                            intent.putExtra("results",LoggedInUsers.await()
+                            )
+                            intent.putExtra("diskspace", DiskSpace.await())
+                            intent.putExtra("memusage",MemUsage.await())
+                            intent.putExtra("cpuusage",CpuUsage.await())
 
-                            findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
-                                View.VISIBLE
+                            intent.putExtra("username", UsernameText.text)
+                            intent.putExtra("password",PasswordText.text)
+                            intent.putExtra("ipaddress",IPAddressText.text)
 
-
-                            LoggedInUsersTextView.text  = results
-                            DiskSpaceTextView.text      = (diskspace.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
-                            CPUusageTextView.text       = cpuusage
-                            MemUsageTextView.text       = memusage
-                            DiskSpaceTextView.setMovementMethod(ScrollingMovementMethod());
-
-                            //null titles so you cant edit
-                            editTextTextPersonName3.keyListener = null
-                            editTextTextPersonName2.keyListener = null
-                            editTextTextPersonName.keyListener = null
-                            ResultsTitle.keyListener = null
-
-
-                            findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
-                                View.GONE
-
-                            // store successfull connection in shared pref
-
-
-                            val editor = pref.edit()
-
-
-                            val Pidata = JSONObject("""{"Username":"${UsernameText.text.toString()}", "Password":"${PasswordText.text.toString()}"}""")
-                            editor.putString(IPAddressText.text.toString(), Pidata.toString())
-
-
-
-                            editor.apply()
-
-
-
-
-                            BackButton.setOnClickListener {
-                                recreate()
-                                setContentView(R.layout.activity_main)
-
-                            }
+                            startActivity(intent)
                         }
 
                     }
@@ -251,7 +247,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
 }
+
+
 
 
 
