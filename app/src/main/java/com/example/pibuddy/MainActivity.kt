@@ -221,30 +221,30 @@ class MainActivity : AppCompatActivity() {
 
                         // check for stored command for that IP
                         try{
-
                             val strJson = pref.getString(IPAddressText.text.toString(), null)
 
-                            val jresponse = JSONObject(strJson)
-                            val storedCommand = jresponse.getString("CustomCommand")
+                            if(strJson != null){
+                                val jresponse = JSONObject(strJson!!)
+                                val storedCommand = jresponse.getString("CustomCommand")
 
-                            Log.d("storedCommand", storedCommand!!)
-                            if( storedCommand != null){
-                                val CustomCommandRun = async {
-                                    executeRemoteCommand(
-                                        UsernameText.text,
-                                        PasswordText.text,
-                                        IPAddressText.text,
-                                        storedCommand
-                                    )
+                                Log.d("storedCommand", storedCommand!!)
+                                if( storedCommand != null){
+                                    val CustomCommandRun = async {
+                                        executeRemoteCommand(
+                                            UsernameText.text,
+                                            PasswordText.text,
+                                            IPAddressText.text,
+                                            storedCommand
+                                        )
 
-                                }
+                                    }
+                                    withContext(Dispatchers.Main) {
 
-                                withContext(Dispatchers.Main) {
 
-
-                                    intent.putExtra("StoredCommandOutput", CustomCommandRun.await())
-                                    intent.putExtra("StoredCommand", storedCommand)
-                                }
+                                        intent.putExtra("StoredCommandOutput", CustomCommandRun.await())
+                                        intent.putExtra("StoredCommand", storedCommand)
+                                    }
+                            }
 
                             }
 

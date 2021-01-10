@@ -1,11 +1,13 @@
 package com.example.pibuddy
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
+import android.view.View.VISIBLE
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -39,14 +41,17 @@ class Result_Activity: AppCompatActivity() {
         val StoredCommand       = intent.getStringExtra("StoredCommand")
         Log.d("KEYS", "$IPAddress, $Username, $Password")
 
-        LoggedInUsersTextView.text  = results
-        DiskSpaceTextView.text      = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
-        CPUusageTextView.text       = cpuusage
-        MemUsageTextView.text       = memusage
+        LoggedInUsersTextView.text       = results
+        DiskSpaceTextView.text           = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
+        CPUusageTextView.text            = cpuusage
+        MemUsageTextView.text            = memusage
+        CustomCommandTextView.text       = customCommandOutput
         DiskSpaceTextView.movementMethod = ScrollingMovementMethod()
 
         if(customCommandOutput != null){
             Log.d(TAG, customCommandOutput)
+            CustomCommandTitle.visibility = VISIBLE
+            CustomCommandTextView.visibility = VISIBLE
         }
 
         //null titles so you cant edit

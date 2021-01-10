@@ -20,12 +20,11 @@
         android:id="@+id/Scan_View_RecyclerView"
         android:layout_width="405dp"
         android:layout_height="419dp"
-        android:layout_marginBottom="116dp"
+        android:layout_marginBottom="104dp"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/Scanning_Text_View"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.eyalbira.loadingdots.LoadingDots

@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/design_default_color_primary"
+            android:background="@color/PiAlternate"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
@@ -25,7 +25,9 @@
         <FrameLayout
             android:id="@+id/fragement_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+        </FrameLayout>
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -86,29 +88,37 @@
             android:layout_width="156dp"
             android:layout_height="68dp"
             android:layout_marginTop="28dp"
+            android:background="@drawable/roundedbutton"
             android:text="Connect"
+
+            app:backgroundTint="@color/PiPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/PasswordText" />
+            app:layout_constraintTop_toBottomOf="@+id/PasswordText"
+            tools:visibility="visible" />
 
         <Button
             android:id="@+id/ScanButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
+            android:background="@drawable/roundedbutton"
             android:text="Scan For Available Devices.... "
             android:textColor="#FFFFFF"
+            app:backgroundTint="@color/PiPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ConnectButton" />
 
         <TextView
             android:id="@+id/Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="144dp"
+            android:layout_height="66dp"
+            android:fontFamily="@font/mitr_extralight"
             android:text="PiBuddy"
-            android:textColor="@color/purple_500"
-            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="@color/PiPrimary"
+            android:textSize="36sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
