@@ -4,16 +4,21 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.View
-import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.example.pibuddy.Dialogs.CustomCommand
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.result.*
 import org.json.JSONObject
 
+
 class Result_Activity: AppCompatActivity() {
+
+    companion object{
+        val TAG = "Result_Activity"
+    }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +28,7 @@ class Result_Activity: AppCompatActivity() {
         findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
             View.VISIBLE
 
+
         val results = intent.getStringExtra("results")
         val diskspace = intent.getStringExtra("diskspace")
         val cpuusage = intent.getStringExtra("cpuusage")
@@ -30,12 +36,13 @@ class Result_Activity: AppCompatActivity() {
         val IPAddress = intent.getStringExtra("ipaddress")
         val Username = intent.getStringExtra("username")
         val Password = intent.getStringExtra("password")
+        Log.d("KEYS", "$IPAddress, $Username, $Password")
 
         LoggedInUsersTextView.text  = results
         DiskSpaceTextView.text      = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
         CPUusageTextView.text       = cpuusage
         MemUsageTextView.text       = memusage
-        DiskSpaceTextView.setMovementMethod(ScrollingMovementMethod());
+        DiskSpaceTextView.movementMethod = ScrollingMovementMethod()
 
         //null titles so you cant edit
         editTextTextPersonName3.keyListener = null
@@ -60,8 +67,11 @@ class Result_Activity: AppCompatActivity() {
         editor.putString(IPAddress, Pidata.toString())
 
 
-
         editor.apply()
+
+        val keys: Map<String, *> = pref.all
+        Log.d("KEYS", keys.toString())
+        Log.d("KEYS", intent.toString())
 
 
 
@@ -77,6 +87,7 @@ class Result_Activity: AppCompatActivity() {
             var dialog =
                 CustomCommand()
             dialog.show(supportFragmentManager, "CustomCommand")
+
         }
     }
 }

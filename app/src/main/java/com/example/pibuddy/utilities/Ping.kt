@@ -12,16 +12,16 @@ fun isPortOpen(ip : String, port : Int, timeout : Int): String {
 
 
     try {
-        val socket = Socket();
-        socket.connect(InetSocketAddress(ip, port), timeout);
+        val socket = Socket()
+        socket.connect(InetSocketAddress(ip, port), timeout)
 
-        socket.close();
-        return "connection successfull";
+        socket.close()
+        return "connection successfull"
 
     }
 
     catch(ce: ConnectException){
-        ce.printStackTrace();
+        ce.printStackTrace()
         return "false"
     }
 
@@ -31,7 +31,7 @@ fun isPortOpen(ip : String, port : Int, timeout : Int): String {
     }
 
     catch (ex: Exception ) {
-        ex.printStackTrace();
+        ex.printStackTrace()
         return "false"
     }
 }

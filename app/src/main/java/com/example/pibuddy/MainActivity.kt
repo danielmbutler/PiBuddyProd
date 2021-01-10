@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             toggle.syncState()
 
         val mNavigationView = findViewById<View>(R.id.nav_viewer) as NavigationView
-        mNavigationView.bringToFront();
+        mNavigationView.bringToFront()
 
         val pref = applicationContext.getSharedPreferences(
             "Connection",
@@ -97,41 +97,40 @@ class MainActivity : AppCompatActivity() {
 
        //get all preferences
 
-              val keys: Map<String, *> = pref.getAll()
-              var ItemId = 0
+              val keys: Map<String, *> = pref.all
+            Log.d("KEYS", keys.toString())
+
 
         val menu = mNavigationView.menu
 
        for ((key, value) in keys) {
-           ItemId ++
+
            Log.d("map values", key + ": " + value.toString())
 
-           menu.add(0,ItemId,0, key).setOnMenuItemClickListener {
+           menu.add(0,0,0, key).setOnMenuItemClickListener {
 
-                   Log.d("onclick listner", key)
-               Log.d("onclick listner", it.itemId.toString())
+               Log.d("onclick listner", key)
+               pref.getString(this.title.toString(), null)
+               val strJson = pref.getString(key, null)
 
-                   pref.getString(this.title.toString(), null)
-                   val strJson = pref.getString(key, null)
+               val jresponse = JSONObject(strJson)
+               val UsernameFromJson = jresponse.getString("Username")
+               val PasswordFromJson = jresponse.getString("Password")
 
-                   val jresponse = JSONObject(strJson)
-                   val UsernameFromJson = jresponse.getString("Username")
-                   val PasswordFromJson = jresponse.getString("Password")
-
-                   if (strJson != null) {
-                       Log.d("onclick listner", strJson)
-                       Log.d("onclick listner", "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} ")
-                       IPAddressText.setText(key)
-                       UsernameText.setText(UsernameFromJson)
-                       PasswordText.setText(PasswordFromJson)
-                   }
+               if (strJson != null) {
+                   Log.d("onclick listner", strJson)
+                   Log.d("onclick listner", "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} ")
+                   IPAddressText.setText(key)
+                   UsernameText.setText(UsernameFromJson)
+                   PasswordText.setText(PasswordFromJson)
+               }
 
 
 
-                   drawer.closeDrawer(GravityCompat.START);
-                   true
+               drawer.closeDrawer(GravityCompat.START);
+               true
 
-               }.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_computer))
+           }.icon = ContextCompat.getDrawable(this, R.drawable.ic_computer)
 
 
            }
@@ -140,9 +139,8 @@ class MainActivity : AppCompatActivity() {
         val headerview = mNavigationView.getHeaderView(0)
         val button =  headerview.findViewById<Button>(R.id.Nav_Header_Clear_Connection_Button)
         button.setOnClickListener {
-            for (i in 0 until menu?.size() ) {
-                menu?.removeItem(i)
-                menu?.removeItem(0)
+            for (i in 0 until menu.size()) {
+
                 menu.removeGroup(0)
             }
             val editor: Editor = pref.edit()
@@ -219,16 +217,28 @@ class MainActivity : AppCompatActivity() {
 
                         withContext(Dispatchers.Main) {
 
-                            var intent = Intent(this@MainActivity,  Result_Activity::class.java)
+                            var intent = Intent(this@MainActivity, Result_Activity::class.java)
                             intent.putExtra("results",LoggedInUsers.await()
                             )
                             intent.putExtra("diskspace", DiskSpace.await())
                             intent.putExtra("memusage",MemUsage.await())
                             intent.putExtra("cpuusage",CpuUsage.await())
 
-                            intent.putExtra("username", UsernameText.text)
-                            intent.putExtra("password",PasswordText.text)
-                            intent.putExtra("ipaddress",IPAddressText.text)
+                            intent.putExtra("username", UsernameText.text.toString())
+                            intent.putExtra("password",PasswordText.text.toString())
+                            intent.putExtra("ipaddress",IPAddressText.text.toString())
+
+                            val bundle = intent.extras
+                            if (bundle != null) {
+                                for (key in bundle.keySet()) {
+                                    Log.d(
+                                        Result_Activity.TAG,
+                                        key + " : " + if (bundle[key] != null) bundle[key] else "NULL"
+                                    )
+                                }
+                            }
+
+                            Log.d("KEYS", intent.toString())
 
                             startActivity(intent)
                         }

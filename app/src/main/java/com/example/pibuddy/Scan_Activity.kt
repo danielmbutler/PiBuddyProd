@@ -34,14 +34,14 @@ class Scan_Activity : AppCompatActivity() {
 
         //get IP
 
-        val wm = getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val ipAddress: String = BigInteger.valueOf(wm.dhcpInfo.netmask.toLong()).toString()
         Log.d(TAG,ipAddress)
 
         //ping scan test
 
         val utils = SubnetUtils("192.168.1.0/24")
-        val allIps: Array<String> = utils.getInfo().getAllAddresses()
+        val allIps: Array<String> = utils.info.allAddresses
 //appIps will contain all the ip address in the subnet
         return allIps
 
@@ -121,7 +121,7 @@ class Scan_Activity : AppCompatActivity() {
                 if(cancelled == "STOP"){
                     pingtest.cancel()
                     withContext(Dispatchers.Main) {
-                        Scanning_Text_View.setText(messagetext)
+                        Scanning_Text_View.text = messagetext
                         Scan_View_text_dot_loader.visibility = INVISIBLE
                     }
                 } else{
@@ -130,7 +130,7 @@ class Scan_Activity : AppCompatActivity() {
                     Log.d("IPCount", (addresscount).toString())
 
                     if(pingtest.await() == "false" ){
-                        Log.d(TAG, "${it.toString()} + is available")
+                        Log.d(TAG, "$it + is available")
                         withContext(Dispatchers.Main){
 
 
@@ -143,9 +143,9 @@ class Scan_Activity : AppCompatActivity() {
                     withContext(Dispatchers.Main){
                         if(cancelled != "STOP"){
                             val addtext = "Scanning for Devices with port 22 open ...... $addresscount addresses remaining"
-                            Scanning_Text_View.setText(addtext)
+                            Scanning_Text_View.text = addtext
                         } else {
-                            Scanning_Text_View.setText(messagetext)
+                            Scanning_Text_View.text = messagetext
                             Scan_View_text_dot_loader.visibility = INVISIBLE
                         }
 
