@@ -28,14 +28,15 @@ class Result_Activity: AppCompatActivity() {
         findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
             View.VISIBLE
 
-
-        val results = intent.getStringExtra("results")
-        val diskspace = intent.getStringExtra("diskspace")
-        val cpuusage = intent.getStringExtra("cpuusage")
-        val memusage = intent.getStringExtra("memusage")
-        val IPAddress = intent.getStringExtra("ipaddress")
-        val Username = intent.getStringExtra("username")
-        val Password = intent.getStringExtra("password")
+        val customCommandOutput = intent.getStringExtra("StoredCommandOutput")
+        val results             = intent.getStringExtra("results")
+        val diskspace           = intent.getStringExtra("diskspace")
+        val cpuusage            = intent.getStringExtra("cpuusage")
+        val memusage            = intent.getStringExtra("memusage")
+        val IPAddress           = intent.getStringExtra("ipaddress")
+        val Username            = intent.getStringExtra("username")
+        val Password            = intent.getStringExtra("password")
+        val StoredCommand       = intent.getStringExtra("StoredCommand")
         Log.d("KEYS", "$IPAddress, $Username, $Password")
 
         LoggedInUsersTextView.text  = results
@@ -43,6 +44,10 @@ class Result_Activity: AppCompatActivity() {
         CPUusageTextView.text       = cpuusage
         MemUsageTextView.text       = memusage
         DiskSpaceTextView.movementMethod = ScrollingMovementMethod()
+
+        if(customCommandOutput != null){
+            Log.d(TAG, customCommandOutput)
+        }
 
         //null titles so you cant edit
         editTextTextPersonName3.keyListener = null
@@ -63,11 +68,17 @@ class Result_Activity: AppCompatActivity() {
         val editor = pref.edit()
 
 
-        val Pidata = JSONObject("""{"Username":"${Username}", "Password":"$Password"}""")
-        editor.putString(IPAddress, Pidata.toString())
+        if(StoredCommand != null){
+            val Pidata = JSONObject("""{"Username":"${Username}", "Password":"$Password", "CustomCommand":"$StoredCommand"}""")
+            editor.putString(IPAddress, Pidata.toString())
+            editor.apply()
+        } else{
+            val Pidata = JSONObject("""{"Username":"${Username}", "Password":"$Password"}""")
+            editor.putString(IPAddress, Pidata.toString())
+            editor.apply()
+        }
 
 
-        editor.apply()
 
         val keys: Map<String, *> = pref.all
         Log.d("KEYS", keys.toString())
@@ -85,8 +96,10 @@ class Result_Activity: AppCompatActivity() {
         }
         Result_View_Add_Command.setOnClickListener {
             var dialog =
-                CustomCommand()
+                CustomCommand(IPAddress!!)
+
             dialog.show(supportFragmentManager, "CustomCommand")
+
 
         }
     }

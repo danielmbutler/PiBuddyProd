@@ -21,6 +21,7 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.result.*
 import kotlinx.coroutines.*
+import org.json.JSONException
 import org.json.JSONObject
 
 
@@ -180,6 +181,10 @@ class MainActivity : AppCompatActivity() {
 
                     } else {
 
+                        // declare intent for result activity
+
+                        var intent = Intent(this@MainActivity, Result_Activity::class.java)
+
                         val LoggedInUsers = async {
                             executeRemoteCommand(
                                 UsernameText.text,
@@ -214,10 +219,44 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
 
+                        // check for stored command for that IP
+                        try{
+
+                            val strJson = pref.getString(IPAddressText.text.toString(), null)
+
+                            val jresponse = JSONObject(strJson)
+                            val storedCommand = jresponse.getString("CustomCommand")
+
+                            Log.d("storedCommand", storedCommand!!)
+                            if( storedCommand != null){
+                                val CustomCommandRun = async {
+                                    executeRemoteCommand(
+                                        UsernameText.text,
+                                        PasswordText.text,
+                                        IPAddressText.text,
+                                        storedCommand
+                                    )
+
+                                }
+
+                                withContext(Dispatchers.Main) {
+
+
+                                    intent.putExtra("StoredCommandOutput", CustomCommandRun.await())
+                                    intent.putExtra("StoredCommand", storedCommand)
+                                }
+
+                            }
+
+                        } catch (ce: JSONException){
+                            Log.d("MainAcvitiy", "No Stored command found")
+                        }
+
+
 
                         withContext(Dispatchers.Main) {
 
-                            var intent = Intent(this@MainActivity, Result_Activity::class.java)
+
                             intent.putExtra("results",LoggedInUsers.await()
                             )
                             intent.putExtra("diskspace", DiskSpace.await())
@@ -227,6 +266,7 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("username", UsernameText.text.toString())
                             intent.putExtra("password",PasswordText.text.toString())
                             intent.putExtra("ipaddress",IPAddressText.text.toString())
+
 
                             val bundle = intent.extras
                             if (bundle != null) {
