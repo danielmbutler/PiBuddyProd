@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.example.pibuddy.R
-import com.example.pibuddy.Result_Activity
+import com.example.pibuddy.activites.Result_Activity
 import kotlinx.android.synthetic.main.activity_custom_command.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject

@@ -9,25 +9,28 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/raspbrry"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/raspbrry_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PiBuddy">
-        <activity android:name=".Scan_Activity">
+        <activity android:name=".activites.Scan_Activity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activites.MainActivity" />
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activites.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Result_Activity" />
+        <activity android:name=".activites.Result_Activity"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"

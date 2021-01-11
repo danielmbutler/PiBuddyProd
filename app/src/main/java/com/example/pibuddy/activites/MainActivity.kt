@@ -1,25 +1,25 @@
-package com.example.pibuddy
+package com.example.pibuddy.activites
 
 
 import android.content.Intent
 import android.content.SharedPreferences.Editor
 import android.os.Build
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.example.pibuddy.Dialogs.CustomCommand
+import com.example.pibuddy.R
 import com.example.pibuddy.utilities.executeRemoteCommand
 import com.example.pibuddy.utilities.isPortOpen
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.result.*
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -76,7 +76,8 @@ class MainActivity : AppCompatActivity() {
             drawer = findViewById(R.id.drawer_layout)
             val toggle = androidx.appcompat.app.ActionBarDrawerToggle(
                 this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
             )
             drawer!!.addDrawerListener(toggle)
             toggle.syncState()
@@ -131,7 +132,9 @@ class MainActivity : AppCompatActivity() {
                drawer.closeDrawer(GravityCompat.START);
                true
 
-           }.icon = ContextCompat.getDrawable(this, R.drawable.ic_computer)
+           }.icon = ContextCompat.getDrawable(this,
+               R.drawable.ic_computer
+           )
 
 
            }
@@ -140,14 +143,30 @@ class MainActivity : AppCompatActivity() {
         val headerview = mNavigationView.getHeaderView(0)
         val button =  headerview.findViewById<Button>(R.id.Nav_Header_Clear_Connection_Button)
         button.setOnClickListener {
-            for (i in 0 until menu.size()) {
 
-                menu.removeGroup(0)
-            }
-            val editor: Editor = pref.edit()
-            editor.clear()
-            editor.apply()
-            drawer.closeDrawers()
+            // Build Confirmation alert
+
+            val builder = AlertDialog.Builder(this@MainActivity)
+            builder.setMessage("Are you sure you want to Delete?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+                    for (i in 0 until menu.size()) {
+
+                        menu.removeGroup(0)
+                    }
+                    val editor: Editor = pref.edit()
+                    editor.clear()
+                    editor.apply()
+                    drawer.closeDrawers()
+
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+
         }
 
 
@@ -176,7 +195,8 @@ class MainActivity : AppCompatActivity() {
 
                     if (pingtest.await() == "false"){
                         withContext(Dispatchers.Main) {
-                            ConnectButton.text = "Connection failure"
+
+                            Toast.makeText(this@MainActivity,"Connection Failure Please Retry..", Toast.LENGTH_SHORT).show()
                         }
 
                     } else {
@@ -288,7 +308,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
             } else {
-                ConnectButton.text = validationtest + "...Please try again"
+                Toast.makeText(this@MainActivity, "$validationtest...Please try again", Toast.LENGTH_SHORT).show()
             }
 
 

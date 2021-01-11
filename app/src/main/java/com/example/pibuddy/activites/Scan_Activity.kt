@@ -1,4 +1,4 @@
-package com.example.pibuddy
+package com.example.pibuddy.activites
 
 import PiAdapter
 import android.content.Context
@@ -11,6 +11,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.example.pibuddy.R
 import com.example.pibuddy.utilities.isPortOpen
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -86,7 +87,8 @@ class Scan_Activity : AppCompatActivity() {
                     val IP = item as PiAdapter
                     Log.d(TAG, IP.IP)
 
-                    intent= Intent(this@Scan_Activity,MainActivity ::class.java)
+                    intent= Intent(this@Scan_Activity,
+                        MainActivity::class.java)
 
                     intent.putExtra("IPAddress", IP.IP)
 

@@ -2,4 +2,24 @@
     <string name="app_name">PiBuddy</string>
     <string name="navigation_drawer_open">Open Nav Draw</string>
     <string name="navigation_drawer_close">Close Nav Draw</string>
+    <string name="command">Command......</string>
+    <string name="save">Save</string>
+    <string name="ip_address">IP Address....</string>
+    <string name="username">Username....</string>
+    <string name="password">Password....</string>
+    <string name="connect">Connect</string>
+    <string name="scan_for_available_devices">Scan For Available Devices....</string>
+    <string name="pibuddy">PiBuddy</string>
+    <string name="stop_scan">Stop Scan</string>
+    <string name="textview">TextView</string>
+    <string name="press_to_connect">Press to Connect</string>
+    <string name="todo">TODO</string>
+    <string name="previous_connections">Previous Connections</string>
+    <string name="clear_connections">Clear Connections</string>
+    <string name="cpu_usage">CPU Usage</string>
+    <string name="mem_usage">Mem Usage</string>
+    <string name="disk_space">Disk Space</string>
+    <string name="logged_in_users">Logged In Users</string>
+    <string name="back">Back</string>
+    <string name="custom_command">Custom Command</string>
 </resources>

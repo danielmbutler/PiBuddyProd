@@ -13,14 +13,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_computer" />
+        app:srcCompat="@drawable/ic_computer"
+        android:contentDescription="@string/todo" />
 
     <TextView
         android:id="@+id/Available_Device_Text_View"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:text="TextView"
+        android:text="@string/textview"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView"
@@ -32,7 +33,7 @@
         android:layout_height="78dp"
         android:layout_marginStart="104dp"
         android:layout_marginEnd="16dp"
-        android:text="Press to Connect"
+        android:text="@string/press_to_connect"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"

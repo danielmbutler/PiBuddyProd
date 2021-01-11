@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Scan_Activity">
+    tools:context=".activites.Scan_Activity">
 
     <TextView
         android:id="@+id/Scan_View_Title"
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="76dp"
         android:layout_marginBottom="52dp"
-        android:text="Stop Scan"
+        android:text="@string/stop_scan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

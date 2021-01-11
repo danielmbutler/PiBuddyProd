@@ -1,6 +1,5 @@
-package com.example.pibuddy
+package com.example.pibuddy.activites
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,8 +9,8 @@ import android.view.View
 import android.view.View.VISIBLE
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import com.example.pibuddy.Dialogs.CustomCommand
+import com.example.pibuddy.R
 import kotlinx.android.synthetic.main.result.*
 import org.json.JSONObject
 
@@ -94,7 +93,7 @@ class Result_Activity: AppCompatActivity() {
 
         BackButton.setOnClickListener {
             finish()
-            intent = Intent(this,MainActivity::class.java)
+            intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
 
 

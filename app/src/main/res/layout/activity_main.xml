@@ -20,7 +20,8 @@
             android:background="@color/PiAlternate"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:targetApi="lollipop" />
 
         <FrameLayout
             android:id="@+id/fragement_container"
@@ -38,13 +39,12 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/draw_menu"
-        />
+        app:menu="@menu/draw_menu" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".activites.MainActivity">
 
         <EditText
             android:id="@+id/IPAddressText"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="68dp"
             android:ems="10"
-            android:hint="IP Address...."
+            android:hint="@string/ip_address"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:ems="10"
-            android:hint="Username...."
+            android:hint="@string/username"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:ems="10"
-            android:hint="Password...."
+            android:hint="@string/password"
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
             android:layout_height="68dp"
             android:layout_marginTop="75dp"
             android:background="@drawable/roundedbutton"
-            android:text="Connect"
+            android:text="@string/connect"
 
             app:backgroundTint="@color/PiPrimary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:background="@drawable/roundedbutton"
-            android:text="Scan For Available Devices.... "
+            android:text="@string/scan_for_available_devices"
             android:textColor="#FFFFFF"
             app:backgroundTint="@color/PiPrimary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -115,7 +115,7 @@
             android:layout_width="144dp"
             android:layout_height="66dp"
             android:fontFamily="@font/mitr_extralight"
-            android:text="PiBuddy"
+            android:text="@string/pibuddy"
             android:textAlignment="center"
             android:textColor="@color/PiPrimary"
             android:textSize="36sp"

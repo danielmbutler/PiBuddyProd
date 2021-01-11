@@ -1,38 +1,38 @@
 package com.example.pibuddy.utilities
 
+import com.google.common.net.InetAddresses
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.net.ConnectException
-import java.net.InetSocketAddress
-import java.net.Socket
-import java.net.SocketTimeoutException
+import java.net.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 fun isPortOpen(ip : String, port : Int, timeout : Int): String {
 
+    val check = InetAddresses.isInetAddress(ip)
 
-    try {
-        val socket = Socket()
-        socket.connect(InetSocketAddress(ip, port), timeout)
-
-        socket.close()
-        return "connection successfull"
-
-    }
-
-    catch(ce: ConnectException){
-        ce.printStackTrace()
+    if (check == false){
         return "false"
-    }
+    } else {
 
-    catch(ce: SocketTimeoutException){
+        try {
+            val socket = Socket()
+            socket.connect(InetSocketAddress(ip, port), timeout)
 
-        return "false"
-    }
+            socket.close()
+            return "connection successfull"
 
-    catch (ex: Exception ) {
-        ex.printStackTrace()
-        return "false"
+        } catch (ce: ConnectException) {
+            ce.printStackTrace()
+            return "false"
+        } catch (ce: SocketTimeoutException) {
+
+            return "false"
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            return "false"
+        }
     }
 }
 
