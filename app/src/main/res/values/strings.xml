@@ -13,7 +13,6 @@
     <string name="stop_scan">Stop Scan</string>
     <string name="textview">TextView</string>
     <string name="press_to_connect">Press to Connect</string>
-    <string name="todo">TODO</string>
     <string name="previous_connections">Previous Connections</string>
     <string name="clear_connections">Clear Connections</string>
     <string name="cpu_usage">CPU Usage</string>
@@ -23,4 +22,7 @@
     <string name="back">Back</string>
     <string name="custom_command">Custom Command</string>
     <string name="RestartScan">Restart Scan</string>
+    <string name="available_device">Available Device</string>
+    <string name="todo">TODO</string>
+    <string name="result">Result</string>
 </resources>

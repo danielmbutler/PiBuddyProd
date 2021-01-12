@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/PiAlternate"
     tools:context=".activites.Scan_Activity">
 
     <TextView
@@ -18,56 +19,73 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Scan_View_RecyclerView"
-        android:layout_width="405dp"
-        android:layout_height="419dp"
-        android:layout_marginBottom="104dp"
+        android:layout_width="0dp"
+        android:layout_height="451dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="52dp"
+        android:background="@color/white"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/Scanning_Text_View"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.eyalbira.loadingdots.LoadingDots
         android:id="@+id/Scan_View_text_dot_loader"
-        android:layout_width="168dp"
-        android:layout_height="21dp"
-        android:layout_marginTop="484dp"
+        android:layout_width="153dp"
+        android:layout_height="15dp"
         android:accessibilityLiveRegion="assertive"
         android:duplicateParentState="true"
-        app:LoadingDots_dots_color="@android:color/holo_green_light"
+        app:LoadingDots_dots_color="@android:color/white"
         app:LoadingDots_dots_count="4"
         app:LoadingDots_dots_size="9dp"
         app:LoadingDots_dots_space="5dp"
         app:LoadingDots_jump_duration="900"
         app:LoadingDots_loop_duration="1200"
         app:LoadingDots_loop_start_delay="100"
+        app:layout_constraintBottom_toTopOf="@+id/Scanning_Text_View"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/Scan_View_RecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/Scan_View_RecyclerView"
+        app:layout_constraintVertical_bias="0.0"
         tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/Scanning_Text_View"
-        android:layout_width="274dp"
-        android:layout_height="96dp"
-        android:textSize="25sp"
+        android:layout_width="337dp"
+        android:layout_height="68dp"
+        android:layout_marginBottom="72dp"
+        android:fontFamily="@font/mitr_extralight"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.849"
         tools:visibility="invisible" />
 
     <Button
         android:id="@+id/Scan_Stop_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="76dp"
-        android:layout_marginBottom="52dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/stop_scan"
+        app:backgroundTint="@color/PiPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/ScanBackButton"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/Scan_Stop_Button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Scan_Stop_Button"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

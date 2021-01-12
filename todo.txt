@@ -1,5 +1,4 @@
-SplashScreen
-BackButton for ScanScreen
+
 
 Test
 MemoryLeak Test

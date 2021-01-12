@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pibuddy.Dialogs.CustomCommand
 import com.example.pibuddy.R
+import kotlinx.android.synthetic.main.activity_result___test.*
 import kotlinx.android.synthetic.main.result.*
 import org.json.JSONObject
 
@@ -24,7 +25,7 @@ class Result_Activity: AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.result)
+        setContentView(R.layout.activity_result___test)
 
         findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
             View.VISIBLE
@@ -40,24 +41,24 @@ class Result_Activity: AppCompatActivity() {
         val StoredCommand       = intent.getStringExtra("StoredCommand")
         Log.d("KEYS", "$IPAddress, $Username, $Password")
 
-        LoggedInUsersTextView.text       = results
-        DiskSpaceTextView.text           = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
-        CPUusageTextView.text            = cpuusage
-        MemUsageTextView.text            = memusage
-        CustomCommandTextView.text       = customCommandOutput
-        DiskSpaceTextView.movementMethod = ScrollingMovementMethod()
+        //LoggedInUsersTextView.text       = results
+        DiskSpace_Result_View.text      = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
+        CPU_Result_View.text            = cpuusage
+        Mem_Result_View.text            = memusage
+        //CustomCommandTextView.text       = customCommandOutput
+        DiskSpace_Result_View.movementMethod = ScrollingMovementMethod()
 
-        if(customCommandOutput != null){
-            Log.d(TAG, customCommandOutput)
-            CustomCommandTitle.visibility = VISIBLE
-            CustomCommandTextView.visibility = VISIBLE
-        }
+//        if(customCommandOutput != null){
+//            Log.d(TAG, customCommandOutput)
+//            CustomCommandTitle.visibility = VISIBLE
+//            CustomCommandTextView.visibility = VISIBLE
+//        }
 
         //null titles so you cant edit
-        editTextTextPersonName3.keyListener = null
-        editTextTextPersonName2.keyListener = null
-        editTextTextPersonName.keyListener = null
-        ResultsTitle.keyListener = null
+//        editTextTextPersonName3.keyListener = null
+//        editTextTextPersonName2.keyListener = null
+//        editTextTextPersonName.keyListener = null
+//        ResultsTitle.keyListener = null
 
 
         findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
@@ -91,21 +92,21 @@ class Result_Activity: AppCompatActivity() {
 
 
 
-        BackButton.setOnClickListener {
-            finish()
-            intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-
-
-        }
-        Result_View_Add_Command.setOnClickListener {
-            var dialog =
-                CustomCommand(IPAddress!!)
-
-            dialog.show(supportFragmentManager, "CustomCommand")
-
-
-        }
+//        BackButton.setOnClickListener {
+//            finish()
+//            intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//
+//
+//        }
+//        Result_View_Add_Command.setOnClickListener {
+//            var dialog =
+//                CustomCommand(IPAddress!!)
+//
+//            dialog.show(supportFragmentManager, "CustomCommand")
+//
+//
+//        }
     }
     override fun onBackPressed() {
 

@@ -3,18 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp">
+    android:layout_height="90dp">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="68dp"
-        android:layout_height="60dp"
+        android:layout_width="49dp"
+        android:layout_height="45dp"
         android:layout_marginStart="16dp"
+        android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_computer"
-        android:contentDescription="@string/todo" />
+        app:layout_constraintVertical_bias="0.644"
+        app:srcCompat="@drawable/ic_computer" />
 
     <TextView
         android:id="@+id/Available_Device_Text_View"
@@ -27,19 +28,31 @@
         app:layout_constraintTop_toTopOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.512" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="182dp"
-        android:layout_height="78dp"
-        android:layout_marginStart="104dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/press_to_connect"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="50dp"
+        android:layout_height="51dp"
+        android:layout_marginEnd="28dp"
         app:layout_constraintBottom_toBottomOf="@+id/Available_Device_Text_View"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.814"
-        app:layout_constraintStart_toEndOf="@+id/Available_Device_Text_View"
-        app:layout_constraintTop_toTopOf="@+id/Available_Device_Text_View" />
+        app:layout_constraintTop_toTopOf="@+id/Available_Device_Text_View"
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        android:contentDescription="@string/todo" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/mitr_extralight"
+        android:text="@string/available_device"
+        android:textColor="@color/PiPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/Available_Device_Text_View"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.053"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

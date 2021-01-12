@@ -70,6 +70,13 @@ class Scan_Activity : AppCompatActivity() {
             }
         }
 
+        ScanBackButton.setOnClickListener {
+            cancelled = "STOP"
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         GlobalScope.launch(Dispatchers.IO) {
             val netAddresses = async { NetworkScanIP() }
             var addresscount = netAddresses.await().count()
