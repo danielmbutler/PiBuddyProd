@@ -1,6 +1,7 @@
 package com.example.pibuddy.activites
 
 import PiAdapter
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.wifi.WifiManager
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.pibuddy.R
@@ -20,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_scan_.*
 import kotlinx.coroutines.*
 import org.apache.commons.net.util.SubnetUtils
 import java.math.BigInteger
+import kotlin.Boolean as Boolean1
 
 
 class Scan_Activity : AppCompatActivity() {
@@ -52,13 +55,14 @@ class Scan_Activity : AppCompatActivity() {
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_scan_)
 
 
         Scan_Stop_Button.setOnClickListener {
             cancelled = "STOP"
 
-            Scan_Stop_Button.text = "Restart Scan"
+            Scan_Stop_Button.text = getString(R.string.RestartScan)
             Scan_Stop_Button.setOnClickListener {
                 val intent = intent
                 finish()
@@ -173,7 +177,13 @@ class Scan_Activity : AppCompatActivity() {
 
         }
     }
+    override fun onBackPressed() {
 
+        cancelled = "STOP"
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
 
 }

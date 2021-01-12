@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         ScanButton.setOnClickListener {
             val intent = Intent(this, Scan_Activity::class.java)
             startActivity(intent)
+            finish()
+
         }
 
         //// slider
@@ -174,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
 
             ConnectButton.setOnClickListener {
-            ConnectButton.text = "Connect"
+
             val validationtest = nullcheck()
 
             Log.d("Nullcheck", validationtest + IPAddressText.text)
@@ -301,6 +303,7 @@ class MainActivity : AppCompatActivity() {
                             Log.d("KEYS", intent.toString())
 
                             startActivity(intent)
+                            finish()
                         }
 
                     }
