@@ -70,4 +70,8 @@ dependencies {
 
     //IP Validate
     implementation("com.google.guava:guava:30.1-jre")
+
+    //debug
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 }

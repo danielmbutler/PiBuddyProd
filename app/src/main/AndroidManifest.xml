@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/raspbrry_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PiBuddy">
-        <activity android:name=".activites.Result_Activity_Test"></activity>
+
         <activity
             android:name=".activites.Splash_Activity"
             android:screenOrientation="portrait">
@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name=".activites.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activites.Result_Activity"
             android:screenOrientation="portrait" />

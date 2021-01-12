@@ -1,12 +1,15 @@
 package com.example.pibuddy.activites
 
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences.Editor
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -203,6 +206,8 @@ class MainActivity : AppCompatActivity() {
 
                     } else {
 
+
+
                         // declare intent for result activity
 
                         var intent = Intent(this@MainActivity, Result_Activity::class.java)
@@ -223,13 +228,13 @@ class MainActivity : AppCompatActivity() {
                                 "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
                             )
                         }
-                        //"awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
+                        //
                         val MemUsage = async {
                             executeRemoteCommand(
                                 UsernameText.text,
                                 PasswordText.text,
                                 IPAddressText.text,
-                                "hostname"
+                                "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
                             )
                         }
                         val CpuUsage = async {
@@ -237,7 +242,8 @@ class MainActivity : AppCompatActivity() {
                                 UsernameText.text,
                                 PasswordText.text,
                                 IPAddressText.text,
-                                "mpstat | grep -A 5 \"%idle\" | tail -n 1 | awk -F \" \" '{print 100 -  \$ 12}'a"
+                                "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
+
                             )
                         }
 
@@ -251,6 +257,12 @@ class MainActivity : AppCompatActivity() {
 
                                 Log.d("storedCommand", storedCommand!!)
                                 if( storedCommand != null){
+                                    // setup waiting dialogue
+
+                                    withContext(Dispatchers.Main){
+                                        Main_Activity_text_dot_loader.visibility = VISIBLE
+                                        Main_Custom_Command_Message.visibility = VISIBLE
+                                    }
                                     val CustomCommandRun = async {
                                         executeRemoteCommand(
                                             UsernameText.text,
@@ -261,7 +273,6 @@ class MainActivity : AppCompatActivity() {
 
                                     }
                                     withContext(Dispatchers.Main) {
-
 
                                         intent.putExtra("StoredCommandOutput", CustomCommandRun.await())
                                         intent.putExtra("StoredCommand", storedCommand)
@@ -302,6 +313,8 @@ class MainActivity : AppCompatActivity() {
 
                             Log.d("KEYS", intent.toString())
 
+                            Main_Activity_text_dot_loader.visibility = INVISIBLE
+                            Main_Custom_Command_Message.visibility = INVISIBLE
                             startActivity(intent)
                             finish()
                         }

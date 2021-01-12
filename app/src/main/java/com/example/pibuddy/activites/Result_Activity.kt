@@ -1,5 +1,6 @@
 package com.example.pibuddy.activites
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,8 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pibuddy.Dialogs.CustomCommand
 import com.example.pibuddy.R
-import kotlinx.android.synthetic.main.activity_result___test.*
-import kotlinx.android.synthetic.main.result.*
+import kotlinx.android.synthetic.main.activity_result.*
 import org.json.JSONObject
 
 
@@ -22,12 +22,15 @@ class Result_Activity: AppCompatActivity() {
         val TAG = "Result_Activity"
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_result___test)
+        setContentView(R.layout.activity_result)
 
-        findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
+        setupActionBar()
+
+        findViewById<View>(R.id.Main_Activity_text_dot_loader).visibility =
             View.VISIBLE
 
         val customCommandOutput = intent.getStringExtra("StoredCommandOutput")
@@ -41,18 +44,18 @@ class Result_Activity: AppCompatActivity() {
         val StoredCommand       = intent.getStringExtra("StoredCommand")
         Log.d("KEYS", "$IPAddress, $Username, $Password")
 
-        //LoggedInUsersTextView.text       = results
-        DiskSpace_Result_View.text      = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
-        CPU_Result_View.text            = cpuusage
-        Mem_Result_View.text            = memusage
-        //CustomCommandTextView.text       = customCommandOutput
+        LoggedIn_Result_View.text            = results
+        DiskSpace_Result_View.text           = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
+        CPU_Result_View.text                 = cpuusage?.replace("[^.,a-zA-Z0-9]+".toRegex(), "") + "%" //replace all special charaters due to phantom space but keep '.'
+        Mem_Result_View.text                 = memusage
+        CustomCommand_Result_View.text       = customCommandOutput
         DiskSpace_Result_View.movementMethod = ScrollingMovementMethod()
 
-//        if(customCommandOutput != null){
-//            Log.d(TAG, customCommandOutput)
-//            CustomCommandTitle.visibility = VISIBLE
-//            CustomCommandTextView.visibility = VISIBLE
-//        }
+        if(customCommandOutput != null){
+            Log.d(TAG, customCommandOutput)
+            CustomCommandTextTitle.visibility = VISIBLE
+            CustomCommand_Result_View.visibility = VISIBLE
+        }
 
         //null titles so you cant edit
 //        editTextTextPersonName3.keyListener = null
@@ -61,7 +64,7 @@ class Result_Activity: AppCompatActivity() {
 //        ResultsTitle.keyListener = null
 
 
-        findViewById<View>(R.id.Scan_View_text_dot_loader).visibility =
+        findViewById<View>(R.id.Main_Activity_text_dot_loader).visibility =
             View.GONE
 
         // store successfull connection in shared pref
@@ -92,21 +95,25 @@ class Result_Activity: AppCompatActivity() {
 
 
 
-//        BackButton.setOnClickListener {
-//            finish()
-//            intent = Intent(this, MainActivity::class.java)
-//            startActivity(intent)
-//
-//
-//        }
-//        Result_View_Add_Command.setOnClickListener {
-//            var dialog =
-//                CustomCommand(IPAddress!!)
-//
-//            dialog.show(supportFragmentManager, "CustomCommand")
-//
-//
-//        }
+        AddCustomCommandButton.setOnClickListener {
+
+                val dialog =
+                    CustomCommand(IPAddress!!)
+                dialog.show(supportFragmentManager, "CustomCommand")
+
+        }
+    }
+    private fun setupActionBar() {
+
+        setSupportActionBar(toolbar)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24_white)
+        }
+
+        toolbar.setNavigationOnClickListener { onBackPressed() }
     }
     override fun onBackPressed() {
 

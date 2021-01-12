@@ -1,7 +1,6 @@
 package com.example.pibuddy.activites
 
 import PiAdapter
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.wifi.WifiManager
@@ -10,7 +9,6 @@ import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.pibuddy.R
@@ -22,7 +20,6 @@ import kotlinx.android.synthetic.main.activity_scan_.*
 import kotlinx.coroutines.*
 import org.apache.commons.net.util.SubnetUtils
 import java.math.BigInteger
-import kotlin.Boolean as Boolean1
 
 
 class Scan_Activity : AppCompatActivity() {
@@ -83,7 +80,7 @@ class Scan_Activity : AppCompatActivity() {
 
             withContext(Dispatchers.Main){
 
-            Scan_View_text_dot_loader.visibility = VISIBLE
+            Main_Activity_text_dot_loader.visibility = VISIBLE
             Scanning_Text_View.visibility = VISIBLE
 
                 Scan_View_RecyclerView.adapter = adapter
@@ -135,7 +132,7 @@ class Scan_Activity : AppCompatActivity() {
                     pingtest.cancel()
                     withContext(Dispatchers.Main) {
                         Scanning_Text_View.text = messagetext
-                        Scan_View_text_dot_loader.visibility = INVISIBLE
+                        Main_Activity_text_dot_loader.visibility = INVISIBLE
                     }
                 } else{
                     Log.d("pingtest", it.toString() + " " + pingtest.await())
@@ -159,7 +156,7 @@ class Scan_Activity : AppCompatActivity() {
                             Scanning_Text_View.text = addtext
                         } else {
                             Scanning_Text_View.text = messagetext
-                            Scan_View_text_dot_loader.visibility = INVISIBLE
+                            Main_Activity_text_dot_loader.visibility = INVISIBLE
                         }
 
 

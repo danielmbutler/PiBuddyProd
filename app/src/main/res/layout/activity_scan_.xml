@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.eyalbira.loadingdots.LoadingDots
-        android:id="@+id/Scan_View_text_dot_loader"
+        android:id="@+id/Main_Activity_text_dot_loader"
         android:layout_width="153dp"
         android:layout_height="15dp"
         android:accessibilityLiveRegion="assertive"

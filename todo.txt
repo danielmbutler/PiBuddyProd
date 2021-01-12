@@ -1,16 +1,18 @@
 
+remove all log statements
 
-Test
-MemoryLeak Test
+Test*
+MemoryLeak Test*
 
 
 Add Ads
+https://developers.google.com/admob/android/quick-start
+
 R8 to Optimise and obfuscate App @keep to not obfuscate certain variables
 https://www.youtube.com/watch?v=bgpyuuzMlo0&list=WL&index=29
 
 mapping.txt file backup
-redo result layout
-redesign
+
 real phone test
 release
 
