@@ -1,6 +1,9 @@
-
+SplashScreen
+BackButton for ScanScreen
 
 Test
+MemoryLeak Test
+
 
 Add Ads
 R8 to Optimise and obfuscate App @keep to not obfuscate certain variables
