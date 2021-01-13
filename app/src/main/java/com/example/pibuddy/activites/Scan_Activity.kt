@@ -1,25 +1,35 @@
 package com.example.pibuddy.activites
 
 import PiAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.wifi.WifiManager
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.Toast
+import androidx.activity.OnBackPressedDispatcher
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.example.pibuddy.Dialogs.HelpDialog
 import com.example.pibuddy.R
 import com.example.pibuddy.utilities.isPortOpen
+import com.example.pibuddy.utilities.validate
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_scan_.*
 import kotlinx.coroutines.*
 import org.apache.commons.net.util.SubnetUtils
-import java.math.BigInteger
+import java.lang.NullPointerException
 
 
 class Scan_Activity : AppCompatActivity() {
@@ -31,17 +41,13 @@ class Scan_Activity : AppCompatActivity() {
 
     private lateinit var PiAdapter: PiAdapter
 
-    private suspend fun NetworkScanIP(): Array<String> {
-
-        //get IP
-
-        val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ipAddress: String = BigInteger.valueOf(wm.dhcpInfo.netmask.toLong()).toString()
-        Log.d(TAG,ipAddress)
+    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private suspend fun NetworkScanIP(CIDRAddress: String): Array<String> {
 
         //ping scan test
 
-        val utils = SubnetUtils("192.168.1.0/24")
+        val utils = SubnetUtils(CIDRAddress)
         val allIps: Array<String> = utils.info.allAddresses
 //appIps will contain all the ip address in the subnet
         return allIps
@@ -49,11 +55,21 @@ class Scan_Activity : AppCompatActivity() {
     }
     private var cancelled = "running"
 
+    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_scan_)
+
+
+        Scanning_Text_View.visibility = VISIBLE
+
+        Scan_View_RecyclerView.adapter = adapter
+
+        // faint line underneath each row
+        Scan_View_RecyclerView.addItemDecoration(DividerItemDecoration(this@Scan_Activity, DividerItemDecoration.VERTICAL))
 
 
         Scan_Stop_Button.setOnClickListener {
@@ -74,19 +90,51 @@ class Scan_Activity : AppCompatActivity() {
             finish()
         }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val netAddresses = async { NetworkScanIP() }
+
+        // check for Wifi Address
+
+        //get IP and subnet mask (comes out in CIDR *.*.*.*/*)
+
+        // verify network connectivity
+
+        var foundAddress = "none"
+
+        try{
+            val connectivityManager =
+                applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            val addresses = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)!!.linkAddresses
+            addresses.forEach {
+                println(it.address)
+                println(it)
+                println(it.prefixLength)
+                if(validate(it.address.toString().replace("/",""))){
+                    Log.d("wifi", "${it.toString()} validated")
+                    foundAddress = it.toString()
+                }
+            }
+        } catch (ce: NullPointerException){
+
+            Toast.makeText(this@Scan_Activity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
+            Scanning_Text_View.setText("Wifi Connection Not Found, Please check Wifi")
+
+
+
+        }
+
+
+
+
+
+        if(foundAddress == "none"){
+            Toast.makeText(this@Scan_Activity, "no Wifi found please check Wifi", Toast.LENGTH_LONG).show()
+        } else { GlobalScope.launch(Dispatchers.IO) {
+            val netAddresses = async { NetworkScanIP(foundAddress) }
             var addresscount = netAddresses.await().count()
 
             withContext(Dispatchers.Main){
 
-            Main_Activity_text_dot_loader.visibility = VISIBLE
-            Scanning_Text_View.visibility = VISIBLE
 
-                Scan_View_RecyclerView.adapter = adapter
-
-                // faint line underneath each row
-                Scan_View_RecyclerView.addItemDecoration(DividerItemDecoration(this@Scan_Activity, DividerItemDecoration.VERTICAL))
 
                 //set item click listener for recyclerview
 
@@ -132,14 +180,14 @@ class Scan_Activity : AppCompatActivity() {
                     pingtest.cancel()
                     withContext(Dispatchers.Main) {
                         Scanning_Text_View.text = messagetext
-                        Main_Activity_text_dot_loader.visibility = INVISIBLE
+
                     }
                 } else{
                     Log.d("pingtest", it.toString() + " " + pingtest.await())
                     addresscount--
                     Log.d("IPCount", (addresscount).toString())
 
-                    if(pingtest.await() == "false" ){
+                    if(pingtest.await() == "connection successfull" ){
                         Log.d(TAG, "$it + is available")
                         withContext(Dispatchers.Main){
 
@@ -156,7 +204,7 @@ class Scan_Activity : AppCompatActivity() {
                             Scanning_Text_View.text = addtext
                         } else {
                             Scanning_Text_View.text = messagetext
-                            Main_Activity_text_dot_loader.visibility = INVISIBLE
+
                         }
 
 
@@ -166,7 +214,9 @@ class Scan_Activity : AppCompatActivity() {
 
 
             }
-        }
+        }}
+
+
     }
 
     val adapter = GroupAdapter<GroupieViewHolder>()
@@ -187,6 +237,24 @@ class Scan_Activity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    // set up right help icon on toolbar
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.pi_buddy_toolbar, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.getItemId()) {
+            R.id.toolbar_menu_help -> {
+                val dialog =
+                    HelpDialog()
+                dialog.show(supportFragmentManager, "Help")
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 

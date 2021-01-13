@@ -1,12 +1,19 @@
 package com.example.pibuddy.activites
 
 
+import android.annotation.SuppressLint
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences.Editor
+import android.net.ConnectivityManager
+import android.net.LinkAddress
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -18,14 +25,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.pibuddy.Dialogs.HelpDialog
 import com.example.pibuddy.R
 import com.example.pibuddy.utilities.executeRemoteCommand
 import com.example.pibuddy.utilities.isPortOpen
+import com.example.pibuddy.utilities.validate
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.NullPointerException
+import java.math.BigInteger
+import java.net.Inet4Address
+import java.net.InetAddress
+import java.net.UnknownHostException
+import java.nio.ByteOrder
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,10 +65,16 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var clearbutton: Button
 
+
+
+
+    @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.d("foundip", "dummylog")
 
        if(intent.getStringExtra("IPAddress") != null ) {
           val IP =  intent.getStringExtra("IPAddress")
@@ -62,12 +83,30 @@ class MainActivity : AppCompatActivity() {
 
        }
 
+        // verify network connectivity
+
+        try{
+            val connectivityManager =
+                applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            val addresses = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)!!.linkAddresses
+        } catch (ce: NullPointerException){
+
+            Toast.makeText(this@MainActivity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
+
+
+        }
+
+
+
+
+
 
 
         ScanButton.setOnClickListener {
             val intent = Intent(this, Scan_Activity::class.java)
             startActivity(intent)
-            finish()
+
 
         }
 
@@ -114,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
            Log.d("map values", key + ": " + value.toString())
 
-           menu.add(0,0,0, key).setOnMenuItemClickListener {
+           menu.add(0, 0, 0, key).setOnMenuItemClickListener {
 
                Log.d("onclick listner", key)
                pref.getString(this.title.toString(), null)
@@ -126,7 +165,10 @@ class MainActivity : AppCompatActivity() {
 
                if (strJson != null) {
                    Log.d("onclick listner", strJson)
-                   Log.d("onclick listner", "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} ")
+                   Log.d(
+                       "onclick listner",
+                       "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} "
+                   )
                    IPAddressText.setText(key)
                    UsernameText.setText(UsernameFromJson)
                    PasswordText.setText(PasswordFromJson)
@@ -137,7 +179,8 @@ class MainActivity : AppCompatActivity() {
                drawer.closeDrawer(GravityCompat.START);
                true
 
-           }.icon = ContextCompat.getDrawable(this,
+           }.icon = ContextCompat.getDrawable(
+               this,
                R.drawable.ic_computer
            )
 
@@ -181,6 +224,7 @@ class MainActivity : AppCompatActivity() {
             ConnectButton.setOnClickListener {
 
             val validationtest = nullcheck()
+                Main_Activity_text_dot_loader.visibility = VISIBLE
 
             Log.d("Nullcheck", validationtest + IPAddressText.text)
 
@@ -196,23 +240,52 @@ class MainActivity : AppCompatActivity() {
                             3000
                         )
                     }
-                    Log.d("pingtest",pingtest.await())
+                    Log.d("pingtest", pingtest.await())
 
                     if (pingtest.await() == "false"){
                         withContext(Dispatchers.Main) {
 
-                            Toast.makeText(this@MainActivity,"Connection Failure Please Retry..", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Connection Failure Please Retry..",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Main_Activity_text_dot_loader.visibility = INVISIBLE
                         }
 
+
+
                     } else {
-
-
 
                         // declare intent for result activity
 
                         var intent = Intent(this@MainActivity, Result_Activity::class.java)
 
-                        val LoggedInUsers = async {
+                        // test command echo hello if fail show toast
+
+                        val testcommand = async {  executeRemoteCommand(
+                            UsernameText.text,
+                            PasswordText.text,
+                            IPAddressText.text, "echo hello"
+                        ) }
+
+                        Log.d("testcommand", testcommand.await())
+
+                        if(!testcommand.await().contains("hello")){
+                            withContext(Dispatchers.Main){
+
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Device Session failure, Please confirm username and password",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Main_Activity_text_dot_loader.visibility = INVISIBLE
+
+                            }
+
+                        } else {
+
+                            val LoggedInUsers = async {
                             executeRemoteCommand(
                                 UsernameText.text,
                                 PasswordText.text,
@@ -220,111 +293,121 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
 
-                        val DiskSpace = async {
-                            executeRemoteCommand(
-                                UsernameText.text,
-                                PasswordText.text,
-                                IPAddressText.text,
-                                "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
-                            )
-                        }
-                        //
-                        val MemUsage = async {
-                            executeRemoteCommand(
-                                UsernameText.text,
-                                PasswordText.text,
-                                IPAddressText.text,
-                                "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
-                            )
-                        }
-                        val CpuUsage = async {
-                            executeRemoteCommand(
-                                UsernameText.text,
-                                PasswordText.text,
-                                IPAddressText.text,
-                                "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
+                            val DiskSpace = async {
+                                executeRemoteCommand(
+                                    UsernameText.text,
+                                    PasswordText.text,
+                                    IPAddressText.text,
+                                    "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
+                                )
+                            }
+                            //
+                            val MemUsage = async {
+                                executeRemoteCommand(
+                                    UsernameText.text,
+                                    PasswordText.text,
+                                    IPAddressText.text,
+                                    "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
+                                )
+                            }
+                            val CpuUsage = async {
+                                executeRemoteCommand(
+                                    UsernameText.text,
+                                    PasswordText.text,
+                                    IPAddressText.text,
+                                    "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
 
-                            )
-                        }
-
-                        // check for stored command for that IP
-                        try{
-                            val strJson = pref.getString(IPAddressText.text.toString(), null)
-
-                            if(strJson != null){
-                                val jresponse = JSONObject(strJson!!)
-                                val storedCommand = jresponse.getString("CustomCommand")
-
-                                Log.d("storedCommand", storedCommand!!)
-                                if( storedCommand != null){
-                                    // setup waiting dialogue
-
-                                    withContext(Dispatchers.Main){
-                                        Main_Activity_text_dot_loader.visibility = VISIBLE
-                                        Main_Custom_Command_Message.visibility = VISIBLE
-                                    }
-                                    val CustomCommandRun = async {
-                                        executeRemoteCommand(
-                                            UsernameText.text,
-                                            PasswordText.text,
-                                            IPAddressText.text,
-                                            storedCommand
-                                        )
-
-                                    }
-                                    withContext(Dispatchers.Main) {
-
-                                        intent.putExtra("StoredCommandOutput", CustomCommandRun.await())
-                                        intent.putExtra("StoredCommand", storedCommand)
-                                    }
+                                )
                             }
 
-                            }
+                            // check for stored command for that IP
+                            try{
+                                val strJson = pref.getString(IPAddressText.text.toString(), null)
 
-                        } catch (ce: JSONException){
-                            Log.d("MainAcvitiy", "No Stored command found")
-                        }
+                                if(strJson != null){
+                                    val jresponse = JSONObject(strJson!!)
+                                    val storedCommand = jresponse.getString("CustomCommand")
 
+                                    Log.d("storedCommand", storedCommand!!)
+                                    if( storedCommand != null){
+                                        // setup waiting dialogue
 
+                                        withContext(Dispatchers.Main){
+                                            Main_Custom_Command_Message.visibility = VISIBLE
+                                        }
+                                        val CustomCommandRun = async {
+                                            executeRemoteCommand(
+                                                UsernameText.text,
+                                                PasswordText.text,
+                                                IPAddressText.text,
+                                                storedCommand
+                                            )
 
-                        withContext(Dispatchers.Main) {
+                                        }
+                                        withContext(Dispatchers.Main) {
 
+                                            intent.putExtra(
+                                                "StoredCommandOutput",
+                                                CustomCommandRun.await()
+                                            )
+                                            intent.putExtra("StoredCommand", storedCommand)
+                                        }
+                                    }
 
-                            intent.putExtra("results",LoggedInUsers.await()
-                            )
-                            intent.putExtra("diskspace", DiskSpace.await())
-                            intent.putExtra("memusage",MemUsage.await())
-                            intent.putExtra("cpuusage",CpuUsage.await())
-
-                            intent.putExtra("username", UsernameText.text.toString())
-                            intent.putExtra("password",PasswordText.text.toString())
-                            intent.putExtra("ipaddress",IPAddressText.text.toString())
-
-
-                            val bundle = intent.extras
-                            if (bundle != null) {
-                                for (key in bundle.keySet()) {
-                                    Log.d(
-                                        Result_Activity.TAG,
-                                        key + " : " + if (bundle[key] != null) bundle[key] else "NULL"
-                                    )
                                 }
+
+                            } catch (ce: JSONException){
+                                Log.d("MainAcvitiy", "No Stored command found")
                             }
 
-                            Log.d("KEYS", intent.toString())
 
-                            Main_Activity_text_dot_loader.visibility = INVISIBLE
-                            Main_Custom_Command_Message.visibility = INVISIBLE
-                            startActivity(intent)
-                            finish()
+
+                            withContext(Dispatchers.Main) {
+
+
+                                intent.putExtra(
+                                    "results", LoggedInUsers.await()
+                                )
+                                intent.putExtra("diskspace", DiskSpace.await())
+                                intent.putExtra("memusage", MemUsage.await())
+                                intent.putExtra("cpuusage", CpuUsage.await())
+
+                                intent.putExtra("username", UsernameText.text.toString())
+                                intent.putExtra("password", PasswordText.text.toString())
+                                intent.putExtra("ipaddress", IPAddressText.text.toString())
+
+
+                                val bundle = intent.extras
+                                if (bundle != null) {
+                                    for (key in bundle.keySet()) {
+                                        Log.d(
+                                            Result_Activity.TAG,
+                                            key + " : " + if (bundle[key] != null) bundle[key] else "NULL"
+                                        )
+                                    }
+                                }
+
+                                Log.d("KEYS", intent.toString())
+
+                                Main_Activity_text_dot_loader.visibility = INVISIBLE
+                                Main_Custom_Command_Message.visibility = INVISIBLE
+                                startActivity(intent)
+                                finish()
+                            }
+
                         }
-
                     }
+
+
 
 
                 }
             } else {
-                Toast.makeText(this@MainActivity, "$validationtest...Please try again", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "$validationtest...Please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
 
@@ -333,6 +416,23 @@ class MainActivity : AppCompatActivity() {
 
 
 
+// set up right help icon on toolbar
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.pi_buddy_toolbar, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.getItemId()) {
+            R.id.toolbar_menu_help -> {
+                val dialog =
+                    HelpDialog()
+                dialog.show(supportFragmentManager, "Help")
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
 
 }

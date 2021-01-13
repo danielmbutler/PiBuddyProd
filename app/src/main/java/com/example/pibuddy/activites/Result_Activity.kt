@@ -6,11 +6,15 @@ import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pibuddy.Dialogs.CustomCommand
+import com.example.pibuddy.Dialogs.HelpDialog
 import com.example.pibuddy.R
 import kotlinx.android.synthetic.main.activity_result.*
 import org.json.JSONObject
@@ -28,7 +32,7 @@ class Result_Activity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
-        setupActionBar()
+
 
         findViewById<View>(R.id.Main_Activity_text_dot_loader).visibility =
             View.VISIBLE
@@ -43,6 +47,10 @@ class Result_Activity: AppCompatActivity() {
         val Password            = intent.getStringExtra("password")
         val StoredCommand       = intent.getStringExtra("StoredCommand")
         Log.d("KEYS", "$IPAddress, $Username, $Password")
+
+        if (IPAddress != null) {
+            setupActionBar(IPAddress)
+        }
 
         LoggedIn_Result_View.text            = results
         DiskSpace_Result_View.text           = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
@@ -103,7 +111,7 @@ class Result_Activity: AppCompatActivity() {
 
         }
     }
-    private fun setupActionBar() {
+    private fun setupActionBar(IP: String) {
 
         setSupportActionBar(toolbar)
 
@@ -111,6 +119,7 @@ class Result_Activity: AppCompatActivity() {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24_white)
+            actionBar.title = IP
         }
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
@@ -120,5 +129,23 @@ class Result_Activity: AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    // set up right help icon on toolbar
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.pi_buddy_toolbar, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.getItemId()) {
+            R.id.toolbar_menu_help -> {
+                val dialog =
+                    HelpDialog()
+                dialog.show(supportFragmentManager, "Help")
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

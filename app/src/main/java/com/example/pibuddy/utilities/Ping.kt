@@ -7,15 +7,22 @@ import java.net.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+public   fun validate(ip: String): Boolean {
+    val PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
 
-fun isPortOpen(ip : String, port : Int, timeout : Int): String {
+    return ip.matches(PATTERN.toRegex());
+}
 
-    val check = InetAddresses.isInetAddress(ip)
+public fun isPortOpen(ip : String, port : Int, timeout : Int): String {
 
-    if (check == false){
+// validate if IP is properly formated
+
+
+    val validationResult = validate(ip)
+
+    if(!validationResult){
         return "false"
-    } else {
-
+    }else {
         try {
             val socket = Socket()
             socket.connect(InetSocketAddress(ip, port), timeout)
@@ -34,6 +41,7 @@ fun isPortOpen(ip : String, port : Int, timeout : Int): String {
             return "false"
         }
     }
-}
+    }
+
 
 

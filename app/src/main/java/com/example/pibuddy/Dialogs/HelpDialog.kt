@@ -1,0 +1,84 @@
+package com.example.pibuddy.Dialogs
+
+import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
+import android.text.method.ScrollingMovementMethod
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.DialogFragment
+import com.example.pibuddy.R
+import com.example.pibuddy.activites.Result_Activity
+import kotlinx.android.synthetic.main.activity_custom_command.*
+import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
+import org.w3c.dom.Text
+
+class HelpDialog (): DialogFragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val rootview = layoutInflater.inflate(R.layout.activity_help, fragement_container, false)
+
+
+         val button = rootview.findViewById<Button>(R.id.Help_Button)
+         val helptextView = rootview.findViewById<TextView>(R.id.Help_TextView)
+         helptextView.setMovementMethod(ScrollingMovementMethod());
+         helptextView.setMovementMethod(LinkMovementMethod.getInstance())
+
+        helptextView.setText(Html.fromHtml("<p><strong>Welcome to PI Buddy</strong></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p>This is my first app and I hope you found it useful :)</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p>Please email any queries or questions to <a href=\"mailto:dbtechprojects@gmail.com\">dbtechprojects@gmail.com</a></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>App Info</strong></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p>Linux commands used.</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>CPU Usage</strong></p>\n" +
+                "<p>&quot;cat &lt;(grep &apos;cpu &apos; /proc/stat) &lt;(sleep 1 &amp;&amp; grep &apos;cpu &apos; /proc/stat) | awk -v RS=\\&quot;\\&quot; &apos;{print (\\\$13-\\\$2+\\\$15-\\\$4)*100/(\\\$13-\\\$2+\\\$15-\\\$4+\\\$16-\\\$5)}&apos;&quot;</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Memory Usage</strong></p>\n" +
+                "<p>&quot;awk &apos;/^Mem/ {printf(\\&quot;%u%%\\&quot;, 100*\\\$3/\\\$2);}&apos; &lt;(free -m)&quot;</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Root Disk Space Used</strong></p>\n" +
+                "<p>&quot;df -hl | grep \\&apos;root\\&apos; | awk \\&apos;BEGIN{print \\&quot;\\&quot;} {percent+=\$5;} END{print percent}\\&apos; | column -t&quot;</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Logged In Users</strong></p>\n" +
+                "<p>&quot;who | cut -d&apos; &apos; -f1 | sort | uniq\\n&quot;</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Custom Command</strong></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p>Any custom command can be used but the output is limited to 1000 characters, only 1 custom command can be used.</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Connecting to your PI</strong></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p>This app requires the IP address for your Raspberry Pi/ Linux device, and you will need to know your username and password. This app will connect on the default SSH Port 22. The scan mode can also be used to find available devices on your network with port 22 open.</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Saving Connections</strong></p>\n" +
+                "<p><br></br></p>\n" +
+                "<p>Successful connections are saved in the side draw on the opening page, the details are stored in Shared Preferences and will be deleted along with the App.</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><br></br></p>"))
+
+
+        button.setOnClickListener {
+
+            //close helpDialog
+            activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+
+
+        }
+
+        return rootview
+    }
+}

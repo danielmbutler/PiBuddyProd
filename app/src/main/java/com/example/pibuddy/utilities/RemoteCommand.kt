@@ -5,6 +5,7 @@ import android.text.Editable
 import android.util.Log
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
+import com.jcraft.jsch.JSchException
 import com.jcraft.jsch.Session
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -35,6 +36,9 @@ suspend fun executeRemoteCommand(
         }
         val responseString = String(responseStream.toByteArray())
         return (responseString)
+    } catch (ce: JSchException){
+        return "error - Please check Username/Password"
+
     } finally {
         if (session != null) {
             session.disconnect()

@@ -26,4 +26,10 @@
     <string name="todo">TODO</string>
     <string name="result">Result</string>
     <string name="running_custom_command">Running Custom Command.....</string>
+    <string name="log_out">Log out</string>
+    <string name="help">Help</string>
+    <string name="exit">Exit</string>
+    <string name="helptext">""</string>
+    <string name="returnWifi">Return</string>
+    <string name="returnwifiText">Wifi Connection Not Found Please Check Wifi</string>
 </resources>

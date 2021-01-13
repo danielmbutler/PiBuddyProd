@@ -19,6 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/PiAlternate"
             android:elevation="4dp"
+            app:layout_collapseMode="pin"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             tools:targetApi="lollipop" />
@@ -28,6 +29,143 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:context=".activites.MainActivity">
+
+
+                    <EditText
+                        android:id="@+id/IPAddressText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:ems="10"
+                        android:hint="@string/ip_address"
+                        android:inputType="textPersonName"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        app:backgroundTint="@color/PiPrimary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/Title" />
+
+                    <EditText
+                        android:id="@+id/UsernameText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:ems="10"
+                        android:hint="@string/username"
+                        android:inputType="textPersonName"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        app:backgroundTint="@color/PiPrimary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.502"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/IPAddressText" />
+
+                    <EditText
+                        android:id="@+id/PasswordText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:ems="10"
+                        android:hint="@string/password"
+                        android:inputType="textPassword"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        app:backgroundTint="@color/PiPrimary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/UsernameText" />
+
+                    <com.eyalbira.loadingdots.LoadingDots
+                        android:id="@+id/Main_Activity_text_dot_loader"
+                        android:layout_width="129dp"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="13dp"
+                        android:accessibilityLiveRegion="assertive"
+                        android:duplicateParentState="true"
+                        android:visibility="invisible"
+                        app:LoadingDots_dots_color="@color/PiAlternate"
+                        app:LoadingDots_dots_count="4"
+                        app:LoadingDots_dots_size="9dp"
+                        app:LoadingDots_dots_space="5dp"
+                        app:LoadingDots_jump_duration="900"
+                        app:LoadingDots_loop_duration="1200"
+                        app:LoadingDots_loop_start_delay="100"
+                        app:layout_constraintBottom_toTopOf="@+id/ConnectButton"
+                        app:layout_constraintEnd_toEndOf="@+id/PasswordText"
+                        app:layout_constraintStart_toStartOf="@+id/PasswordText"
+                        app:layout_constraintTop_toBottomOf="@+id/PasswordText"
+                        tools:visibility="invisible">
+
+                    </com.eyalbira.loadingdots.LoadingDots>
+
+                    <Button
+                        android:id="@+id/ConnectButton"
+                        android:layout_width="156dp"
+                        android:layout_height="68dp"
+                        android:layout_marginTop="50dp"
+                        android:background="@drawable/roundedbutton"
+                        android:text="@string/connect"
+
+                        app:backgroundTint="@color/PiPrimary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/PasswordText"
+                        tools:visibility="visible" />
+
+                    <Button
+                        android:id="@+id/ScanButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:background="@drawable/roundedbutton"
+                        android:text="@string/scan_for_available_devices"
+                        android:textColor="#FFFFFF"
+                        app:backgroundTint="@color/PiPrimary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ConnectButton" />
+
+                    <TextView
+                        android:id="@+id/Title"
+                        android:layout_width="144dp"
+                        android:layout_height="66dp"
+                        android:fontFamily="@font/mitr_extralight"
+                        android:text="@string/pibuddy"
+                        android:textAlignment="center"
+                        android:textColor="@color/PiPrimary"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.498"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.047" />
+
+                    <TextView
+                        android:id="@+id/Main_Custom_Command_Message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/mitr_extralight"
+                        android:text="@string/running_custom_command"
+                        android:textColor="@color/PiPrimary"
+                        android:textSize="18sp"
+                        android:visibility="invisible"
+                        app:layout_constraintEnd_toEndOf="@+id/ScanButton"
+                        app:layout_constraintStart_toStartOf="@+id/ScanButton"
+                        app:layout_constraintTop_toBottomOf="@+id/ScanButton" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
         </FrameLayout>
 
 
@@ -40,135 +178,5 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/draw_menu" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activites.MainActivity">
-
-        <EditText
-            android:id="@+id/IPAddressText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="68dp"
-            android:ems="10"
-            android:hint="@string/ip_address"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textCursorDrawable="@drawable/color_cursor"
-            app:backgroundTint="@color/PiPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Title" />
-
-        <EditText
-            android:id="@+id/UsernameText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:ems="10"
-            android:hint="@string/username"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:backgroundTint="@color/PiPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/IPAddressText" />
-
-        <EditText
-            android:id="@+id/PasswordText"
-            android:layout_width="wrap_content"
-            app:backgroundTint="@color/PiPrimary"
-            android:layout_height="wrap_content"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:layout_marginTop="28dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/UsernameText" />
-
-        <Button
-            android:id="@+id/ConnectButton"
-            android:layout_width="156dp"
-            android:layout_height="68dp"
-            android:layout_marginTop="75dp"
-            android:background="@drawable/roundedbutton"
-            android:text="@string/connect"
-
-            app:backgroundTint="@color/PiPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/PasswordText"
-            tools:visibility="visible" />
-
-        <Button
-            android:id="@+id/ScanButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:background="@drawable/roundedbutton"
-            android:text="@string/scan_for_available_devices"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="@color/PiPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ConnectButton" />
-
-        <TextView
-            android:id="@+id/Title"
-            android:layout_width="144dp"
-            android:layout_height="66dp"
-            android:fontFamily="@font/mitr_extralight"
-            android:text="@string/pibuddy"
-            android:textAlignment="center"
-            android:textColor="@color/PiPrimary"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.101" />
-
-        <TextView
-            android:id="@+id/Main_Custom_Command_Message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/mitr_extralight"
-            android:text="@string/running_custom_command"
-            android:textColor="@color/PiPrimary"
-            android:textSize="18sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/Main_Activity_text_dot_loader"
-            app:layout_constraintEnd_toEndOf="@+id/ScanButton"
-            app:layout_constraintStart_toStartOf="@+id/ScanButton" />
-
-        <com.eyalbira.loadingdots.LoadingDots
-            android:id="@+id/Main_Activity_text_dot_loader"
-            android:layout_width="137dp"
-            android:layout_height="37dp"
-            android:layout_marginTop="32dp"
-            android:accessibilityLiveRegion="assertive"
-            android:duplicateParentState="true"
-            android:visibility="invisible"
-            app:LoadingDots_dots_color="@color/PiAlternate"
-            app:LoadingDots_dots_count="4"
-            app:LoadingDots_dots_size="9dp"
-            app:LoadingDots_dots_space="5dp"
-            app:LoadingDots_jump_duration="900"
-            app:LoadingDots_loop_duration="1200"
-            app:LoadingDots_loop_start_delay="100"
-            app:layout_constraintEnd_toEndOf="@+id/ScanButton"
-            app:layout_constraintStart_toStartOf="@+id/ScanButton"
-            app:layout_constraintTop_toBottomOf="@+id/ScanButton"
-            tools:visibility="invisible">
-
-        </com.eyalbira.loadingdots.LoadingDots>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

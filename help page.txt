@@ -1,0 +1,36 @@
+Welcome to PI Buddy
+
+This is my first app and I hope you found it useful :)
+
+Please email any quieries or qustions to dbtechprojects@gmail.com
+
+App Info
+
+Linux commands used.
+
+CPU Usage
+"cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
+
+Memory Usage
+"awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
+
+Root Disk Space Used
+"df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
+
+Logged In Users
+"who | cut -d' ' -f1 | sort | uniq\n"
+
+Custom Command
+
+Any custom command can be used but output is limited to 1000 characters, only 1 custom command can be used.
+
+
+Connecting to your PI
+
+This app requires the IP address for your Raspberry Pi/ Linux device, and you will need to know your username and password. This app will connect on the default SSH Port 22. Scan mode can also be used to find any avaliable devices on your network with port 22 open.
+
+Saving Connections
+
+Successful connections are saved in the side draw on the opening page, the details are stored in Shared Prefrences and will be deleted along with the App.
+
+
