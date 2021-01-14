@@ -30,9 +30,7 @@ import com.example.pibuddy.R
 import com.example.pibuddy.utilities.executeRemoteCommand
 import com.example.pibuddy.utilities.isPortOpen
 import com.example.pibuddy.utilities.validate
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -88,10 +86,13 @@ class MainActivity : AppCompatActivity() {
 
        }
 
-        MobileAds.initialize(this) {}
+        //intialise and build AD
+
+        MobileAds.initialize(this@MainActivity)
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712" //test unit
+
         mInterstitialAd.loadAd(AdRequest.Builder().build())
 
         // verify network connectivity
@@ -404,13 +405,34 @@ class MainActivity : AppCompatActivity() {
                                 Main_Custom_Command_Message.visibility = INVISIBLE
                                 if (mInterstitialAd.isLoaded) {
                                     mInterstitialAd.show()
+
+                                    mInterstitialAd.adListener = object : AdListener() {
+                                        override fun onAdClosed() {
+
+                                            startActivity(intent)
+                                            finish()
+                                        }
+
+                                        override fun onAdFailedToLoad(p0: LoadAdError?) {
+                                            super.onAdFailedToLoad(p0)
+                                            startActivity(intent)
+                                            finish()
+
+                                        }
+
+                                        override fun onAdClicked() {
+                                            super.onAdClicked()
+                                            startActivity(intent)
+                                            finish()
+                                        }
+
+                                    }
+
                                 } else {
                                     Log.d("TAG", "The interstitial wasn't loaded yet.")
                                 }
                                 Log.d("TAG", mInterstitialAd.responseInfo.toString())
-                                startActivity(intent)
 
-                                finish()
                             }
 
                         }
@@ -449,9 +471,9 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             else -> super.onOptionsItemSelected(item)
+
         }
     }
-
 
 }
 
