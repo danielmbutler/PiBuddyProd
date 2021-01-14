@@ -74,4 +74,7 @@ dependencies {
     //debug
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+
+    //ads
+    implementation 'com.google.android.gms:play-services-ads:19.6.0'
 }

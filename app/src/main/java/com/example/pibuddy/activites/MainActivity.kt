@@ -30,6 +30,9 @@ import com.example.pibuddy.R
 import com.example.pibuddy.utilities.executeRemoteCommand
 import com.example.pibuddy.utilities.isPortOpen
 import com.example.pibuddy.utilities.validate
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -65,7 +68,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var clearbutton: Button
 
+    //AD setup
 
+    private lateinit var mInterstitialAd: InterstitialAd
 
 
     @SuppressLint("NewApi")
@@ -82,6 +87,12 @@ class MainActivity : AppCompatActivity() {
            IPAddressText.setText(IP)
 
        }
+
+        MobileAds.initialize(this) {}
+
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
 
         // verify network connectivity
 
@@ -391,7 +402,14 @@ class MainActivity : AppCompatActivity() {
 
                                 Main_Activity_text_dot_loader.visibility = INVISIBLE
                                 Main_Custom_Command_Message.visibility = INVISIBLE
+                                if (mInterstitialAd.isLoaded) {
+                                    mInterstitialAd.show()
+                                } else {
+                                    Log.d("TAG", "The interstitial wasn't loaded yet.")
+                                }
+                                Log.d("TAG", mInterstitialAd.responseInfo.toString())
                                 startActivity(intent)
+
                                 finish()
                             }
 

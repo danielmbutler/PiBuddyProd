@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/PiAlternate"
+    android:background="@color/GreySecondary"
     tools:context=".activites.Scan_Activity">
 
     <TextView

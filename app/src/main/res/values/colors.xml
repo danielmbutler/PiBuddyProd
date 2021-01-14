@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="PiPrimary">#C51A4A</color>
     <color name="PiAlternate">#6CC04A</color>
+    <color name="GreySecondary">#A9A9B0</color>
 </resources>

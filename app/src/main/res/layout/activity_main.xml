@@ -17,10 +17,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/PiAlternate"
+            android:background="@color/GreySecondary"
             android:elevation="4dp"
-            app:layout_collapseMode="pin"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             tools:targetApi="lollipop" />
 
