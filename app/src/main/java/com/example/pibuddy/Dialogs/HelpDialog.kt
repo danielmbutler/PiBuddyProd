@@ -4,20 +4,14 @@ import android.os.Bundle
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.pibuddy.R
-import com.example.pibuddy.activites.Result_Activity
-import kotlinx.android.synthetic.main.activity_custom_command.*
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
-import org.w3c.dom.Text
 
 class HelpDialog (): DialogFragment() {
     override fun onCreateView(

@@ -1,11 +1,7 @@
 package com.example.pibuddy.utilities
 
-import com.google.common.net.InetAddresses
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.net.*
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+
 
 public   fun validate(ip: String): Boolean {
     val PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";

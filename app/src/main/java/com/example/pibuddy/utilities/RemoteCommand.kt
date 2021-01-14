@@ -1,15 +1,13 @@
 package com.example.pibuddy.utilities
 
-import android.content.Context
+
 import android.text.Editable
-import android.util.Log
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.JSchException
 import com.jcraft.jsch.Session
 import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.util.*
+
 
 suspend fun executeRemoteCommand(
     username: Editable,

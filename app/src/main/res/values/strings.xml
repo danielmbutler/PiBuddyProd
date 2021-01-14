@@ -16,7 +16,7 @@
     <string name="previous_connections">Previous Connections</string>
     <string name="clear_connections">Clear Connections</string>
     <string name="cpu_usage">CPU Usage</string>
-    <string name="mem_usage">Mem Usage</string>
+    <string name="mem_usage">Memory Usage</string>
     <string name="disk_space">Disk Space</string>
     <string name="logged_in_users">Logged In Users</string>
     <string name="back">Back</string>

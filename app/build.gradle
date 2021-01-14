@@ -71,11 +71,6 @@ dependencies {
     //IP Validate
     implementation("com.google.guava:guava:30.1-jre")
 
-    //debug
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
-
-    //ads
-    implementation 'com.google.android.gms:play-services-ads:19.6.0'
 
 }

@@ -10,7 +10,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pibuddy.Dialogs.CustomCommand
@@ -60,7 +59,7 @@ class Result_Activity: AppCompatActivity() {
         DiskSpace_Result_View.movementMethod = ScrollingMovementMethod()
 
         if(customCommandOutput != null){
-            Log.d(TAG, customCommandOutput)
+            //Log.d(TAG, customCommandOutput)
             CustomCommandTextTitle.visibility = VISIBLE
             CustomCommand_Result_View.visibility = VISIBLE
         }
@@ -97,8 +96,8 @@ class Result_Activity: AppCompatActivity() {
 
 
         val keys: Map<String, *> = pref.all
-        Log.d("KEYS", keys.toString())
-        Log.d("KEYS", intent.toString())
+//        Log.d("KEYS", keys.toString())
+//        Log.d("KEYS", intent.toString())
 
 
 

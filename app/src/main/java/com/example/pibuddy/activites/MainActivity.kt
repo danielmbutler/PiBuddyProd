@@ -2,13 +2,10 @@ package com.example.pibuddy.activites
 
 
 import android.annotation.SuppressLint
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences.Editor
 import android.net.ConnectivityManager
-import android.net.LinkAddress
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -29,19 +26,13 @@ import com.example.pibuddy.Dialogs.HelpDialog
 import com.example.pibuddy.R
 import com.example.pibuddy.utilities.executeRemoteCommand
 import com.example.pibuddy.utilities.isPortOpen
-import com.example.pibuddy.utilities.validate
-import com.google.android.gms.ads.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.NullPointerException
-import java.math.BigInteger
-import java.net.Inet4Address
-import java.net.InetAddress
-import java.net.UnknownHostException
-import java.nio.ByteOrder
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     //AD setup
 
-    private lateinit var mInterstitialAd: InterstitialAd
+
 
 
     @SuppressLint("NewApi")
@@ -77,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.d("foundip", "dummylog")
+
 
        if(intent.getStringExtra("IPAddress") != null ) {
           val IP =  intent.getStringExtra("IPAddress")
@@ -88,12 +79,7 @@ class MainActivity : AppCompatActivity() {
 
         //intialise and build AD
 
-        MobileAds.initialize(this@MainActivity)
 
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712" //test unit
-
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
 
         // verify network connectivity
 
@@ -156,18 +142,18 @@ class MainActivity : AppCompatActivity() {
        //get all preferences
 
               val keys: Map<String, *> = pref.all
-            Log.d("KEYS", keys.toString())
+            //Log.d("KEYS", keys.toString())
 
 
         val menu = mNavigationView.menu
 
        for ((key, value) in keys) {
 
-           Log.d("map values", key + ": " + value.toString())
+           //Log.d("map values", key + ": " + value.toString())
 
            menu.add(0, 0, 0, key).setOnMenuItemClickListener {
 
-               Log.d("onclick listner", key)
+               //Log.d("onclick listner", key)
                pref.getString(this.title.toString(), null)
                val strJson = pref.getString(key, null)
 
@@ -176,11 +162,11 @@ class MainActivity : AppCompatActivity() {
                val PasswordFromJson = jresponse.getString("Password")
 
                if (strJson != null) {
-                   Log.d("onclick listner", strJson)
-                   Log.d(
-                       "onclick listner",
-                       "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} "
-                   )
+                   //Log.d("onclick listner", strJson)
+//                  // Log.d(
+//                       "onclick listner",
+//                       "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} "
+//                  // )
                    IPAddressText.setText(key)
                    UsernameText.setText(UsernameFromJson)
                    PasswordText.setText(PasswordFromJson)
@@ -238,7 +224,7 @@ class MainActivity : AppCompatActivity() {
             val validationtest = nullcheck()
                 Main_Activity_text_dot_loader.visibility = VISIBLE
 
-            Log.d("Nullcheck", validationtest + IPAddressText.text)
+            //Log.d("Nullcheck", validationtest + IPAddressText.text)
 
             if (validationtest == "success"){
 
@@ -252,7 +238,7 @@ class MainActivity : AppCompatActivity() {
                             3000
                         )
                     }
-                    Log.d("pingtest", pingtest.await())
+                    //Log.d("pingtest", pingtest.await())
 
                     if (pingtest.await() == "false"){
                         withContext(Dispatchers.Main) {
@@ -271,7 +257,7 @@ class MainActivity : AppCompatActivity() {
 
                         // declare intent for result activity
 
-                        var intent = Intent(this@MainActivity, Result_Activity::class.java)
+                        val intent = Intent(this@MainActivity, Result_Activity::class.java)
 
                         // test command echo hello if fail show toast
 
@@ -281,7 +267,7 @@ class MainActivity : AppCompatActivity() {
                             IPAddressText.text, "echo hello"
                         ) }
 
-                        Log.d("testcommand", testcommand.await())
+                      //  Log.d("testcommand", testcommand.await())
 
                         if(!testcommand.await().contains("hello")){
                             withContext(Dispatchers.Main){
@@ -340,7 +326,7 @@ class MainActivity : AppCompatActivity() {
                                     val jresponse = JSONObject(strJson!!)
                                     val storedCommand = jresponse.getString("CustomCommand")
 
-                                    Log.d("storedCommand", storedCommand!!)
+                                    //Log.d("storedCommand", storedCommand!!)
                                     if( storedCommand != null){
                                         // setup waiting dialogue
 
@@ -399,39 +385,13 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                Log.d("KEYS", intent.toString())
+                                //Log.d("KEYS", intent.toString())
 
                                 Main_Activity_text_dot_loader.visibility = INVISIBLE
                                 Main_Custom_Command_Message.visibility = INVISIBLE
-                                if (mInterstitialAd.isLoaded) {
-                                    mInterstitialAd.show()
+                                startActivity(intent)
+                                finish()
 
-                                    mInterstitialAd.adListener = object : AdListener() {
-                                        override fun onAdClosed() {
-
-                                            startActivity(intent)
-                                            finish()
-                                        }
-
-                                        override fun onAdFailedToLoad(p0: LoadAdError?) {
-                                            super.onAdFailedToLoad(p0)
-                                            startActivity(intent)
-                                            finish()
-
-                                        }
-
-                                        override fun onAdClicked() {
-                                            super.onAdClicked()
-                                            startActivity(intent)
-                                            finish()
-                                        }
-
-                                    }
-
-                                } else {
-                                    Log.d("TAG", "The interstitial wasn't loaded yet.")
-                                }
-                                Log.d("TAG", mInterstitialAd.responseInfo.toString())
 
                             }
 

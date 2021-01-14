@@ -7,14 +7,12 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import android.widget.Toast
-import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -105,18 +103,18 @@ class Scan_Activity : AppCompatActivity() {
 
             val addresses = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)!!.linkAddresses
             addresses.forEach {
-                println(it.address)
-                println(it)
-                println(it.prefixLength)
+                //println(it.address)
+                //println(it)
+                //println(it.prefixLength)
                 if(validate(it.address.toString().replace("/",""))){
-                    Log.d("wifi", "${it.toString()} validated")
+                    //Log.d("wifi", "${it.toString()} validated")
                     foundAddress = it.toString()
                 }
             }
         } catch (ce: NullPointerException){
 
             Toast.makeText(this@Scan_Activity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
-            Scanning_Text_View.setText("Wifi Connection Not Found, Please check Wifi")
+            Scanning_Text_View.setText(resources.getString(R.string.returnwifiText))
 
 
 
@@ -141,7 +139,7 @@ class Scan_Activity : AppCompatActivity() {
                 adapter.setOnItemClickListener{ item: Item<GroupieViewHolder>, view: View ->
 
                     val IP = item as PiAdapter
-                    Log.d(TAG, IP.IP)
+                    //Log.d(TAG, IP.IP)
 
                     intent= Intent(this@Scan_Activity,
                         MainActivity::class.java)
@@ -163,7 +161,7 @@ class Scan_Activity : AppCompatActivity() {
 
 
             netAddresses.await().forEach {
-                Log.d(TAG, cancelled)
+                //Log.d(TAG, cancelled)
 
                 val pingtest = async {
                     isPortOpen(
@@ -183,12 +181,12 @@ class Scan_Activity : AppCompatActivity() {
 
                     }
                 } else{
-                    Log.d("pingtest", it.toString() + " " + pingtest.await())
+                    //Log.d("pingtest", it.toString() + " " + pingtest.await())
                     addresscount--
-                    Log.d("IPCount", (addresscount).toString())
-
+                    //Log.d("IPCount", (addresscount).toString())
+                    
                     if(pingtest.await() == "connection successfull" ){
-                        Log.d(TAG, "$it + is available")
+                        //Log.d(TAG, "$it + is available")
                         withContext(Dispatchers.Main){
 
 
