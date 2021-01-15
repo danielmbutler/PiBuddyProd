@@ -1,4 +1,4 @@
-package com.example.pibuddy.activites
+package com.dbtechprojects.pibuddy.activites
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -12,9 +12,9 @@ import android.view.View
 import android.view.View.VISIBLE
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.pibuddy.Dialogs.CustomCommand
-import com.example.pibuddy.Dialogs.HelpDialog
-import com.example.pibuddy.R
+import com.dbtechprojects.pibuddy.Dialogs.CustomCommand
+import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.R
 import kotlinx.android.synthetic.main.activity_result.*
 import org.json.JSONObject
 

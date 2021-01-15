@@ -1,4 +1,4 @@
-import com.example.pibuddy.R
+import com.dbtechprojects.pibuddy.R
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.available_device_row.view.*

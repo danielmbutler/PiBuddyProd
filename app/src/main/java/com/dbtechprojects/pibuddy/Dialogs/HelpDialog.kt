@@ -1,4 +1,4 @@
-package com.example.pibuddy.Dialogs
+package com.dbtechprojects.pibuddy.Dialogs
 
 import android.os.Bundle
 import android.text.Html
@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import com.example.pibuddy.R
+import com.dbtechprojects.pibuddy.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class HelpDialog (): DialogFragment() {

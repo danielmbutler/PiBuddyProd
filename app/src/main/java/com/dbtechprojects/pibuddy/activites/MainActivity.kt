@@ -1,4 +1,4 @@
-package com.example.pibuddy.activites
+package com.dbtechprojects.pibuddy.activites
 
 
 import android.annotation.SuppressLint
@@ -22,10 +22,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.example.pibuddy.Dialogs.HelpDialog
-import com.example.pibuddy.R
-import com.example.pibuddy.utilities.executeRemoteCommand
-import com.example.pibuddy.utilities.isPortOpen
+import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.utilities.executeRemoteCommand
+import com.dbtechprojects.pibuddy.utilities.isPortOpen
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         ScanButton.setOnClickListener {
             val intent = Intent(this, Scan_Activity::class.java)
             startActivity(intent)
+            finish()
 
 
         }

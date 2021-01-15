@@ -1,10 +1,10 @@
-package com.example.pibuddy.activites
+package com.dbtechprojects.pibuddy.activites
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import com.example.pibuddy.R
+import com.dbtechprojects.pibuddy.R
 
 class Splash_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

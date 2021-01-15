@@ -1,4 +1,4 @@
-package com.example.pibuddy.activites
+package com.dbtechprojects.pibuddy.activites
 
 import PiAdapter
 import android.annotation.SuppressLint
@@ -16,10 +16,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.example.pibuddy.Dialogs.HelpDialog
-import com.example.pibuddy.R
-import com.example.pibuddy.utilities.isPortOpen
-import com.example.pibuddy.utilities.validate
+import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.utilities.isPortOpen
+import com.dbtechprojects.pibuddy.utilities.validate
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item

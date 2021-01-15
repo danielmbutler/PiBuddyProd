@@ -9,7 +9,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.pibuddy"
+        applicationId "com.dbtechprojects.pibuddy"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
@@ -19,11 +19,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+   
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
     compileOptions {
@@ -33,6 +36,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
 }
 
 dependencies {
@@ -55,7 +59,8 @@ dependencies {
 
     //multidex
 
-    implementation 'com.android.support:multidex:1.0.3'
+    def multidex_version = "2.0.1"
+    implementation "androidx.multidex:multidex:$multidex_version"
 
     //implementation 'com.github.bhargavms:DotLoader:1.1.1'
     implementation'com.eyalbira.loadingdots:loading-dots:1.0.2'
