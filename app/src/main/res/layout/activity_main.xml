@@ -155,6 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/mitr_extralight"
+                        android:padding="10dp"
                         android:text="@string/running_custom_command"
                         android:textColor="@color/PiPrimary"
                         android:textSize="18sp"

@@ -104,10 +104,10 @@ class Scan_Activity : AppCompatActivity() {
             val addresses = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)!!.linkAddresses
             addresses.forEach {
                 //println(it.address)
-                println(it)
-                println(it.prefixLength)
+                //println(it)
+                //println(it.prefixLength)
                 if(validate(it.address.toString().replace("/",""))){
-                    Log.d("wifi", "${it.toString()} validated")
+                    //Log.d("wifi", "${it.toString()} validated")
                     foundAddress = it.toString()
                 }
             }

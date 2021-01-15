@@ -25,7 +25,7 @@
     <string name="available_device">Available Device</string>
     <string name="todo">TODO</string>
     <string name="result">Result</string>
-    <string name="running_custom_command">Running Custom Command.....</string>
+    <string name="running_custom_command">Running Custom Command.....15 Second Timeout</string>
     <string name="log_out">Log out</string>
     <string name="help">Help</string>
     <string name="exit">Exit</string>

@@ -45,7 +45,7 @@ class Result_Activity: AppCompatActivity() {
         val Username            = intent.getStringExtra("username")
         val Password            = intent.getStringExtra("password")
         val StoredCommand       = intent.getStringExtra("StoredCommand")
-        Log.d("KEYS", "$IPAddress, $Username, $Password")
+        //Log.d("KEYS", "$IPAddress, $Username, $Password")
 
         if (IPAddress != null) {
             setupActionBar(IPAddress)
@@ -77,7 +77,7 @@ class Result_Activity: AppCompatActivity() {
         // store successfull connection in shared pref
 
         val pref = applicationContext.getSharedPreferences(
-            "Connection",
+            "Connections",
             0
         ) // 0 - for private mode
         val editor = pref.edit()

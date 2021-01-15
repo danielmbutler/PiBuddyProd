@@ -46,10 +46,15 @@ suspend fun executeRemoteCommand(
 
         val responseString = String(responseStream.toByteArray())
         return (responseString)
-    } catch (ce: JSchException){
+    }
+    catch (ce: JSchException){
+
+
         return "error - Please check Username/Password"
 
-    } finally {
+   }
+
+    finally {
         if (session != null) {
             session.disconnect()
         }

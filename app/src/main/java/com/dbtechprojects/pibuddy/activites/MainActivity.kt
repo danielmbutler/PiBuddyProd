@@ -4,11 +4,11 @@ package com.dbtechprojects.pibuddy.activites
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.utilities.executeRemoteCommand
@@ -31,8 +33,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.NullPointerException
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -90,7 +90,11 @@ class MainActivity : AppCompatActivity() {
             val addresses = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)!!.linkAddresses
         } catch (ce: NullPointerException){
 
-            Toast.makeText(this@MainActivity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@MainActivity,
+                "Wifi Connection Not Found, Please check Wifi",
+                Toast.LENGTH_LONG
+            ).show()
 
 
         }
@@ -223,11 +227,12 @@ class MainActivity : AppCompatActivity() {
             ConnectButton.setOnClickListener {
 
             val validationtest = nullcheck()
-                Main_Activity_text_dot_loader.visibility = VISIBLE
+
 
             //Log.d("Nullcheck", validationtest + IPAddressText.text)
 
             if (validationtest == "success"){
+                Main_Activity_text_dot_loader.visibility = VISIBLE
 
                 GlobalScope.launch(Dispatchers.IO) {
 
@@ -268,7 +273,7 @@ class MainActivity : AppCompatActivity() {
                             IPAddressText.text, "echo hello"
                         ) }
 
-                      //  Log.d("testcommand", testcommand.await())
+                       //Log.d("testcommand", testcommand.await())
 
                         if(!testcommand.await().contains("hello")){
                             withContext(Dispatchers.Main){
@@ -327,6 +332,7 @@ class MainActivity : AppCompatActivity() {
                                     val jresponse = JSONObject(strJson!!)
                                     val storedCommand = jresponse.getString("CustomCommand")
 
+
                                     //Log.d("storedCommand", storedCommand!!)
                                     if( storedCommand != null){
                                         // setup waiting dialogue
@@ -356,7 +362,7 @@ class MainActivity : AppCompatActivity() {
                                 }
 
                             } catch (ce: JSONException){
-                                Log.d("MainAcvitiy", "No Stored command found")
+                                //Log.d("MainAcvitiy", "No Stored command found")
                             }
 
 
@@ -375,18 +381,6 @@ class MainActivity : AppCompatActivity() {
                                 intent.putExtra("password", PasswordText.text.toString())
                                 intent.putExtra("ipaddress", IPAddressText.text.toString())
 
-
-                                val bundle = intent.extras
-                                if (bundle != null) {
-                                    for (key in bundle.keySet()) {
-                                        Log.d(
-                                            Result_Activity.TAG,
-                                            key + " : " + if (bundle[key] != null) bundle[key] else "NULL"
-                                        )
-                                    }
-                                }
-
-                                //Log.d("KEYS", intent.toString())
 
                                 Main_Activity_text_dot_loader.visibility = INVISIBLE
                                 Main_Custom_Command_Message.visibility = INVISIBLE

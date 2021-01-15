@@ -4,13 +4,24 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
+def propertiesFile = file('myFile.properties')
+
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
+    signingConfigs {
+        release {
+            storeFile file(project.property("MyApp.signing"))
+            storePassword project.property("MyApp.store.password")
+            keyAlias project.property("MyApp.signing.alias")
+            keyPassword project.property("MyApp.signing.password")
+        }
+    }
+
     defaultConfig {
         applicationId "com.dbtechprojects.pibuddy"
-        minSdkVersion 19
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -19,13 +30,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-   
+
 
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
 
         }
     }
@@ -75,6 +87,10 @@ dependencies {
 
     //IP Validate
     implementation("com.google.guava:guava:30.1-jre")
+
+    //shared pref encrypt
+
+    implementation "androidx.security:security-crypto:1.1.0-alpha03"
 
 
 
