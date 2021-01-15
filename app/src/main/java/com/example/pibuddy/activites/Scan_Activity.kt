@@ -104,10 +104,10 @@ class Scan_Activity : AppCompatActivity() {
             val addresses = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)!!.linkAddresses
             addresses.forEach {
                 //println(it.address)
-                //println(it)
-                //println(it.prefixLength)
+                println(it)
+                println(it.prefixLength)
                 if(validate(it.address.toString().replace("/",""))){
-                    //Log.d("wifi", "${it.toString()} validated")
+                    Log.d("wifi", "${it.toString()} validated")
                     foundAddress = it.toString()
                 }
             }
@@ -184,7 +184,7 @@ class Scan_Activity : AppCompatActivity() {
                     //Log.d("pingtest", it.toString() + " " + pingtest.await())
                     addresscount--
                     //Log.d("IPCount", (addresscount).toString())
-                    
+
                     if(pingtest.await() == "connection successfull" ){
                         //Log.d(TAG, "$it + is available")
                         withContext(Dispatchers.Main){

@@ -27,7 +27,7 @@ public fun isPortOpen(ip : String, port : Int, timeout : Int): String {
             return "connection successfull"
 
         } catch (ce: ConnectException) {
-            ce.printStackTrace()
+            //ce.printStackTrace()
             return "false"
         } catch (ce: SocketTimeoutException) {
 
