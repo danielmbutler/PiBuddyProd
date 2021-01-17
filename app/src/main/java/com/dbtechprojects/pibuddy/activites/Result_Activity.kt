@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dbtechprojects.pibuddy.Dialogs.CustomCommand
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.utilities.SharedPref
 import kotlinx.android.synthetic.main.activity_result.*
 import org.json.JSONObject
 
@@ -76,10 +77,7 @@ class Result_Activity: AppCompatActivity() {
 
         // store successfull connection in shared pref
 
-        val pref = applicationContext.getSharedPreferences(
-            "Connections",
-            0
-        ) // 0 - for private mode
+        val pref = SharedPref(this).sharedPreferences
         val editor = pref.edit()
 
 
@@ -95,17 +93,10 @@ class Result_Activity: AppCompatActivity() {
 
 
 
-        val keys: Map<String, *> = pref.all
-//        Log.d("KEYS", keys.toString())
-//        Log.d("KEYS", intent.toString())
-
-
-
-
         AddCustomCommandButton.setOnClickListener {
 
                 val dialog =
-                    CustomCommand(IPAddress!!)
+                    CustomCommand(IPAddress!!,this@Result_Activity)
                 dialog.show(supportFragmentManager, "CustomCommand")
 
         }

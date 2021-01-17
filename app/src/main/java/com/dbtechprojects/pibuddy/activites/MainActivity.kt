@@ -26,6 +26,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.dbtechprojects.pibuddy.utilities.executeRemoteCommand
 import com.dbtechprojects.pibuddy.utilities.isPortOpen
 import com.google.android.material.navigation.NavigationView
@@ -132,13 +133,7 @@ class MainActivity : AppCompatActivity() {
         val mNavigationView = findViewById<View>(R.id.nav_viewer) as NavigationView
         mNavigationView.bringToFront()
 
-        val pref = applicationContext.getSharedPreferences(
-            "Connection",
-            0
-        ) // 0 - for private mode
-
-
-
+        val pref = SharedPref(this).sharedPreferences
 
 
 
@@ -326,6 +321,7 @@ class MainActivity : AppCompatActivity() {
 
                             // check for stored command for that IP
                             try{
+
                                 val strJson = pref.getString(IPAddressText.text.toString(), null)
 
                                 if(strJson != null){

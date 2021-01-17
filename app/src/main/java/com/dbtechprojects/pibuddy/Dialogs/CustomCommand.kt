@@ -1,5 +1,6 @@
 package com.dbtechprojects.pibuddy.Dialogs
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.utilities.SharedPref
 import kotlinx.android.synthetic.main.activity_custom_command.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 
-class CustomCommand (val IP: String): DialogFragment() {
+class CustomCommand (val IP: String, context: Context): DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,10 +30,7 @@ class CustomCommand (val IP: String): DialogFragment() {
             //Log.d(Result_Activity.TAG, command.toString())
             //Log.d(Result_Activity.TAG, IP)
 
-            val pref = context?.getSharedPreferences(
-                "Connection",
-                0
-            ) // 0 - for private mode
+            val pref = SharedPref(context!!).sharedPreferences
 
             val editor = pref?.edit()
 
