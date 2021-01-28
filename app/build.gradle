@@ -92,6 +92,10 @@ dependencies {
 
     implementation "androidx.security:security-crypto:1.1.0-alpha03"
 
+    // google ads
+
+    implementation 'com.google.android.gms:play-services-ads:19.3.0'
+
 
 
 }

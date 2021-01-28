@@ -4,11 +4,11 @@ package com.dbtechprojects.pibuddy.activites
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,13 +22,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.dbtechprojects.pibuddy.utilities.executeRemoteCommand
 import com.dbtechprojects.pibuddy.utilities.isPortOpen
+import com.google.android.gms.ads.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     //AD setup
 
-
+    private lateinit var mInterstitialAd: InterstitialAd
 
 
     @SuppressLint("NewApi")
@@ -69,6 +68,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
+        MobileAds.initialize(this@MainActivity)
+
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
 
 
        if(intent.getStringExtra("IPAddress") != null ) {
@@ -141,7 +147,7 @@ class MainActivity : AppCompatActivity() {
 
        //get all preferences
 
-              val keys: Map<String, *> = pref.all
+              val keys: MutableMap<String, *> = pref.all
             //Log.d("KEYS", keys.toString())
 
 
@@ -149,38 +155,44 @@ class MainActivity : AppCompatActivity() {
 
        for ((key, value) in keys) {
 
-           //Log.d("map values", key + ": " + value.toString())
+            if(key == "adcount"){
+                keys.remove("adcount")
+            } else {
+                menu.add(0, 0, 0, key).setOnMenuItemClickListener {
 
-           menu.add(0, 0, 0, key).setOnMenuItemClickListener {
+                    //Log.d("onclick listner", key)
+                    pref.getString(this.title.toString(), null)
+                    val strJson = pref.getString(key, null)
 
-               //Log.d("onclick listner", key)
-               pref.getString(this.title.toString(), null)
-               val strJson = pref.getString(key, null)
+                    val jresponse = JSONObject(strJson)
+                    val UsernameFromJson = jresponse.getString("Username")
+                    val PasswordFromJson = jresponse.getString("Password")
 
-               val jresponse = JSONObject(strJson)
-               val UsernameFromJson = jresponse.getString("Username")
-               val PasswordFromJson = jresponse.getString("Password")
-
-               if (strJson != null) {
-                   //Log.d("onclick listner", strJson)
+                    if (strJson != null) {
+                        //Log.d("onclick listner", strJson)
 //                  // Log.d(
 //                       "onclick listner",
 //                       "Username: ${UsernameFromJson}, Password: ${PasswordFromJson} "
 //                  // )
-                   IPAddressText.setText(key)
-                   UsernameText.setText(UsernameFromJson)
-                   PasswordText.setText(PasswordFromJson)
-               }
+                        IPAddressText.setText(key)
+                        UsernameText.setText(UsernameFromJson)
+                        PasswordText.setText(PasswordFromJson)
+                    }
 
 
 
-               drawer.closeDrawer(GravityCompat.START);
-               true
+                    drawer.closeDrawer(GravityCompat.START);
+                    true
 
-           }.icon = ContextCompat.getDrawable(
-               this,
-               R.drawable.ic_computer
-           )
+                }.icon = ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_computer
+                )
+            }
+
+           //Log.d("map values", key + ": " + value.toString())
+
+
 
 
            }
@@ -380,18 +392,66 @@ class MainActivity : AppCompatActivity() {
 
                                 Main_Activity_text_dot_loader.visibility = INVISIBLE
                                 Main_Custom_Command_Message.visibility = INVISIBLE
-                                startActivity(intent)
-                                finish()
 
+                                val editor = pref.edit()
 
+                                val adcount = pref.getString("adcount","")
+
+                                if(adcount.isNullOrEmpty()){
+                                    editor.putString("adcount","1")
+                                    editor.apply()
+                                    startActivity(intent)
+                                    finish()
+                                } else{
+                                    Log.d("MainActivity", adcount)
+                                    val newvalue = adcount.toInt() + 1
+                                    editor.putString("adcount", newvalue.toString())
+                                    if(adcount.toInt() >= 3){
+                                        // show ad
+                                        Log.d("MainActvity", "Showing Ad")
+
+                                        if (mInterstitialAd.isLoaded) {
+                                            mInterstitialAd.show()
+                                            mInterstitialAd.adListener = object : AdListener() {
+                                                override fun onAdClosed() {
+                                                    startActivity(intent)
+                                                    editor.remove("adcount")
+                                                    editor.apply()
+                                                    finish()
+
+                                                }
+
+                                                override fun onAdFailedToLoad(p0: LoadAdError?) {
+                                                    startActivity(intent)
+                                                    editor.remove("adcount")
+                                                    editor.apply()
+                                                    finish()
+
+                                                }
+
+                                                override fun onAdClicked() {
+                                                    startActivity(intent)
+                                                    editor.remove("adcount")
+                                                    editor.apply()
+                                                    finish()
+
+                                                }
+                                            }
+                                        } else {
+                                            Log.d("TAG", "The interstitial wasn't loaded yet.")
+                                        }
+
+                                    } else {
+                                        editor.apply()
+                                        startActivity(intent)
+                                        finish()
+                                    }
+
+                                }
                             }
 
                         }
                     }
-
-
-
-
                 }
             } else {
                 Toast.makeText(

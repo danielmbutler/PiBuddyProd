@@ -32,6 +32,9 @@ class Result_Activity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
+        val pref = SharedPref(this).sharedPreferences
+        val editor = pref.edit()
+
 
 
         findViewById<View>(R.id.Main_Activity_text_dot_loader).visibility =
@@ -77,8 +80,7 @@ class Result_Activity: AppCompatActivity() {
 
         // store successfull connection in shared pref
 
-        val pref = SharedPref(this).sharedPreferences
-        val editor = pref.edit()
+
 
 
         if(StoredCommand != null){
