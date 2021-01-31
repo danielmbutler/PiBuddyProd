@@ -10,4 +10,5 @@
     <color name="PiPrimary">#C51A4A</color>
     <color name="PiAlternate">#6CC04A</color>
     <color name="GreySecondary">#A9A9B0</color>
+    <color name="buttonalternate">#80a5e0</color>
 </resources>

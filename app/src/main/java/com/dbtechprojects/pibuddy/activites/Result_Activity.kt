@@ -5,18 +5,24 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.dbtechprojects.pibuddy.Dialogs.CustomCommand
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.utilities.SharedPref
+import com.dbtechprojects.pibuddy.utilities.executeRemoteCommand
+import com.dbtechprojects.pibuddy.utilities.isPortOpen
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_result.*
+import kotlinx.android.synthetic.main.activity_result.toolbar
+import kotlinx.coroutines.*
 import org.json.JSONObject
 
 
@@ -101,6 +107,182 @@ class Result_Activity: AppCompatActivity() {
                     CustomCommand(IPAddress!!,this@Result_Activity)
                 dialog.show(supportFragmentManager, "CustomCommand")
 
+        }
+
+        Result_View_RestartButton.setOnClickListener {
+
+            // Build Confirmation alert
+
+            val builder = AlertDialog.Builder(this@Result_Activity)
+            builder.setMessage("Are you sure you want to restart this device?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+
+                    GlobalScope.launch(Dispatchers.IO) {
+
+                        //pingtest
+                        val pingtest = async {
+                            isPortOpen(
+                                IPAddress.toString(),
+                                22,
+                                3000
+                            )
+                        }
+                        //Log.d("pingtest", pingtest.await())
+
+                        if (pingtest.await() == "false") {
+                            withContext(Dispatchers.Main) {
+
+                                Toast.makeText(
+                                    this@Result_Activity,
+                                    "Connection Failure Please Retry..",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                dialog.dismiss()
+
+                            }
+
+                        } else {
+                            // run command
+
+                            val testcommand = async {  executeRemoteCommand(
+                                Username.toString(),
+                                Password.toString(),
+                                IPAddress.toString(), "echo hello"
+                            ) }
+
+                            //Log.d("testcommand", testcommand.await())
+
+                            if(!testcommand.await().contains("hello")){
+                                withContext(Dispatchers.Main){
+
+                                    Toast.makeText(
+                                        this@Result_Activity,
+                                        "Device Session failure, Please confirm username and password",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    dialog.dismiss()
+
+                                }
+                        } else {
+
+                            //run real command
+
+                                val RestartCommand = async {  executeRemoteCommand(
+                                    Username.toString(),
+                                    Password.toString(),
+                                    IPAddress.toString(), "sudo systemctl start reboot.target"
+                                ) }
+
+                                withContext(Dispatchers.Main){
+                                    Toast.makeText(
+                                        this@Result_Activity,
+                                        "Your device is now rebooting....",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    dialog.dismiss()
+                                }
+
+                        }
+                        }
+
+                    }
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+        }
+
+        Result_View_PowerOffButton.setOnClickListener {
+
+            // Build Confirmation alert
+
+            val builder = AlertDialog.Builder(this@Result_Activity)
+            builder.setMessage("Are you sure you want to Power OFF this device?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+
+                    GlobalScope.launch(Dispatchers.IO) {
+
+                        //pingtest
+                        val pingtest = async {
+                            isPortOpen(
+                                IPAddress.toString(),
+                                22,
+                                3000
+                            )
+                        }
+                        //Log.d("pingtest", pingtest.await())
+
+                        if (pingtest.await() == "false") {
+                            withContext(Dispatchers.Main) {
+
+                                Toast.makeText(
+                                    this@Result_Activity,
+                                    "Connection Failure Please Retry..",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                dialog.dismiss()
+
+                            }
+
+                        } else {
+                            // run command
+
+                            val testcommand = async {  executeRemoteCommand(
+                                Username.toString(),
+                                Password.toString(),
+                                IPAddress.toString(), "echo hello"
+                            ) }
+
+                            //Log.d("testcommand", testcommand.await())
+
+                            if(!testcommand.await().contains("hello")){
+                                withContext(Dispatchers.Main){
+
+                                    Toast.makeText(
+                                        this@Result_Activity,
+                                        "Device Session failure, Please confirm username and password",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    dialog.dismiss()
+
+                                }
+                            } else {
+
+                                //run real command
+
+                                val ShutdownCommand = async {  executeRemoteCommand(
+                                    Username.toString(),
+                                    Password.toString(),
+                                    IPAddress.toString(), "sudo shutdown -P now"
+                                ) }
+
+                                withContext(Dispatchers.Main){
+                                    Toast.makeText(
+                                        this@Result_Activity,
+                                        "Your device is now shutting down....",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    dialog.dismiss()
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
         }
     }
     private fun setupActionBar(IP: String) {

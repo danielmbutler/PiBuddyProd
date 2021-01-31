@@ -108,10 +108,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
         ScanButton.setOnClickListener {
             val intent = Intent(this, Scan_Activity::class.java)
             startActivity(intent)
@@ -275,9 +271,9 @@ class MainActivity : AppCompatActivity() {
                         // test command echo hello if fail show toast
 
                         val testcommand = async {  executeRemoteCommand(
-                            UsernameText.text,
-                            PasswordText.text,
-                            IPAddressText.text, "echo hello"
+                            UsernameText.text.toString(),
+                            PasswordText.text.toString(),
+                            IPAddressText.text.toString(), "echo hello"
                         ) }
 
                        //Log.d("testcommand", testcommand.await())
@@ -298,34 +294,34 @@ class MainActivity : AppCompatActivity() {
 
                             val LoggedInUsers = async {
                             executeRemoteCommand(
-                                UsernameText.text,
-                                PasswordText.text,
-                                IPAddressText.text, "who | cut -d' ' -f1 | sort | uniq\n"
+                                UsernameText.text.toString(),
+                                PasswordText.text.toString(),
+                                IPAddressText.text.toString(), "who | cut -d' ' -f1 | sort | uniq\n"
                             )
                         }
 
                             val DiskSpace = async {
                                 executeRemoteCommand(
-                                    UsernameText.text,
-                                    PasswordText.text,
-                                    IPAddressText.text,
+                                    UsernameText.text.toString(),
+                                    PasswordText.text.toString(),
+                                    IPAddressText.text.toString(),
                                     "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
                                 )
                             }
                             //
                             val MemUsage = async {
                                 executeRemoteCommand(
-                                    UsernameText.text,
-                                    PasswordText.text,
-                                    IPAddressText.text,
+                                    UsernameText.text.toString(),
+                                    PasswordText.text.toString(),
+                                    IPAddressText.text.toString(),
                                     "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
                                 )
                             }
                             val CpuUsage = async {
                                 executeRemoteCommand(
-                                    UsernameText.text,
-                                    PasswordText.text,
-                                    IPAddressText.text,
+                                    UsernameText.text.toString(),
+                                    PasswordText.text.toString(),
+                                    IPAddressText.text.toString(),
                                     "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
 
                                 )
@@ -350,9 +346,9 @@ class MainActivity : AppCompatActivity() {
                                         }
                                         val CustomCommandRun = async {
                                             executeRemoteCommand(
-                                                UsernameText.text,
-                                                PasswordText.text,
-                                                IPAddressText.text,
+                                                UsernameText.text.toString(),
+                                                PasswordText.text.toString(),
+                                                IPAddressText.text.toString(),
                                                 storedCommand
                                             )
 

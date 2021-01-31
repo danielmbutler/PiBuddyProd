@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activites.Result_Activity_Test"
+    tools:context=".activites.Result_Activity"
         >
 
 
@@ -222,15 +222,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/DiskSpace_Result_View" />
 
+
+        <Button
+
+            android:id="@+id/Result_View_PowerOffButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/roundedbuttonalternate"
+            android:text="@string/power_off"
+            app:layout_constraintEnd_toStartOf="@+id/Result_View_RestartButton"
+            app:layout_constraintStart_toStartOf="@+id/LoggedIn_Result_View"
+            app:layout_constraintTop_toBottomOf="@id/LoggedIn_Result_View"
+            app:backgroundTint= "@color/GreySecondary"/>
+
+        <Button
+            android:id="@+id/Result_View_RestartButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/roundedbuttonalternate"
+            android:text="@string/restart"
+            app:layout_constraintEnd_toEndOf="@+id/LoggedIn_Result_View"
+            app:layout_constraintStart_toEndOf="@+id/Result_View_PowerOffButton"
+            app:layout_constraintTop_toTopOf="@+id/Result_View_PowerOffButton"
+            app:backgroundTint= "@color/buttonalternate"/>
+
         <ImageView
             android:id="@+id/AddCustomCommandButton"
             android:layout_width="70dp"
             android:layout_height="51dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/LoggedIn_Result_View"
+            app:layout_constraintTop_toBottomOf="@+id/Result_View_RestartButton"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

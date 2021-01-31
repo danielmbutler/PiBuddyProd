@@ -49,6 +49,12 @@ class HelpDialog (): DialogFragment() {
                 "<p><strong>Logged In Users</strong></p>\n" +
                 "<p>&quot;who | cut -d&apos; &apos; -f1 | sort | uniq\\n&quot;</p>\n" +
                 "<p><br></br></p>\n" +
+                "<p><strong>Power Off</strong></p>\n" +
+                "<p>&quot;sudo shutdown -P now&quot;</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Restart</strong></p>\n" +
+                "<p>&quot;sudo systemctl start reboot.target&quot;</p>\n" +
+                "<p><br></br></p>\n" +
                 "<p><strong>Custom Command</strong></p>\n" +
                 "<p><br></br></p>\n" +
                 "<p>Any custom command can be used but the output is limited to 1000 characters, only 1 custom command can be used.</p>\n" +

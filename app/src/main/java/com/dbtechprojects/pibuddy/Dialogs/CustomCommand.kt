@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.utilities.SharedPref
@@ -60,7 +61,8 @@ class CustomCommand (val IP: String, context: Context): DialogFragment() {
 
             editor!!.apply()
 
-
+            Toast.makeText(activity, "Saving Custom Command, This will run on next connection",
+                Toast.LENGTH_LONG).show()
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
 
             // run command

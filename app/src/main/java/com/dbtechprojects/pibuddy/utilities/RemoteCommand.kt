@@ -1,20 +1,16 @@
 package com.dbtechprojects.pibuddy.utilities
 
 
-import android.os.Handler
-import android.os.Looper
-import android.text.Editable
 import com.jcraft.jsch.*
 import java.io.ByteArrayOutputStream
-import java.net.Socket
 import java.util.*
 import kotlin.concurrent.schedule
 
 
 suspend fun executeRemoteCommand(
-    username: Editable,
-    password: Editable,
-    hostname: Editable, command: String,
+    username: String,
+    password: String,
+    hostname: String, command: String,
     port: Int = 22): String {
     var session: Session? = null
     var channel: ChannelExec? = null
