@@ -27,7 +27,7 @@ import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.dbtechprojects.pibuddy.utilities.executeRemoteCommand
 import com.dbtechprojects.pibuddy.utilities.isPortOpen
-import com.google.android.gms.ads.*
+//import com.google.android.gms.ads.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     //AD setup
 
-    private lateinit var mInterstitialAd: InterstitialAd
+    //private lateinit var mInterstitialAd: InterstitialAd
 
 
     @SuppressLint("NewApi")
@@ -70,11 +70,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        MobileAds.initialize(this@MainActivity)
-
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
+//        MobileAds.initialize(this@MainActivity)
+//
+//        mInterstitialAd = InterstitialAd(this)
+//        mInterstitialAd.adUnitId = "ca-app-pub-9583910221851939/4966930612"
+//        mInterstitialAd.loadAd(AdRequest.Builder().build())
 
 
        if(intent.getStringExtra("IPAddress") != null ) {
@@ -406,36 +406,44 @@ class MainActivity : AppCompatActivity() {
                                         // show ad
                                         Log.d("MainActvity", "Showing Ad")
 
-                                        if (mInterstitialAd.isLoaded) {
-                                            mInterstitialAd.show()
-                                            mInterstitialAd.adListener = object : AdListener() {
-                                                override fun onAdClosed() {
-                                                    startActivity(intent)
-                                                    editor.remove("adcount")
-                                                    editor.apply()
-                                                    finish()
+                                        // in place logic till ads work
+                                        editor.remove("adcount")
+                                        editor.apply()
+                                        startActivity(intent)
+                                        finish()
 
-                                                }
 
-                                                override fun onAdFailedToLoad(p0: LoadAdError?) {
-                                                    startActivity(intent)
-                                                    editor.remove("adcount")
-                                                    editor.apply()
-                                                    finish()
-
-                                                }
-
-                                                override fun onAdClicked() {
-                                                    startActivity(intent)
-                                                    editor.remove("adcount")
-                                                    editor.apply()
-                                                    finish()
-
-                                                }
-                                            }
-                                        } else {
-                                            Log.d("TAG", "The interstitial wasn't loaded yet.")
-                                        }
+//                                        if (mInterstitialAd.isLoaded) {
+//                                            mInterstitialAd.show()
+//                                            mInterstitialAd.adListener = object : AdListener() {
+//                                                override fun onAdClosed() {
+//                                                    startActivity(intent)
+//                                                    editor.remove("adcount")
+//                                                    editor.apply()
+//                                                    finish()
+//
+//                                                }
+//
+//                                                override fun onAdFailedToLoad(p0: LoadAdError?) {
+//                                                    startActivity(intent)
+//                                                    editor.remove("adcount")
+//                                                    editor.apply()
+//                                                    finish()
+//
+//                                                }
+//
+//                                                override fun onAdClicked() {
+//                                                    startActivity(intent)
+//                                                    editor.remove("adcount")
+//                                                    editor.apply()
+//                                                    finish()
+//
+//                                                }
+//
+//                                            }
+//                                        } else {
+//                                            Log.d("TAG", "The interstitial wasn't loaded yet.")
+//                                        }
 
                                     } else {
                                         editor.apply()
