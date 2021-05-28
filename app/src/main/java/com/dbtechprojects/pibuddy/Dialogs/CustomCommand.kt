@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_custom_command.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 
-class CustomCommand (val IP: String, context: Context): DialogFragment() {
+class CustomCommand (val IP: String): DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

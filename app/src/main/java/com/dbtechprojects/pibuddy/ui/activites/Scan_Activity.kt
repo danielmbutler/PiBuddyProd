@@ -1,4 +1,4 @@
-package com.dbtechprojects.pibuddy.activites
+package com.dbtechprojects.pibuddy.ui.activites
 
 import PiAdapter
 import android.annotation.SuppressLint
@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View

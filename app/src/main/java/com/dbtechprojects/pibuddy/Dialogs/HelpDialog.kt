@@ -24,10 +24,10 @@ class HelpDialog (): DialogFragment() {
 
          val button = rootview.findViewById<Button>(R.id.Help_Button)
          val helptextView = rootview.findViewById<TextView>(R.id.Help_TextView)
-         helptextView.setMovementMethod(ScrollingMovementMethod());
-         helptextView.setMovementMethod(LinkMovementMethod.getInstance())
+        helptextView.movementMethod = ScrollingMovementMethod();
+        helptextView.movementMethod = LinkMovementMethod.getInstance()
 
-        helptextView.setText(Html.fromHtml("<p><strong>Welcome to PI Buddy</strong></p>\n" +
+        helptextView.text = Html.fromHtml("<p><strong>Welcome to PI Buddy</strong></p>\n" +
                 "<p><br></br></p>\n" +
                 "<p>This is my first app and I hope you found it useful :)</p>\n" +
                 "<p><br></br></p>\n" +
@@ -68,7 +68,7 @@ class HelpDialog (): DialogFragment() {
                 "<p><br></br></p>\n" +
                 "<p>Successful connections are saved in the side draw on the opening page, <strong>the details are stored on your Device</strong> and will be deleted along with the App.</p>\n" +
                 "<p><br><p>Ver 1.0.0 </p></br></p>\n" +
-                "<p><br></br></p>"))
+                "<p><br></br></p>")
 
 
         button.setOnClickListener {

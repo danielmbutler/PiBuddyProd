@@ -1,4 +1,4 @@
-package com.dbtechprojects.pibuddy.activites
+package com.dbtechprojects.pibuddy.ui.activites
 
 import android.annotation.SuppressLint
 import android.content.Intent

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PiBuddy">
         <activity
-            android:name=".activites.Splash_Activity"
+            android:name="com.dbtechprojects.pibuddy.ui.activites.Splash_Activity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,17 +25,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activites.Scan_Activity"
+            android:name="com.dbtechprojects.pibuddy.ui.activites.Scan_Activity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activites.MainActivity" />
+                android:value="com.dbtechprojects.pibuddy.ui.activites.MainActivity" />
         </activity>
         <activity
-            android:name=".activites.MainActivity"
+            android:name="com.dbtechprojects.pibuddy.ui.activites.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activites.Result_Activity"
+            android:name="com.dbtechprojects.pibuddy.ui.activites.Result_Activity"
             android:screenOrientation="portrait" />
 
         <meta-data
