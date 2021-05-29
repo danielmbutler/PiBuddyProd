@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -35,16 +36,11 @@ class Scan_Activity : AppCompatActivity() {
         val TAG = "Scan_Activity"
     }
 
-    private var items: List<String> = ArrayList()
+    private var cancelled = false
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val IPs: MutableList<String> = mutableListOf()
+    private var clientAddress = "none"
 
-    private lateinit var PiAdapter: PiAdapter
-
-    private var cancelled = "running"
-    val adapter = GroupAdapter<GroupieViewHolder>()
-
-    val IPs: MutableList<String> = mutableListOf()
-
-    var clientAddress = "none"
 
     private val viewModel: ScanViewModel by viewModels()
     private val scanActivityBinding by lazy {
@@ -56,7 +52,7 @@ class Scan_Activity : AppCompatActivity() {
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_scan_)
+        setContentView(scanActivityBinding.root)
         setupRV()
         setupClicks()
 
@@ -85,7 +81,7 @@ class Scan_Activity : AppCompatActivity() {
         } catch (ce: NullPointerException){
 
             Toast.makeText(this@Scan_Activity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
-            //Scanning_Text_View.setText(resources.getString(R.string.returnwifiText))
+            scanActivityBinding.ScanningTextView.text = resources.getString(R.string.returnwifiText)
         }
 
         if(clientAddress == "none"){
@@ -95,6 +91,7 @@ class Scan_Activity : AppCompatActivity() {
             val netAddresses = networkScanIP(clientAddress)
             // scan IPS and confirm activity
             viewModel.scanIPs(netAddresses)
+
             
         }
     }
@@ -108,14 +105,21 @@ class Scan_Activity : AppCompatActivity() {
 
         viewModel.addressCount.observe(this, Observer { count ->
             // update text view
+            Log.d(TAG, "addresscount : $count ")
             val addtext = "Scanning for Devices with port 22 open ...... $count addresses remaining"
-             scanActivityBinding.ScanningTextView.text = addtext
+
+            // if scan is not cancelled set text
+            if (!cancelled){
+                scanActivityBinding.ScanningTextView.text = addtext
+            }
+
         })
     }
 
     private fun setupClicks() {
 
         scanActivityBinding.ScanStopButton.setOnClickListener {
+            cancelled = true
             viewModel.cancelScan()
             val messagetext = "Scan Stopped"
             scanActivityBinding.ScanningTextView.text = messagetext
@@ -138,7 +142,7 @@ class Scan_Activity : AppCompatActivity() {
 
 
     private fun setupRV(){
-        scanActivityBinding.ScanningTextView.visibility = VISIBLE
+
         adapter.setOnItemClickListener{ item: Item<GroupieViewHolder>, view: View ->
 
             val IP = item as PiAdapter

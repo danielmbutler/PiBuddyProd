@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val TAG = "MainActivity"
 
+
     @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {

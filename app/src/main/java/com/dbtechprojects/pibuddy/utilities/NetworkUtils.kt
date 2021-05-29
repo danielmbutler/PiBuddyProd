@@ -33,22 +33,20 @@ object NetworkUtils {
             try {
                 val socket = Socket()
                 socket.connect(InetSocketAddress(ip, port), timeout)
-
                 socket.close()
-                Log.d(TAG, "isPortOpen: socketattempt")
+                //Log.d(TAG, "isPortOpen: socketattempt")
                 return true
 
             } catch (ce: ConnectException) {
                 //ce.printStackTrace()
-                Log.d(TAG, "Connect Exception:${ce.message}")
+                //Log.d(TAG, "Connect Exception:${ce.message}")
                 return false
             } catch (ce: SocketTimeoutException) {
-                Log.d(TAG, "Timeout Exception:${ce.message}")
-
+                //Log.d(TAG, "Timeout Exception:${ce.message}")
                 return false
             } catch (ex: Exception) {
-                ex.printStackTrace()
-                Log.d(TAG, " Exception:${ex.message}")
+                //ex.printStackTrace()
+               // Log.d(TAG, " Exception:${ex.message}")
                 return false
             }
         }
