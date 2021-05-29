@@ -13,7 +13,7 @@ import kotlin.concurrent.schedule
 object NetworkUtils {
 
     private const val TAG = "NetworkUtils"
-    private fun validate(ip: String): Boolean {
+     fun validate(ip: String): Boolean {
         val PATTERN =
             "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
 
