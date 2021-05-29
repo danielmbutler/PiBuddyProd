@@ -1,5 +1,6 @@
 package com.dbtechprojects.pibuddy.utilities
 
+import android.util.Log
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.JSchException
@@ -10,6 +11,8 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 object NetworkUtils {
+
+    private const val TAG = "NetworkUtils"
     private fun validate(ip: String): Boolean {
         val PATTERN =
             "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
@@ -24,6 +27,7 @@ object NetworkUtils {
         val validationResult = validate(ip)
 
         if (!validationResult) {
+            Log.d(TAG, "isPortOpen: validation result : $validationResult")
             return false
         } else {
             try {
@@ -31,16 +35,20 @@ object NetworkUtils {
                 socket.connect(InetSocketAddress(ip, port), timeout)
 
                 socket.close()
+                Log.d(TAG, "isPortOpen: socketattempt")
                 return true
 
             } catch (ce: ConnectException) {
                 //ce.printStackTrace()
+                Log.d(TAG, "Connect Exception:${ce.message}")
                 return false
             } catch (ce: SocketTimeoutException) {
+                Log.d(TAG, "Timeout Exception:${ce.message}")
 
                 return false
             } catch (ex: Exception) {
                 ex.printStackTrace()
+                Log.d(TAG, " Exception:${ex.message}")
                 return false
             }
         }

@@ -5,8 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CommandResults(
-    val results: String, //LoggedInUsers
-    val diskSpace: String,
-    val memUsage: String,
-    val cpuUsage: String
-): Parcelable
+    var results: String? = null, //LoggedInUsers
+    var diskSpace: String? = null,
+    var memUsage: String? = null,
+    var cpuUsage: String? = null,
+    var testCommand: Boolean? = null,
+    var customCommand: String? = null
+) : Parcelable

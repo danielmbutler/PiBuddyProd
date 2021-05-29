@@ -17,13 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
-import com.dbtechprojects.pibuddy.utilities.isPortOpen
-import com.dbtechprojects.pibuddy.utilities.validate
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_scan_.*
 import kotlinx.coroutines.*
 import org.apache.commons.net.util.SubnetUtils
 import java.lang.NullPointerException
@@ -61,31 +57,31 @@ class Scan_Activity : AppCompatActivity() {
         setContentView(R.layout.activity_scan_)
 
 
-        Scanning_Text_View.visibility = VISIBLE
-
-        Scan_View_RecyclerView.adapter = adapter
-
-        // faint line underneath each row
-        Scan_View_RecyclerView.addItemDecoration(DividerItemDecoration(this@Scan_Activity, DividerItemDecoration.VERTICAL))
-
-
-        Scan_Stop_Button.setOnClickListener {
-            cancelled = "STOP"
-
-            Scan_Stop_Button.text = getString(R.string.RestartScan)
-            Scan_Stop_Button.setOnClickListener {
-                val intent = intent
-                finish()
-                startActivity(intent)
-            }
-        }
-
-        ScanBackButton.setOnClickListener {
-            cancelled = "STOP"
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+//        Scanning_Text_View.visibility = VISIBLE
+//
+//        Scan_View_RecyclerView.adapter = adapter
+//
+//        // faint line underneath each row
+//        Scan_View_RecyclerView.addItemDecoration(DividerItemDecoration(this@Scan_Activity, DividerItemDecoration.VERTICAL))
+//
+//
+//        Scan_Stop_Button.setOnClickListener {
+//            cancelled = "STOP"
+//
+//            Scan_Stop_Button.text = getString(R.string.RestartScan)
+//            Scan_Stop_Button.setOnClickListener {
+//                val intent = intent
+//                finish()
+//                startActivity(intent)
+//            }
+//        }
+//
+//        ScanBackButton.setOnClickListener {
+//            cancelled = "STOP"
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
 
 
         // check for Wifi Address
@@ -105,15 +101,15 @@ class Scan_Activity : AppCompatActivity() {
                 //println(it.address)
                 //println(it)
                 //println(it.prefixLength)
-                if(validate(it.address.toString().replace("/",""))){
-                    //Log.d("wifi", "${it.toString()} validated")
-                    foundAddress = it.toString()
-                }
+//                if(validate(it.address.toString().replace("/",""))){
+//                    //Log.d("wifi", "${it.toString()} validated")
+//                    foundAddress = it.toString()
+//                }
             }
         } catch (ce: NullPointerException){
 
             Toast.makeText(this@Scan_Activity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
-            Scanning_Text_View.setText(resources.getString(R.string.returnwifiText))
+            //Scanning_Text_View.setText(resources.getString(R.string.returnwifiText))
 
 
 
@@ -159,58 +155,58 @@ class Scan_Activity : AppCompatActivity() {
             }
 
 
-            netAddresses.await().forEach {
-                //Log.d(TAG, cancelled)
-
-                val pingtest = async {
-                    isPortOpen(
-                        it.toString(),
-                        22,
-                        1000
-                    )
-
-
-                }
-                val messagetext = "Scan Stopped"
-
-                if(cancelled == "STOP"){
-                    pingtest.cancel()
-                    withContext(Dispatchers.Main) {
-                        Scanning_Text_View.text = messagetext
-
-                    }
-                } else{
-                    //Log.d("pingtest", it.toString() + " " + pingtest.await())
-                    addresscount--
-                    //Log.d("IPCount", (addresscount).toString())
-
-                    if(pingtest.await() == "connection successfull" ){
-                        //Log.d(TAG, "$it + is available")
-                        withContext(Dispatchers.Main){
-
-
-
-                            IPs.add(it)
-                            refreshRecyclerViewMessages()
-                        }
-                    }
-
-                    withContext(Dispatchers.Main){
-                        if(cancelled != "STOP"){
-                            val addtext = "Scanning for Devices with port 22 open ...... $addresscount addresses remaining"
-                            Scanning_Text_View.text = addtext
-                        } else {
-                            Scanning_Text_View.text = messagetext
-
-                        }
-
-
-                    }
-                }
-
-
-
-            }
+//            netAddresses.await().forEach {
+//                //Log.d(TAG, cancelled)
+//
+//                val pingtest = async {
+//                    isPortOpen(
+//                        it.toString(),
+//                        22,
+//                        1000
+//                    )
+//
+//
+//                }
+//                val messagetext = "Scan Stopped"
+//
+//                if(cancelled == "STOP"){
+//                    pingtest.cancel()
+//                    withContext(Dispatchers.Main) {
+//                        Scanning_Text_View.text = messagetext
+//
+//                    }
+//                } else{
+//                    //Log.d("pingtest", it.toString() + " " + pingtest.await())
+//                    addresscount--
+//                    //Log.d("IPCount", (addresscount).toString())
+//
+//                    if(pingtest.await() == "connection successfull" ){
+//                        //Log.d(TAG, "$it + is available")
+//                        withContext(Dispatchers.Main){
+//
+//
+//
+//                            IPs.add(it)
+//                            refreshRecyclerViewMessages()
+//                        }
+//                    }
+//
+//                    withContext(Dispatchers.Main){
+//                        if(cancelled != "STOP"){
+//                            val addtext = "Scanning for Devices with port 22 open ...... $addresscount addresses remaining"
+//                            Scanning_Text_View.text = addtext
+//                        } else {
+//                            Scanning_Text_View.text = messagetext
+//
+//                        }
+//
+//
+//                    }
+//                }
+//
+//
+//
+//            }
         }}
 
 
@@ -243,7 +239,7 @@ class Scan_Activity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.getItemId()) {
+        return when (item.itemId) {
             R.id.toolbar_menu_help -> {
                 val dialog =
                     HelpDialog()

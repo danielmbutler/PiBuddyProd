@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     private val mainActivityBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
+    private val TAG = "MainActivity"
 
     @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -84,168 +84,108 @@ class MainActivity : AppCompatActivity() {
                 mainActivityBinding.MainActivityTextDotLoader.visibility = INVISIBLE
             } else {
                 // Ping Test Was successful lets run commands
-                // declare intent for result activity
 
-                val intent = Intent(this@MainActivity, Result_Activity::class.java)
+                // check for stored command for that IP
+                try {
 
-                // test command echo hello if fail show toast
+                    val strJson =
+                        pref.getString(mainActivityBinding.IPAddressText.text.toString(), null)
 
-                val testcommand = async {
-                    executeRemoteCommand(
-                        mainActivityBinding.UsernameText.text.toString(),
-                        mainActivityBinding.PasswordText.text.toString(),
-                        mainActivityBinding.IPAddressText.text.toString(), "echo hello"
+                    if (strJson != null) {
+                        val jresponse = JSONObject(strJson!!)
+                        val storedCommand = jresponse.getString("CustomCommand")
+
+
+                        //Log.d("storedCommand", storedCommand!!)
+                        if (storedCommand != null) {
+                            // setup waiting dialogue
+
+                            mainActivityBinding.MainCustomCommandMessage.visibility = VISIBLE
+
+                            // execute commands
+                            viewModel.runPiCommands(
+                                ipAddress = mainActivityBinding.IPAddressText.text.toString(),
+                                username = mainActivityBinding.UsernameText.text.toString(),
+                                password = mainActivityBinding.PasswordText.text.toString(),
+                                customCommand = storedCommand
+                            )
+
+
+                        }
+
+                    } else {
+                        viewModel.runPiCommands(
+                            ipAddress = mainActivityBinding.IPAddressText.text.toString(),
+                            username = mainActivityBinding.UsernameText.text.toString(),
+                            password = mainActivityBinding.PasswordText.text.toString(),
+                            customCommand = null
+                        )
+
+                    }
+
+                } catch (ce: JSONException) {
+                    //Log.d("MainAcvitiy", "No Stored command found")
+                    viewModel.runPiCommands(
+                        ipAddress = mainActivityBinding.IPAddressText.text.toString(),
+                        username = mainActivityBinding.UsernameText.text.toString(),
+                        password = mainActivityBinding.PasswordText.text.toString(),
+                        customCommand = null
                     )
+
                 }
 
 
-                if (!testcommand.await().contains("hello")) {
-                    withContext(Dispatchers.Main) {
 
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Device Session failure, Please confirm username and password",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        mainActivityBinding.MainActivityTextDotLoader.visibility = INVISIBLE
+            }
 
-                    }
+        })
 
+        viewModel.commandResults.observe(this, Observer { results ->
+            if (!results.testCommand!!){
+                Toast.makeText(this, "Test Command Failed Please retry", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d(TAG, "results: $results")
+                val intent = Intent(this@MainActivity, Result_Activity::class.java)
+                intent.putExtra("username", mainActivityBinding.UsernameText.text.toString())
+                intent.putExtra("password", mainActivityBinding.PasswordText.text.toString())
+                intent.putExtra("ipaddress", mainActivityBinding.IPAddressText.text.toString())
+
+
+                mainActivityBinding.MainActivityTextDotLoader.visibility = INVISIBLE
+                mainActivityBinding.MainCustomCommandMessage.visibility = INVISIBLE
+
+                val editor = pref.edit()
+
+                val adcount = pref.getString("adcount", "")
+
+                if (adcount.isNullOrEmpty()) {
+                    editor.putString("adcount", "1")
+                    editor.apply()
+                    //startActivity(intent)
+                    //finish()
                 } else {
+                    Log.d("MainActivity", adcount)
+                    val newvalue = adcount.toInt() + 1
+                    editor.putString("adcount", newvalue.toString())
+                    if (adcount.toInt() >= 3) {
+                        // show ad
+                        Log.d("MainActvity", "Showing Ad")
 
-                    val LoggedInUsers = async {
-                        executeRemoteCommand(
-                           mainActivityBinding.UsernameText.text.toString(),
-                           mainActivityBinding.PasswordText.text.toString(),
-                           mainActivityBinding.IPAddressText.text.toString(),
-                            "who | cut -d' ' -f1 | sort | uniq\n"
-                        )
-                    }
-
-                    val DiskSpace = async {
-                        executeRemoteCommand(
-                            mainActivityBinding.UsernameText.text.toString(),
-                            mainActivityBinding.PasswordText.text.toString(),
-                            mainActivityBinding.IPAddressText.text.toString(),
-                            "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
-                        )
-                    }
-                    //
-                    val MemUsage = async {
-                        executeRemoteCommand(
-                            mainActivityBinding.UsernameText.text.toString(),
-                            mainActivityBinding.PasswordText.text.toString(),
-                            mainActivityBinding.IPAddressText.text.toString(),
-                            "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
-                        )
-                    }
-                    val CpuUsage = async {
-                        executeRemoteCommand(
-                            mainActivityBinding.UsernameText.text.toString(),
-                            mainActivityBinding.PasswordText.text.toString(),
-                            mainActivityBinding.IPAddressText.text.toString(),
-                            "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
-
-                        )
-                    }
-
-                    // check for stored command for that IP
-                    try {
-
-                        val strJson = pref.getString(IPAddressText.text.toString(), null)
-
-                        if (strJson != null) {
-                            val jresponse = JSONObject(strJson!!)
-                            val storedCommand = jresponse.getString("CustomCommand")
-
-
-                            //Log.d("storedCommand", storedCommand!!)
-                            if (storedCommand != null) {
-                                // setup waiting dialogue
-
-                                withContext(Dispatchers.Main) {
-                                    Main_Custom_Command_Message.visibility = VISIBLE
-                                }
-                                val CustomCommandRun = async {
-                                    executeRemoteCommand(
-                                        mainActivityBinding.UsernameText.text.toString(),
-                                        mainActivityBinding.PasswordText.text.toString(),
-                                        mainActivityBinding.IPAddressText.text.toString(),
-                                        storedCommand
-                                    )
-
-                                }
-                                withContext(Dispatchers.Main) {
-
-                                    intent.putExtra(
-                                        "StoredCommandOutput",
-                                        CustomCommandRun.await()
-                                    )
-                                    intent.putExtra("StoredCommand", storedCommand)
-                                }
-                            }
-
-                        }
-
-                    } catch (ce: JSONException) {
-                        //Log.d("MainAcvitiy", "No Stored command found")
-                    }
-
-
-
-
-
-
-                    intent.putExtra("results", LoggedInUsers.await())
-                    intent.putExtra("diskspace", DiskSpace.await())
-                    intent.putExtra("memusage", MemUsage.await())
-                    intent.putExtra("cpuusage", CpuUsage.await())
-
-                    intent.putExtra("username", mainActivityBinding.UsernameText.text.toString())
-                    intent.putExtra("password", mainActivityBinding.PasswordText.text.toString())
-                    intent.putExtra("ipaddress",mainActivityBinding.IPAddressText.text.toString())
-
-
-                    mainActivityBinding.MainActivityTextDotLoader.visibility = INVISIBLE
-                    mainActivityBinding.MainCustomCommandMessage.visibility = INVISIBLE
-
-                    val editor = pref.edit()
-
-                    val adcount = pref.getString("adcount", "")
-
-                    if (adcount.isNullOrEmpty()) {
-                        editor.putString("adcount", "1")
+                        // in place logic till ads work
+                        editor.remove("adcount")
                         editor.apply()
-                        startActivity(intent)
-                        finish()
+                        //startActivity(intent)
+                        //finish()
+
+
                     } else {
-                        Log.d("MainActivity", adcount)
-                        val newvalue = adcount.toInt() + 1
-                        editor.putString("adcount", newvalue.toString())
-                        if (adcount.toInt() >= 3) {
-                            // show ad
-                            Log.d("MainActvity", "Showing Ad")
-
-                            // in place logic till ads work
-                            editor.remove("adcount")
-                            editor.apply()
-                            startActivity(intent)
-                            finish()
-
-
-                        } else {
-                            editor.apply()
-                            startActivity(intent)
-                            finish()
-                        }
-
+                        editor.apply()
+                        //startActivity(intent)
+                        //finish()
                     }
-
 
                 }
             }
-
-
         })
     }
 
@@ -257,7 +197,7 @@ class MainActivity : AppCompatActivity() {
             if (validationTest == "success") {
                 mainActivityBinding.MainActivityTextDotLoader.visibility = VISIBLE
 
-                viewModel.pingTest(mainActivityBinding.IPAddressText.toString())
+                viewModel.pingTest(mainActivityBinding.IPAddressText.text.toString())
 
             } else {
                 Toast.makeText(

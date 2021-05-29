@@ -8,10 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.dbtechprojects.pibuddy.R
-import kotlinx.android.synthetic.main.activity_main.*
+
 
 class HelpDialog (): DialogFragment() {
     override fun onCreateView(
@@ -19,7 +20,8 @@ class HelpDialog (): DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootview = layoutInflater.inflate(R.layout.activity_help, fragement_container, false)
+        val fragmentContainer = container?.findViewById<FrameLayout>(R.id.fragement_container)
+        val rootview = layoutInflater.inflate(R.layout.activity_help, fragmentContainer, false)
 
 
          val button = rootview.findViewById<Button>(R.id.Help_Button)
