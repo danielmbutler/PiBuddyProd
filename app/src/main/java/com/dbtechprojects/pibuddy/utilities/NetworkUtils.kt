@@ -10,6 +10,10 @@ import java.net.*
 import java.util.*
 import kotlin.concurrent.schedule
 
+/*
+Networking Utility functions, validating IP Address, testing ports, and executing remote commands over ssh
+ */
+
 object NetworkUtils {
 
     private const val TAG = "NetworkUtils"

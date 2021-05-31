@@ -120,7 +120,10 @@ class MainViewModel : ViewModel() {
                 resultsObject.cpuUsage = CpuUsage.await()
                 resultsObject.diskSpace = DiskSpace.await()
                 resultsObject.memUsage = MemUsage.await()
-                resultsObject.results = LoggedInUsers.await()
+                resultsObject.loggedInUsers = LoggedInUsers.await()
+                resultsObject.username = username
+                resultsObject.password = password
+                resultsObject.ipAddress = ipAddress
                 _commandResults.postValue(resultsObject)
 
 

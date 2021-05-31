@@ -43,16 +43,16 @@ class Scan_Activity : AppCompatActivity() {
 
 
     private val viewModel: ScanViewModel by viewModels()
-    private val scanActivityBinding by lazy {
-        ActivityScanBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: ActivityScanBinding
+    
 
     @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(scanActivityBinding.root)
+        binding = ActivityScanBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupRV()
         setupClicks()
 
@@ -81,7 +81,7 @@ class Scan_Activity : AppCompatActivity() {
         } catch (ce: NullPointerException){
 
             Toast.makeText(this@Scan_Activity, "Wifi Connection Not Found, Please check Wifi", Toast.LENGTH_LONG).show()
-            scanActivityBinding.ScanningTextView.text = resources.getString(R.string.returnwifiText)
+            binding.ScanningTextView.text = resources.getString(R.string.returnwifiText)
         }
 
         if(clientAddress == "none"){
@@ -110,7 +110,7 @@ class Scan_Activity : AppCompatActivity() {
 
             // if scan is not cancelled set text
             if (!cancelled){
-                scanActivityBinding.ScanningTextView.text = addtext
+                binding.ScanningTextView.text = addtext
             }
 
         })
@@ -118,21 +118,21 @@ class Scan_Activity : AppCompatActivity() {
 
     private fun setupClicks() {
 
-        scanActivityBinding.ScanStopButton.setOnClickListener {
+        binding.ScanStopButton.setOnClickListener {
             cancelled = true
             viewModel.cancelScan()
             val messagetext = "Scan Stopped"
-            scanActivityBinding.ScanningTextView.text = messagetext
+            binding.ScanningTextView.text = messagetext
 
-            scanActivityBinding.ScanStopButton.text = getString(R.string.RestartScan)
-            scanActivityBinding.ScanStopButton.setOnClickListener {
+            binding.ScanStopButton.text = getString(R.string.RestartScan)
+            binding.ScanStopButton.setOnClickListener {
                 val intent = intent
                 finish()
                 startActivity(intent)
             }
         }
 
-        scanActivityBinding.ScanBackButton.setOnClickListener {
+        binding.ScanBackButton.setOnClickListener {
             viewModel.cancelScan()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -160,10 +160,10 @@ class Scan_Activity : AppCompatActivity() {
 
 
         }
-        scanActivityBinding.ScanViewRecyclerView.adapter = adapter
+        binding.ScanViewRecyclerView.adapter = adapter
 
         // faint line underneath each row
-        scanActivityBinding.ScanViewRecyclerView.addItemDecoration(DividerItemDecoration(this@Scan_Activity, DividerItemDecoration.VERTICAL))
+        binding.ScanViewRecyclerView.addItemDecoration(DividerItemDecoration(this@Scan_Activity, DividerItemDecoration.VERTICAL))
     }
 
     private fun refreshRecyclerViewMessages(){

@@ -2,274 +2,180 @@ package com.dbtechprojects.pibuddy.ui.activites
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.view.View.VISIBLE
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import com.dbtechprojects.pibuddy.Dialogs.CustomCommand
 import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.databinding.ActivityResultBinding
+import com.dbtechprojects.pibuddy.models.CommandResults
+import com.dbtechprojects.pibuddy.ui.viewmodels.ResultViewModel
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import org.json.JSONObject
 
 
-class Result_Activity: AppCompatActivity() {
+class Result_Activity : AppCompatActivity() {
 
-    companion object{
+    companion object {
         val TAG = "Result_Activity"
     }
+
+    private lateinit var pref: SharedPreferences
+    private lateinit var binding: ActivityResultBinding
+    private lateinit var IPAddress: String
+    private lateinit var username: String
+    private lateinit var password: String
+    private val viewModel: ResultViewModel by viewModels()
+
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_result)
+        binding = ActivityResultBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        val pref = SharedPref(this).sharedPreferences
-        val editor = pref.edit()
+        pref = SharedPref(this).sharedPreferences
 
-
-
-        findViewById<View>(R.id.Main_Activity_text_dot_loader).visibility =
-            View.VISIBLE
-
-        val customCommandOutput = intent.getStringExtra("StoredCommandOutput")
-        val results             = intent.getStringExtra("results")
-        val diskspace           = intent.getStringExtra("diskspace")
-        val cpuusage            = intent.getStringExtra("cpuusage")
-        val memusage            = intent.getStringExtra("memusage")
-        val IPAddress           = intent.getStringExtra("ipaddress")
-        val Username            = intent.getStringExtra("username")
-        val Password            = intent.getStringExtra("password")
-        val StoredCommand       = intent.getStringExtra("StoredCommand")
-        //Log.d("KEYS", "$IPAddress, $Username, $Password")
-
-        if (IPAddress != null) {
-            setupActionBar(IPAddress)
+        // check for results
+        intent.getParcelableExtra<CommandResults>("results")?.let { results ->
+            setupObservers()
+            populateResultView(results)
+            setupClicks()
         }
 
-//        LoggedIn_Result_View.text            = results
-//        DiskSpace_Result_View.text           = (diskspace?.replace("[^0-9a-zA-Z:,]+".toRegex(), "") + "%" + " used") //replace all special charaters due to phantom space
-//        CPU_Result_View.text                 = cpuusage?.replace("[^.,a-zA-Z0-9]+".toRegex(), "") + "%" //replace all special charaters due to phantom space but keep '.'
-//        Mem_Result_View.text                 = memusage
-//        CustomCommand_Result_View.text       = customCommandOutput
-//        DiskSpace_Result_View.movementMethod = ScrollingMovementMethod()
-//
-//        if(customCommandOutput != null){
-//            //Log.d(TAG, customCommandOutput)
-//            CustomCommandTextTitle.visibility = VISIBLE
-//            CustomCommand_Result_View.visibility = VISIBLE
-//        }
+
+    }
+
+    private fun setupObservers() {
+        viewModel.restartAttemptMessage.observe(this, Observer { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        })
+        viewModel.powerOffAttemptMessage.observe(this, Observer { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun setupClicks() {
+        binding.AddCustomCommandButton.setOnClickListener {
+
+            val dialog =
+                CustomCommand(IPAddress!!)
+            dialog.show(supportFragmentManager, "CustomCommand")
+
+        }
+
+        binding.ResultViewRestartButton.setOnClickListener {
+
+            // Build Confirmation alert
+
+            val builder = AlertDialog.Builder(this@Result_Activity)
+            builder.setMessage("Are you sure you want to restart this device?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+                    viewModel.restartButtonClick(
+                        username = username,
+                        password = password,
+                        ipaddress = IPAddress
+                    )
+
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+        }
+
+
+        binding.ResultViewPowerOffButton.setOnClickListener {
+
+            // Build Confirmation alert
+
+            val builder = AlertDialog.Builder(this@Result_Activity)
+            builder.setMessage("Are you sure you want to Power OFF this device?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+                    viewModel.powerOffButtonClicked(username, password, IPAddress)
+                    dialog.dismiss()
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+        }
+    }
+
+    private fun populateResultView(results: CommandResults) {
+        // setup values to be used for power off and custom command
+        IPAddress = results.ipAddress.toString()
+        username = results.username.toString()
+        password = results.password.toString()
+        showProgressBar(true)
+
+
+        setupActionBar(IPAddress)
+
+
+        binding.LoggedInResultView.text = results.loggedInUsers
+        binding.DiskSpaceResultView.text = (results.diskSpace?.replace(
+            "[^0-9a-zA-Z:,]+".toRegex(),
+            ""
+        ) + "%" + " used") //replace all special charaters due to phantom space
+        binding.CPUResultView.text = results.cpuUsage?.replace(
+            "[^.,a-zA-Z0-9]+".toRegex(),
+            ""
+        ) + "%" //replace all special charaters due to phantom space but keep '.'
+        binding.MemResultView.text = results.memUsage
+        binding.CustomCommandResultView.text = results.customCommand
+        binding.DiskSpaceResultView.movementMethod = ScrollingMovementMethod()
+
+        if (results.customCommand != null) {
+            //Log.d(TAG, customCommandOutput)
+            binding.CustomCommandTextTitle.visibility = VISIBLE
+            binding.CustomCommandResultView.visibility = VISIBLE
+        }
 
 
 
 
-        findViewById<View>(R.id.Main_Activity_text_dot_loader).visibility =
-            View.GONE
+        showProgressBar(false)
 
         // store successfull connection in shared pref
 
+        val editor = pref.edit()
 
 
-
-        if(StoredCommand != null){
-            val Pidata = JSONObject("""{"Username":"${Username}", "Password":"$Password", "CustomCommand":"$StoredCommand"}""")
+        if (results.customCommand != null) {
+            val Pidata =
+                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}, "CustomCommand":"${results.customCommand}"}""")
             editor.putString(IPAddress, Pidata.toString())
             editor.apply()
-        } else{
-            val Pidata = JSONObject("""{"Username":"${Username}", "Password":"$Password"}""")
+        } else {
+            val Pidata =
+                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}"}""")
             editor.putString(IPAddress, Pidata.toString())
             editor.apply()
         }
-
-
-
-//        AddCustomCommandButton.setOnClickListener {
-//
-//                val dialog =
-//                    CustomCommand(IPAddress!!,this@Result_Activity)
-//                dialog.show(supportFragmentManager, "CustomCommand")
-//
-//        }
-//
-//        Result_View_RestartButton.setOnClickListener {
-//
-//            // Build Confirmation alert
-//
-//            val builder = AlertDialog.Builder(this@Result_Activity)
-//            builder.setMessage("Are you sure you want to restart this device?")
-//                .setCancelable(false)
-//                .setPositiveButton("Yes") { dialog, id ->
-//
-//                    GlobalScope.launch(Dispatchers.IO) {
-//
-//                        //pingtest
-//                        val pingtest = async {
-//                            isPortOpen(
-//                                IPAddress.toString(),
-//                                22,
-//                                3000
-//                            )
-//                        }
-//                        //Log.d("pingtest", pingtest.await())
-//
-//                        if (pingtest.await() == "false") {
-//                            withContext(Dispatchers.Main) {
-//
-//                                Toast.makeText(
-//                                    this@Result_Activity,
-//                                    "Connection Failure Please Retry..",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//
-//                                dialog.dismiss()
-//
-//                            }
-//
-//                        } else {
-//                            // run command
-//
-//                            val testcommand = async {  executeRemoteCommand(
-//                                Username.toString(),
-//                                Password.toString(),
-//                                IPAddress.toString(), "echo hello"
-//                            ) }
-//
-//                            //Log.d("testcommand", testcommand.await())
-//
-//                            if(!testcommand.await().contains("hello")){
-//                                withContext(Dispatchers.Main){
-//
-//                                    Toast.makeText(
-//                                        this@Result_Activity,
-//                                        "Device Session failure, Please confirm username and password",
-//                                        Toast.LENGTH_LONG
-//                                    ).show()
-//                                    dialog.dismiss()
-//
-//                                }
-//                        } else {
-//
-//                            //run real command
-//
-//                                val RestartCommand = async {  executeRemoteCommand(
-//                                    Username.toString(),
-//                                    Password.toString(),
-//                                    IPAddress.toString(), "sudo systemctl start reboot.target"
-//                                ) }
-//
-//                                withContext(Dispatchers.Main){
-//                                    Toast.makeText(
-//                                        this@Result_Activity,
-//                                        "Your device is now rebooting....",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                    dialog.dismiss()
-//                                }
-//
-//                        }
-//                        }
-//
-//                    }
-//                }
-//                .setNegativeButton("No") { dialog, id ->
-//                    // Dismiss the dialog
-//                    dialog.dismiss()
-//                }
-//            val alert = builder.create()
-//            alert.show()
-//        }
-//
-//        Result_View_PowerOffButton.setOnClickListener {
-//
-//            // Build Confirmation alert
-//
-//            val builder = AlertDialog.Builder(this@Result_Activity)
-//            builder.setMessage("Are you sure you want to Power OFF this device?")
-//                .setCancelable(false)
-//                .setPositiveButton("Yes") { dialog, id ->
-//
-//                    GlobalScope.launch(Dispatchers.IO) {
-//
-//                        //pingtest
-//                        val pingtest = async {
-//                            isPortOpen(
-//                                IPAddress.toString(),
-//                                22,
-//                                3000
-//                            )
-//                        }
-//                        //Log.d("pingtest", pingtest.await())
-//
-//                        if (pingtest.await() == "false") {
-//                            withContext(Dispatchers.Main) {
-//
-//                                Toast.makeText(
-//                                    this@Result_Activity,
-//                                    "Connection Failure Please Retry..",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//
-//                                dialog.dismiss()
-//
-//                            }
-//
-//                        } else {
-//                            // run command
-//
-//                            val testcommand = async {  executeRemoteCommand(
-//                                Username.toString(),
-//                                Password.toString(),
-//                                IPAddress.toString(), "echo hello"
-//                            ) }
-//
-//                            //Log.d("testcommand", testcommand.await())
-//
-//                            if(!testcommand.await().contains("hello")){
-//                                withContext(Dispatchers.Main){
-//
-//                                    Toast.makeText(
-//                                        this@Result_Activity,
-//                                        "Device Session failure, Please confirm username and password",
-//                                        Toast.LENGTH_LONG
-//                                    ).show()
-//                                    dialog.dismiss()
-//
-//                                }
-//                            } else {
-//
-//                                //run real command
-//
-//                                val ShutdownCommand = async {  executeRemoteCommand(
-//                                    Username.toString(),
-//                                    Password.toString(),
-//                                    IPAddress.toString(), "sudo shutdown -P now"
-//                                ) }
-//
-//                                withContext(Dispatchers.Main){
-//                                    Toast.makeText(
-//                                        this@Result_Activity,
-//                                        "Your device is now shutting down....",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                    dialog.dismiss()
-//                                }
-//
-//                            }
-//                        }
-//
-//                    }
-//                }
-//                .setNegativeButton("No") { dialog, id ->
-//                    // Dismiss the dialog
-//                    dialog.dismiss()
-//                }
-//            val alert = builder.create()
-//            alert.show()
-//        }
     }
+
     private fun setupActionBar(IP: String) {
 
         //setSupportActionBar(toolbar)
@@ -283,6 +189,12 @@ class Result_Activity: AppCompatActivity() {
 
         //toolbar.setNavigationOnClickListener { onBackPressed() }
     }
+
+    private fun showProgressBar(isVisible: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.Main_Activity_text_dot_loader)
+        progressBar.isVisible = isVisible
+    }
+
     override fun onBackPressed() {
 
         val intent = Intent(this, MainActivity::class.java)
@@ -296,6 +208,7 @@ class Result_Activity: AppCompatActivity() {
         menuInflater.inflate(R.menu.pi_buddy_toolbar, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
             R.id.toolbar_menu_help -> {

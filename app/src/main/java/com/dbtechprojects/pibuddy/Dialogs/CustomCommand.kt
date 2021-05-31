@@ -24,7 +24,7 @@ class CustomCommand (val IP: String): DialogFragment() {
         val rootview = layoutInflater.inflate(R.layout.activity_custom_command, fragement_container, false)
 
 
-         val button = rootview.findViewById<Button>(R.id.SaveCommandButton)
+        val button = rootview.findViewById<Button>(R.id.SaveCommandButton)
         val dialogtext = rootview.findViewById<EditText>(R.id.Dialog_CommandText)
 
 
