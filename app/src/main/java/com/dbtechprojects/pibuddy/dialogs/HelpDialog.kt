@@ -1,4 +1,4 @@
-package com.dbtechprojects.pibuddy.Dialogs
+package com.dbtechprojects.pibuddy.dialogs
 
 import android.os.Bundle
 import android.text.Html

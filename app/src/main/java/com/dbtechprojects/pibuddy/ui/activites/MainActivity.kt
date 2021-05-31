@@ -25,10 +25,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
-import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityMainBinding
 import com.dbtechprojects.pibuddy.ui.viewmodels.MainViewModel
+import com.dbtechprojects.pibuddy.utilities.Resource
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
@@ -76,113 +77,128 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObservers() {
         viewModel.pingTest.observe(this, Observer { result ->
-            if (!result) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Connection Failure Please Retry..",
-                    Toast.LENGTH_SHORT
-                ).show()
-                binding.MainActivityTextDotLoader.visibility = INVISIBLE
-            } else {
-                // Ping Test Was successful lets run commands
 
-                // check for stored command for that IP
-                try {
+            when(result){
+                is Resource.Success -> {
+                    result.data?.let { pingTest ->
+                        Log.d(TAG, "initObservers: pingTest is $pingTest")
+                        if (pingTest.result) {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Connection Failure Please Retry..",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            binding.MainActivityTextDotLoader.visibility = INVISIBLE
+                        } else {
+                            // Ping Test Was successful lets run commands
 
-                    val strJson =
-                        pref.getString(binding.IPAddressText.text.toString(), null)
+                            // check for stored command for that IP
+                            try {
 
-                    if (strJson != null) {
-                        val jresponse = JSONObject(strJson!!)
-                        val storedCommand = jresponse.getString("CustomCommand")
+                                val strJson =
+                                    pref.getString(binding.IPAddressText.text.toString(), null)
 
-
-                        //Log.d("storedCommand", storedCommand!!)
-                        if (storedCommand != null) {
-                            // setup waiting dialogue
-
-                            binding.MainCustomCommandMessage.visibility = VISIBLE
-
-                            // execute commands
-                            viewModel.runPiCommands(
-                                ipAddress = binding.IPAddressText.text.toString(),
-                                username = binding.UsernameText.text.toString(),
-                                password = binding.PasswordText.text.toString(),
-                                customCommand = storedCommand
-                            )
+                                if (strJson != null) {
+                                    val jresponse = JSONObject(strJson!!)
+                                    val storedCommand = jresponse.getString("CustomCommand")
 
 
+                                    //Log.d("storedCommand", storedCommand!!)
+                                    if (storedCommand != null) {
+                                        // setup waiting dialogue
+
+                                        binding.MainCustomCommandMessage.visibility = VISIBLE
+
+                                        // execute commands
+                                        viewModel.runPiCommand(
+                                            ipAddress = binding.IPAddressText.text.toString(),
+                                            username = binding.UsernameText.text.toString(),
+                                            password = binding.PasswordText.text.toString(),
+                                            customCommand = storedCommand
+                                        )
+
+
+                                    }
+
+                                } else {
+                                    viewModel.runPiCommand(
+                                        ipAddress = binding.IPAddressText.text.toString(),
+                                        username = binding.UsernameText.text.toString(),
+                                        password = binding.PasswordText.text.toString(),
+                                        customCommand = null
+                                    )
+
+                                }
+
+                            } catch (ce: JSONException) {
+                                //Log.d("MainAcvitiy", "No Stored command found")
+                                viewModel.runPiCommand(
+                                    ipAddress = binding.IPAddressText.text.toString(),
+                                    username = binding.UsernameText.text.toString(),
+                                    password = binding.PasswordText.text.toString(),
+                                    customCommand = null
+                                )
+
+                            }
                         }
-
-                    } else {
-                        viewModel.runPiCommands(
-                            ipAddress = binding.IPAddressText.text.toString(),
-                            username = binding.UsernameText.text.toString(),
-                            password = binding.PasswordText.text.toString(),
-                            customCommand = null
-                        )
-
                     }
 
-                } catch (ce: JSONException) {
-                    //Log.d("MainAcvitiy", "No Stored command found")
-                    viewModel.runPiCommands(
-                        ipAddress = binding.IPAddressText.text.toString(),
-                        username = binding.UsernameText.text.toString(),
-                        password = binding.PasswordText.text.toString(),
-                        customCommand = null
-                    )
-
                 }
-
-
-
+                is Resource.Initial -> {
+                    Log.d(TAG, "Initial")
+                }
             }
 
         })
 
         viewModel.commandResults.observe(this, Observer { results ->
-            if (!results.testCommand!!){
-                Toast.makeText(this, "Test Command Failed Please retry", Toast.LENGTH_SHORT).show()
-            } else {
-                Log.d(TAG, "results: $results")
-                val intent = Intent(this@MainActivity, Result_Activity::class.java)
-                intent.putExtra("results", results)
+
+            when (results) {
+                is Resource.Loading -> Log.d(TAG, "LOADING")
+                is Resource.Error -> {
+                    Toast.makeText(this, "Test Command Failed Please retry", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is Resource.Success -> {
+                    Log.d(TAG, "results: $results")
+                    val intent = Intent(this@MainActivity, Result_Activity::class.java)
+                    intent.putExtra("results", results.data)
 
 
-                binding.MainActivityTextDotLoader.visibility = INVISIBLE
-                binding.MainCustomCommandMessage.visibility = INVISIBLE
+                    binding.MainActivityTextDotLoader.visibility = INVISIBLE
+                    binding.MainCustomCommandMessage.visibility = INVISIBLE
 
-                val editor = pref.edit()
+                    val editor = pref.edit()
 
-                val adcount = pref.getString("adcount", "")
+                    val adcount = pref.getString("adcount", "")
 
-                if (adcount.isNullOrEmpty()) {
-                    editor.putString("adcount", "1")
-                    editor.apply()
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Log.d("MainActivity", adcount)
-                    val newvalue = adcount.toInt() + 1
-                    editor.putString("adcount", newvalue.toString())
-                    if (adcount.toInt() >= 3) {
-                        // show ad
-                        Log.d("MainActvity", "Showing Ad")
-
-                        // in place logic till ads work
-                        editor.remove("adcount")
+                    if (adcount.isNullOrEmpty()) {
+                        editor.putString("adcount", "1")
                         editor.apply()
                         startActivity(intent)
                         finish()
-
-
                     } else {
-                        editor.apply()
-                       startActivity(intent)
-                       finish()
-                    }
+                        Log.d("MainActivity", adcount)
+                        val newvalue = adcount.toInt() + 1
+                        editor.putString("adcount", newvalue.toString())
+                        if (adcount.toInt() >= 3) {
+                            // show ad
+                            Log.d("MainActvity", "Showing Ad")
 
+                            // in place logic till ads work
+                            editor.remove("adcount")
+                            editor.apply()
+                            startActivity(intent)
+                            finish()
+
+
+                        } else {
+                            editor.apply()
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    }
                 }
             }
         })

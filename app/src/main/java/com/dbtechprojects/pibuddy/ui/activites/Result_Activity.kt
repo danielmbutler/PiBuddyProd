@@ -17,8 +17,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.dbtechprojects.pibuddy.Dialogs.CustomCommand
-import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.dialogs.CustomCommand
+import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityResultBinding
 import com.dbtechprojects.pibuddy.models.CommandResults
@@ -191,8 +191,7 @@ class Result_Activity : AppCompatActivity() {
     }
 
     private fun showProgressBar(isVisible: Boolean) {
-        val progressBar = findViewById<ProgressBar>(R.id.Main_Activity_text_dot_loader)
-        progressBar.isVisible = isVisible
+        binding.MainActivityTextDotLoader.isVisible = isVisible
     }
 
     override fun onBackPressed() {

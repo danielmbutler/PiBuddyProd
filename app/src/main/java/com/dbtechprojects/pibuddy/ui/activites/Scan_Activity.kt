@@ -11,18 +11,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.dbtechprojects.pibuddy.Dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityScanBinding
 import com.dbtechprojects.pibuddy.ui.viewmodels.ScanViewModel
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils
+import com.dbtechprojects.pibuddy.utilities.Resource
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -99,8 +99,15 @@ class Scan_Activity : AppCompatActivity() {
     private fun initScanIpObserver() {
         viewModel.ips.observe(this, Observer { ip ->
             //add IP to IP list
-            IPs.add(ip)
-            refreshRecyclerViewMessages()
+            when(ip){
+                is Resource.Success -> {
+                    ip.data?.let { IPs.add(it.ipAddress)
+                        refreshRecyclerViewMessages()
+                    }
+                }
+            }
+
+
         })
 
         viewModel.addressCount.observe(this, Observer { count ->

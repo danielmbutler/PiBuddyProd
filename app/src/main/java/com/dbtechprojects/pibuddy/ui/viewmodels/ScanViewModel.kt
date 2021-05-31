@@ -1,79 +1,34 @@
 package com.dbtechprojects.pibuddy.ui.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.dbtechprojects.pibuddy.models.PingResult
+import com.dbtechprojects.pibuddy.repository.repository
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils.isPortOpen
+import com.dbtechprojects.pibuddy.utilities.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ScanViewModel : ViewModel() {
 
-    private  val TAG = "ScanViewModel"
+    private val TAG = "ScanViewModel"
 
-    private val _ips = MutableLiveData<String>()
-    val ips: LiveData<String>
-        get() = _ips
+    private val _ips = repository._pingTest
+    val ips: LiveData<Resource<PingResult>>
+        get() = _ips.asLiveData()
 
     // descending count of IP Addresses
-    private val _addressCount = MutableLiveData<Int>()
+    private val _addressCount = repository.addressCount
     val addressCount: LiveData<Int>
         get() = _addressCount
 
-    // value to control whether scan should be running
-    private var _scanRunning = true
-
-
-
-
-    fun scanIPs(netAddresses: Array<String>) {
-        // set scan to running
-        _scanRunning = true
-        var addresscount = netAddresses.count()
-
-
-        viewModelScope.launch(Dispatchers.IO) {
-
-                netAddresses.forEach {
-                    Log.d(TAG, "loop runs")
-                    if (_scanRunning){
-                        Log.d(TAG, "scanning : $it")
-                        Log.d(TAG, "scanning : scan status: $_scanRunning")
-
-                        val pingtest = async {
-                            isPortOpen(
-                                it,
-                                22,
-                                1000
-                            )
-
-                        }
-
-                        if (pingtest.await()) {
-                            _ips.postValue(it)
-                            // decrement address count
-                            addresscount--
-                            //post new address count value
-                            _addressCount.postValue(addresscount)
-                            Log.d(TAG, "scanIPs: successful : $it, ips left: $addresscount")
-                        } else {
-                            // decrement address count
-                            addresscount--
-                            //post new address count value
-                            _addressCount.postValue(addresscount)
-                            Log.d(TAG, "scanIPs: unsuccessful : $it, ips left: $addresscount")
-                        }
-                    } else{
-                        return@forEach
-                    }
-                }
-            }
+    fun scanIPs(netAddresses: Array<String>){
+        repository.scanIPs(netAddresses, viewModelScope)
     }
 
-        fun cancelScan() {
-            _scanRunning = false
-        }
+    fun cancelScan(){
+        repository.cancelScan()
     }
+}

@@ -1,6 +1,5 @@
-package com.dbtechprojects.pibuddy.Dialogs
+package com.dbtechprojects.pibuddy.dialogs
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
