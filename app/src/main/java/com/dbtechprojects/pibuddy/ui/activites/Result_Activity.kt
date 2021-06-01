@@ -165,7 +165,7 @@ class Result_Activity : AppCompatActivity() {
 
         if (results.customCommand != null) {
             val Pidata =
-                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}, "CustomCommand":"${results.customCommand}"}""")
+                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}", "CustomCommand":"${results.customCommand}"}""")
             editor.putString(IPAddress, Pidata.toString())
             editor.apply()
         } else {
@@ -178,7 +178,7 @@ class Result_Activity : AppCompatActivity() {
 
     private fun setupActionBar(IP: String) {
 
-        //setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         val actionBar = supportActionBar
         if (actionBar != null) {
@@ -187,7 +187,7 @@ class Result_Activity : AppCompatActivity() {
             actionBar.title = IP
         }
 
-        //toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
     private fun showProgressBar(isVisible: Boolean) {

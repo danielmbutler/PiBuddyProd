@@ -1,11 +1,13 @@
 package com.dbtechprojects.pibuddy.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils.executeRemoteCommand
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils.isPortOpen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -20,7 +22,7 @@ class ResultViewModel : ViewModel() {
         get() = _powerOffAttemptMessage
 
     fun restartButtonClick(ipaddress: String, username: String, password: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
             //pingtest
             val pingtest = async {
@@ -30,7 +32,7 @@ class ResultViewModel : ViewModel() {
                     3000
                 )
             }
-            //Log.d("pingtest", pingtest.await())
+            Log.d("pingtest", pingtest.await().toString() + ipaddress)
 
             if (!pingtest.await()) {
                 _restartAttemptMessage.postValue("Connection Failure Please Retry..")
@@ -73,7 +75,7 @@ class ResultViewModel : ViewModel() {
     }
 
     fun powerOffButtonClicked(username: String, password: String, IPAddress: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
             //pingtest
             val pingtest = async {

@@ -69,8 +69,11 @@ class MainActivity : AppCompatActivity() {
         setupDraw()
         //setupClickListeners
         setupClicks()
-        //initialise Observers from ViewModel
-        initObservers()
+
+        if(savedInstanceState == null){
+            //initialise Observers from ViewModel
+            initObservers()
+        }
 
 
     }
@@ -82,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     result.data?.let { pingTest ->
                         Log.d(TAG, "initObservers: pingTest is $pingTest")
-                        if (pingTest.result) {
+                        if (!pingTest.result) {
                             Toast.makeText(
                                 this@MainActivity,
                                 "Connection Failure Please Retry..",
@@ -95,8 +98,7 @@ class MainActivity : AppCompatActivity() {
                             // check for stored command for that IP
                             try {
 
-                                val strJson =
-                                    pref.getString(binding.IPAddressText.text.toString(), null)
+                                val strJson = pref.getString(binding.IPAddressText.text.toString(), null)
 
                                 if (strJson != null) {
                                     val jresponse = JSONObject(strJson!!)
@@ -151,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        viewModel.commandResults.observe(this, Observer { results ->
+       viewModel.commandResults.observe(this, Observer { results ->
 
             when (results) {
                 is Resource.Loading -> Log.d(TAG, "LOADING")
@@ -266,7 +268,7 @@ class MainActivity : AppCompatActivity() {
         for ((key, value) in keys) {
 
             if (key == "adcount") {
-                keys.remove("adcount")
+                pref.edit().remove("adcount").apply()
             } else {
                 menu.add(0, 0, 0, key).setOnMenuItemClickListener {
 
@@ -373,7 +375,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.getItemId()) {
+        return when (item.itemId) {
             R.id.toolbar_menu_help -> {
                 val dialog =
                     HelpDialog()
@@ -383,6 +385,12 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.pingTest.removeObservers(this)
+        viewModel.commandResults.removeObservers(this)
     }
 
 }
