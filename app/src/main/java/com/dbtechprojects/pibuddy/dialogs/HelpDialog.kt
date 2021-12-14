@@ -1,4 +1,4 @@
-package com.dbtechprojects.pibuddy.Dialogs
+package com.dbtechprojects.pibuddy.dialogs
 
 import android.os.Bundle
 import android.text.Html
@@ -8,10 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.dbtechprojects.pibuddy.R
-import kotlinx.android.synthetic.main.activity_main.*
+
 
 class HelpDialog (): DialogFragment() {
     override fun onCreateView(
@@ -19,15 +20,16 @@ class HelpDialog (): DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootview = layoutInflater.inflate(R.layout.activity_help, fragement_container, false)
+        val fragmentContainer = container?.findViewById<FrameLayout>(R.id.fragement_container)
+        val rootview = layoutInflater.inflate(R.layout.activity_help, fragmentContainer, false)
 
 
          val button = rootview.findViewById<Button>(R.id.Help_Button)
          val helptextView = rootview.findViewById<TextView>(R.id.Help_TextView)
-         helptextView.setMovementMethod(ScrollingMovementMethod());
-         helptextView.setMovementMethod(LinkMovementMethod.getInstance())
+        helptextView.movementMethod = ScrollingMovementMethod();
+        helptextView.movementMethod = LinkMovementMethod.getInstance()
 
-        helptextView.setText(Html.fromHtml("<p><strong>Welcome to PI Buddy</strong></p>\n" +
+        helptextView.text = Html.fromHtml("<p><strong>Welcome to PI Buddy</strong></p>\n" +
                 "<p><br></br></p>\n" +
                 "<p>This is my first app and I hope you found it useful :)</p>\n" +
                 "<p><br></br></p>\n" +
@@ -49,6 +51,12 @@ class HelpDialog (): DialogFragment() {
                 "<p><strong>Logged In Users</strong></p>\n" +
                 "<p>&quot;who | cut -d&apos; &apos; -f1 | sort | uniq\\n&quot;</p>\n" +
                 "<p><br></br></p>\n" +
+                "<p><strong>Power Off</strong></p>\n" +
+                "<p>&quot;sudo shutdown -P now&quot;</p>\n" +
+                "<p><br></br></p>\n" +
+                "<p><strong>Restart</strong></p>\n" +
+                "<p>&quot;sudo systemctl start reboot.target&quot;</p>\n" +
+                "<p><br></br></p>\n" +
                 "<p><strong>Custom Command</strong></p>\n" +
                 "<p><br></br></p>\n" +
                 "<p>Any custom command can be used but the output is limited to 1000 characters, only 1 custom command can be used.</p>\n" +
@@ -61,8 +69,8 @@ class HelpDialog (): DialogFragment() {
                 "<p><strong>Saving Connections</strong></p>\n" +
                 "<p><br></br></p>\n" +
                 "<p>Successful connections are saved in the side draw on the opening page, <strong>the details are stored on your Device</strong> and will be deleted along with the App.</p>\n" +
-                "<p><br><p>Ver 1.0.0 </p></br></p>\n" +
-                "<p><br></br></p>"))
+                "<p><br><p>Ver 1.2.0 </p></br></p>\n" +
+                "<p><br></br></p>")
 
 
         button.setOnClickListener {

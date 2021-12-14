@@ -32,4 +32,6 @@
     <string name="helptext">""</string>
     <string name="returnWifi">Return</string>
     <string name="returnwifiText">Wifi Connection Not Found Please Check Wifi</string>
+    <string name="restart">Restart</string>
+    <string name="power_off">Power Off</string>
 </resources>
