@@ -73,8 +73,7 @@ class Result_Activity : AppCompatActivity() {
     private fun setupClicks() {
         binding.AddCustomCommandButton.setOnClickListener {
 
-            val dialog =
-                CustomCommand(IPAddress!!)
+            val dialog = CustomCommand(IPAddress)
             dialog.show(supportFragmentManager, "CustomCommand")
 
         }
