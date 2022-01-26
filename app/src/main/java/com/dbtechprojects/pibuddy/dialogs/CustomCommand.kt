@@ -40,19 +40,23 @@ class CustomCommand (val IP: String): DialogFragment() {
 
             val jresponse = JSONObject(strJson!!)
 
+            // remove command if empty texg box is saved
+
             if (command.isEmpty()){
                 jresponse.remove("CustomCommand")
                 editor!!.putString(IP, jresponse.toString())
                 editor!!.apply()
+                Toast.makeText(activity, "Custom command removed",
+                    Toast.LENGTH_LONG).show()
                 activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+                return@setOnClickListener
             }
 
 
 
             jresponse.put("CustomCommand", command.toString())
 
-            val emptycheck = ""
-            if (command.toString() !== emptycheck) {
+            if (command.toString().isNotEmpty()) {
                 if (editor != null) {
                     editor.putString(IP, jresponse.toString())
                 }

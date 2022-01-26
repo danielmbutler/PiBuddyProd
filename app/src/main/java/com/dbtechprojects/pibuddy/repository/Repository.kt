@@ -57,6 +57,7 @@ object Repository {
         customCommand: String?,
         scope: CoroutineScope
     ): Resource<CommandResults> {
+        Log.d("customCommand", "custom command $customCommand")
 
         return suspendCoroutine<Resource<CommandResults>> {commandResult ->
             val resultsObject = CommandResults()
@@ -117,7 +118,7 @@ object Repository {
                             username,
                             password,
                             ipAddress,
-                            "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
+                            "mpstat | awk '\$12 ~ /[0-9.]+/ { print 100 - \$12\"%\" }'"
 
                         )
                     }
@@ -141,7 +142,7 @@ object Repository {
                     resultsObject.username = username
                     resultsObject.password = password
                     resultsObject.ipAddress = ipAddress
-                    Log.d(TAG, "runPiCommands: $resultsObject")
+                   // Log.d(TAG, "runPiCommands: $resultsObject")
                     commandResult.resume(Resource.Success(resultsObject))
                 }
             }

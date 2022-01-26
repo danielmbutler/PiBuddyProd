@@ -146,33 +146,13 @@ class Result_Activity : AppCompatActivity() {
         binding.CustomCommandResultView.text = results.customCommand
         binding.DiskSpaceResultView.movementMethod = ScrollingMovementMethod()
 
-        if (results.customCommand != null) {
+        if (!results.customCommand.isNullOrEmpty()) {
             //Log.d(TAG, customCommandOutput)
             binding.CustomCommandTextTitle.visibility = VISIBLE
             binding.CustomCommandResultView.visibility = VISIBLE
         }
 
-
-
-
         showProgressBar(false)
-
-        // store successfull connection in shared pref
-
-        val editor = pref.edit()
-
-
-        if (results.customCommand != null) {
-            val Pidata =
-                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}", "CustomCommand":"${results.customCommand}"}""")
-            editor.putString(IPAddress, Pidata.toString())
-            editor.apply()
-        } else {
-            val Pidata =
-                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}"}""")
-            editor.putString(IPAddress, Pidata.toString())
-            editor.apply()
-        }
     }
 
     private fun setupActionBar(IP: String) {
@@ -203,16 +183,14 @@ class Result_Activity : AppCompatActivity() {
     // set up right help icon on toolbar
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.pi_buddy_toolbar, menu)
+        menuInflater.inflate(R.menu.pi_buddy_result_toolbar, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
-            R.id.toolbar_menu_help -> {
-                val dialog =
-                    HelpDialog()
-                dialog.show(supportFragmentManager, "Help")
+            R.id.toolbar_menu_result -> {
+                // open shell dialog here
                 return true
             }
             else -> super.onOptionsItemSelected(item)

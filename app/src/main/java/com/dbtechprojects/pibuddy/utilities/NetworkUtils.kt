@@ -93,6 +93,7 @@ object NetworkUtils {
             return (responseString)
         } catch (ce: JSchException) {
 
+            Log.d("exception", "ex: $ce")
 
             return "error - Please check Username/Password"
 

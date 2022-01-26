@@ -158,8 +158,9 @@ class MainActivity : AppCompatActivity() {
             when (results) {
                 is Resource.Loading -> Log.d(TAG, "LOADING")
                 is Resource.Error -> {
-                    Toast.makeText(this, "Test Command Failed Please retry", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "error - Please check Username/Password", Toast.LENGTH_SHORT)
                         .show()
+                    binding.MainActivityTextDotLoader.visibility = View.INVISIBLE
                 }
                 is Resource.Success -> {
                     Log.d(TAG, "results: $results")
