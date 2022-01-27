@@ -218,5 +218,11 @@ class Scan_Activity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.addressCount.removeObservers(this)
+        viewModel.ips.removeObservers(this)
+        viewModel.cancelScan()
+    }
 
 }

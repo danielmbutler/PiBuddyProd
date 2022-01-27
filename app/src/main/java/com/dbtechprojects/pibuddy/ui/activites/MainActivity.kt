@@ -29,6 +29,7 @@ import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityMainBinding
 import com.dbtechprojects.pibuddy.ui.viewmodels.MainViewModel
+import com.dbtechprojects.pibuddy.utilities.Constants
 import com.dbtechprojects.pibuddy.utilities.Resource
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.google.android.material.navigation.NavigationView
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                         if (!pingTest.result) {
                             Toast.makeText(
                                 this@MainActivity,
-                                "Connection Failure Please Retry..",
+                                Constants.CONNECTION_ERROR,
                                 Toast.LENGTH_SHORT
                             ).show()
                             binding.MainActivityTextDotLoader.visibility = INVISIBLE
@@ -158,7 +159,7 @@ class MainActivity : AppCompatActivity() {
             when (results) {
                 is Resource.Loading -> Log.d(TAG, "LOADING")
                 is Resource.Error -> {
-                    Toast.makeText(this, "error - Please check Username/Password", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, Constants.USERNAME_PASSWORD_ERROR, Toast.LENGTH_SHORT)
                         .show()
                     binding.MainActivityTextDotLoader.visibility = View.INVISIBLE
                 }

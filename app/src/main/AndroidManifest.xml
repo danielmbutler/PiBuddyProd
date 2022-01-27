@@ -42,6 +42,10 @@
             android:name="com.dbtechprojects.pibuddy.ui.activites.Result_Activity"
             android:exported="true"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.dbtechprojects.pibuddy.ui.activites.Shell_Activity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"
