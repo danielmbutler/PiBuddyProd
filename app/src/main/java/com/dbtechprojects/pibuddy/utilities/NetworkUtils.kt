@@ -62,33 +62,37 @@ object NetworkUtils {
         }
     }
 
-    suspend fun runCommandInSession(command: String) : String {
+    suspend fun runCommandInSession(command: String): Resource<String> {
 
-       if (session?.isConnected == false)  try {
-           session?.connect()
-       }catch (ex : java.lang.Exception){
-           Log.d("exc", "exc: $ex")
-           return "Connection TimeOut"
-       }
-         var channel = session?.openChannel("exec") as ChannelExec?
+        if (session?.isConnected == false) try {
+            session?.connect()
+        } catch (ex: java.lang.Exception) {
+            Log.d("exc", "exc: $ex")
+            return Resource.Error(Constants.CONNECTION_ERROR)
+        }
+        var channel = session?.openChannel("exec") as ChannelExec?
         channel?.setCommand(command)
 
         val responseStream = ByteArrayOutputStream()
 
         channel?.outputStream = responseStream
-        channel?.connect(15000) //set session timeout
+        try {
+            channel?.connect(7500) //set session timeout
+        }catch (ex: java.lang.Exception){
+            return Resource.Error(Constants.CONNECTION_ERROR)
+        }
 
 
         while (channel?.isConnected == true) {
             Thread.sleep(100)
-            Timer().schedule(15000) {
+            Timer().schedule(7500) {
                 channel!!.disconnect() //disconnect channel if command output lasts longer than 15secs
             }
         }
 
 
         val responseString = String(responseStream.toByteArray())
-        return  responseString
+        return Resource.Success(responseString)
     }
 
     suspend fun executeRemoteCommand(
@@ -160,7 +164,7 @@ object NetworkUtils {
         }
     }
 
-    fun disconnectSession(){
+    fun disconnectSession() {
         session?.disconnect()
         session = null
     }

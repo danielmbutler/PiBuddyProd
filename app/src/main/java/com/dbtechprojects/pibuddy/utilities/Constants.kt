@@ -12,6 +12,7 @@ object Constants {
     const val REBOOT_MESSAGE = "Your device is now rebooting...."
     const val USERNAME_PASSWORD_ERROR = "error - Please check Username/Password"
     const val SHUTTING_DOWN_MESSAGE = "Your device is now shutting down.... "
+    const val WAITING_MESSAGE = "waiting...."
 
     fun setColorForText(text: String, color: Int): SpannableString {
         val spannableString = SpannableString(text)

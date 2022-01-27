@@ -26,6 +26,7 @@
         android:id="@+id/shell_window"
         android:padding="6dp"
         android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@color/white"
         android:textColor="@color/shell"
         app:layout_constraintBottom_toTopOf="@id/sendCommandBtn"
         app:layout_constraintLeft_toLeftOf="parent"

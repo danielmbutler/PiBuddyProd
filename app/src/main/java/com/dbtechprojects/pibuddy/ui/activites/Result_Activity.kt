@@ -16,16 +16,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.dbtechprojects.pibuddy.dialogs.CustomCommand
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityResultBinding
 import com.dbtechprojects.pibuddy.models.CommandResults
-import com.dbtechprojects.pibuddy.repository.SecureShellRepo
+import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.ui.viewmodels.ResultViewModel
 import com.dbtechprojects.pibuddy.utilities.SharedPref
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 
 class Result_Activity : AppCompatActivity() {
@@ -57,8 +55,6 @@ class Result_Activity : AppCompatActivity() {
             setupObservers()
             populateResultView(results)
             setupClicks()
-            lifecycleScope.launch(Dispatchers.IO) { SecureShellRepo.executeSSHSession(username,password,IPAddress) }
-
         }
 
 
@@ -194,7 +190,7 @@ class Result_Activity : AppCompatActivity() {
         return when (item.getItemId()) {
             R.id.toolbar_menu_result -> {
                 val intent = Intent(this,Shell_Activity::class.java)
-                intent.putExtra("IPAddress", IPAddress)
+                intent.putExtra("Connection", Connection(IPAddress, username, password))
                 startActivity(intent)
                 return true
             }
