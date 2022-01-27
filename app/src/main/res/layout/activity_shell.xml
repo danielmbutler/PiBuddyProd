@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar2"
-        tools:targetApi="lollipop"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/GreySecondary"
@@ -15,22 +14,52 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:targetApi="lollipop" />
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/black"
-        android:inputType="text"
         android:autofillHints="false"
-        android:padding="6dp"
-        android:textColor="@color/shell"
-        android:scrollbars="vertical"
+        android:background="@color/black"
         android:gravity="top|left"
-        tools:text="testing............."
+        android:id="@+id/shell_window"
+        android:padding="6dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/shell"
+        app:layout_constraintBottom_toTopOf="@id/sendCommandBtn"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar2"
+        tools:text="testing............." />
+
+    <Button
+        android:id="@+id/sendCommandBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/GreySecondary"
+        android:text="Send"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar2"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shell_window" />
+
+    <EditText
+        android:id="@+id/commandInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        android:hint="command..."
+        android:padding="6dp"
+        android:inputType="textMultiLine"
+        android:maxLines ="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/sendCommandBtn"
+        app:layout_constraintTop_toTopOf="@+id/sendCommandBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

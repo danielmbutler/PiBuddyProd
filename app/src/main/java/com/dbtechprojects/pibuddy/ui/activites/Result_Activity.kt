@@ -9,7 +9,6 @@ import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.VISIBLE
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -19,7 +18,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.dbtechprojects.pibuddy.dialogs.CustomCommand
-import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityResultBinding
 import com.dbtechprojects.pibuddy.models.CommandResults
@@ -28,7 +26,6 @@ import com.dbtechprojects.pibuddy.ui.viewmodels.ResultViewModel
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 
 class Result_Activity : AppCompatActivity() {
@@ -196,7 +193,9 @@ class Result_Activity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
             R.id.toolbar_menu_result -> {
-                viewModel.sshClick(ipaddress = IPAddress, username, password)
+                val intent = Intent(this,Shell_Activity::class.java)
+                intent.putExtra("IPAddress", IPAddress)
+                startActivity(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)

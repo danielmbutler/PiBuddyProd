@@ -42,7 +42,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var pref: SharedPreferences
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var _binding: ActivityMainBinding
+    val binding: ActivityMainBinding get() = _binding!!
+
    
     private val TAG = "MainActivity"
 
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //set IP address if intent has IP (occurs from Scan Activity
@@ -240,8 +242,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDraw() {
         var drawer: DrawerLayout? = null
-
-        var toolbarid = binding.toolbar.id
 
         setSupportActionBar(binding.toolbar)
         drawer = findViewById(R.id.drawer_layout)

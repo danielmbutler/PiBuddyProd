@@ -32,7 +32,7 @@ object Repository {
     suspend fun pingTest(ip: String, scope: CoroutineScope): Resource<PingResult> {
        return suspendCoroutine<Resource<PingResult>> { Pingresult ->
             scope.launch(Dispatchers.IO){
-                val result = NetworkUtils.isPortOpen(ip, 22, 3000)
+                val result = NetworkUtils.isPortOpen(ip, 22, 5000)
 
 
                 Pingresult.resume(Resource.Success(PingResult(ip,result)))
