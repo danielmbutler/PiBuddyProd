@@ -23,7 +23,7 @@ import com.dbtechprojects.pibuddy.models.CommandResults
 import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.ui.viewmodels.ResultViewModel
 import com.dbtechprojects.pibuddy.utilities.SharedPref
-
+import org.json.JSONObject
 
 
 class Result_Activity : AppCompatActivity() {
@@ -152,6 +152,23 @@ class Result_Activity : AppCompatActivity() {
         }
 
         showProgressBar(false)
+
+        // store successfull connection in shared pref
+
+        val editor = pref.edit()
+
+
+        if (results.customCommand != null) {
+            val Pidata =
+                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}", "CustomCommand":"${results.customCommand}"}""")
+            editor.putString(IPAddress, Pidata.toString())
+            editor.apply()
+        } else {
+            val Pidata =
+                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}"}""")
+            editor.putString(IPAddress, Pidata.toString())
+            editor.apply()
+        }
     }
 
     private fun setupActionBar(IP: String) {

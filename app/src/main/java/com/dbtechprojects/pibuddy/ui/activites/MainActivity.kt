@@ -28,6 +28,7 @@ import androidx.lifecycle.Observer
 import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityMainBinding
+import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.ui.viewmodels.MainViewModel
 import com.dbtechprojects.pibuddy.utilities.Constants
 import com.dbtechprojects.pibuddy.utilities.Resource
@@ -36,16 +37,19 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var pref: SharedPreferences
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var _binding: ActivityMainBinding
+    private  var _binding: ActivityMainBinding? = null
     val binding: ActivityMainBinding get() = _binding!!
+    private lateinit var drawer : DrawerLayout
+    private lateinit var navigationView: NavigationView
 
-   
+
     private val TAG = "MainActivity"
 
 
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         //setupClickListeners
         setupClicks()
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             //initialise Observers from ViewModel
             initObservers()
         }
@@ -84,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     private fun initObservers() {
         viewModel.pingTest.observe(this, Observer { result ->
 
-            when(result){
+            when (result) {
                 is Resource.Success -> {
                     result.data?.let { pingTest ->
                         Log.d(TAG, "initObservers: pingTest is $pingTest")
@@ -101,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                             // check for stored command for that IP
                             try {
 
-                                val strJson = pref.getString(binding.IPAddressText.text.toString(), null)
+                                val strJson =
+                                    pref.getString(binding.IPAddressText.text.toString(), null)
 
                                 if (strJson != null) {
                                     val jresponse = JSONObject(strJson!!)
@@ -156,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-       viewModel.commandResults.observe(this, Observer { results ->
+        viewModel.commandResults.observe(this, Observer { results ->
 
             when (results) {
                 is Resource.Loading -> Log.d(TAG, "LOADING")
@@ -240,8 +245,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
     private fun setupDraw() {
-        var drawer: DrawerLayout? = null
+
 
         setSupportActionBar(binding.toolbar)
         drawer = findViewById(R.id.drawer_layout)
@@ -253,55 +260,14 @@ class MainActivity : AppCompatActivity() {
         drawer!!.addDrawerListener(toggle)
         toggle.syncState()
 
-        val mNavigationView = findViewById<View>(R.id.nav_viewer) as NavigationView
-        mNavigationView.bringToFront()
 
+        navigationView = findViewById<View>(R.id.nav_viewer) as NavigationView
+        val menu = navigationView.menu
+        navigationView.bringToFront()
 
-        //get all preferences
+        setupDrawItems()
 
-        val keys: MutableMap<String, *> = pref.all
-        //Log.d("KEYS", keys.toString())
-
-
-        val menu = mNavigationView.menu
-
-
-        // setup menu Items with IPs
-        for ((key, value) in keys) {
-
-            if (key == "adcount") {
-                pref.edit().remove("adcount").apply()
-            } else {
-                menu.add(0, 0, 0, key).setOnMenuItemClickListener {
-
-                    //Log.d("onclick listner", key)
-                    pref.getString(this.title.toString(), null)
-                    val strJson = pref.getString(key, null)
-
-                    val jresponse = JSONObject(strJson)
-                    val UsernameFromJson = jresponse.getString("Username")
-                    val PasswordFromJson = jresponse.getString("Password")
-
-                    if (strJson != null) {
-                        binding.IPAddressText.setText(key)
-                        binding.UsernameText.setText(UsernameFromJson)
-                        binding.PasswordText.setText(PasswordFromJson)
-                    }
-
-                    drawer.closeDrawer(GravityCompat.START);
-                    true
-
-                }.icon = ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_computer
-                )
-            }
-
-
-        }
-
-
-        val headerview = mNavigationView.getHeaderView(0)
+        val headerview = navigationView.getHeaderView(0)
         val button = headerview.findViewById<Button>(R.id.Nav_Header_Clear_Connection_Button)
         button.setOnClickListener {
 
@@ -328,6 +294,64 @@ class MainActivity : AppCompatActivity() {
             val alert = builder.create()
             alert.show()
 
+        }
+    }
+
+    private fun setupDrawItems(){
+
+        //get all preferences
+
+        val keys: MutableMap<String, *> = pref.all
+        //Log.d("KEYS", keys.toString())
+
+        val mNavigationView = findViewById<View>(R.id.nav_viewer) as NavigationView
+
+        val menu = mNavigationView.menu
+
+        // setup menu Items with IPs
+        for ((key, value) in keys) {
+            if (key == "adcount") {
+                pref.edit().remove("adcount").apply()
+            } else {
+                menu.add(0, 0, 0, key).apply {
+                    setOnMenuItemClickListener {
+
+                        //Log.d("onclick listner", key)
+                        pref.getString(this.title.toString(), null)
+                        val strJson = pref.getString(key, null)
+
+                        val jresponse = JSONObject(strJson)
+                        val UsernameFromJson = jresponse.getString("Username")
+                        val PasswordFromJson = jresponse.getString("Password")
+
+                        if (strJson != null) {
+                            binding.IPAddressText.setText(key)
+                            binding.UsernameText.setText(UsernameFromJson)
+                            binding.PasswordText.setText(PasswordFromJson)
+                        }
+
+                        drawer.closeDrawer(GravityCompat.START);
+                        true
+
+                    }
+                    icon = ContextCompat.getDrawable(
+                        this@MainActivity,
+                        R.drawable.ic_computer
+                    )
+
+                }
+            }
+        }
+        if (keys.isNotEmpty()){
+            // script deployment
+            menu.add("Script Deployment").apply {
+                icon = (ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_baseline_flash_on_24))
+                setOnMenuItemClickListener {
+                    val intent = Intent(this@MainActivity, Deployment_Activity::class.java)
+                    startActivity(intent)
+                    true
+                }
+            }
         }
     }
 
@@ -391,6 +415,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        _binding = null
         viewModel.pingTest.removeObservers(this)
         viewModel.commandResults.removeObservers(this)
     }

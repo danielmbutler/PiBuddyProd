@@ -19,9 +19,7 @@ object NetworkUtils {
     private const val TAG = "NetworkUtils"
 
     private var session: Session? = null
-
-    val sessionResponseStream = ByteArrayOutputStream()
-
+    
 
     fun validate(ip: String): Boolean {
         val PATTERN =

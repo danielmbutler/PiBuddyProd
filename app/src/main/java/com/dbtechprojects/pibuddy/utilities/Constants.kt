@@ -1,10 +1,11 @@
 package com.dbtechprojects.pibuddy.utilities
 
-import android.graphics.Color
+
+import android.content.SharedPreferences
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-
+import androidx.appcompat.app.AlertDialog
 
 object Constants {
     const val CONNECTION_ERROR = "Connection Failure Please Retry.."
@@ -25,4 +26,28 @@ object Constants {
         )
         return spannableString
     }
+
+    // saving for later
+
+//    private fun showDeleteDialogSingleItem(ipAddress: String, index: Int) {
+//        val builder = AlertDialog.Builder(this@MainActivity)
+//        builder.setMessage("Are you sure you want to Delete?")
+//            .setCancelable(false)
+//            .setPositiveButton("Yes") { dialog, id ->
+//
+//                val editor: SharedPreferences.Editor = pref.edit()
+//                editor.remove(ipAddress)
+//                editor.apply()
+//                navigationView.menu.removeItem(index)
+//                drawer.closeDrawers()
+//                setupDrawItems()
+//
+//            }
+//            .setNegativeButton("No") { dialog, id ->
+//                // Dismiss the dialog
+//                dialog.dismiss()
+//            }
+//        val alert = builder.create()
+//        alert.show()
+//    }
 }
