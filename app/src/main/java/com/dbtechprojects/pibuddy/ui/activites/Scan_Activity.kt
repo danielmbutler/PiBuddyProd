@@ -1,6 +1,6 @@
 package com.dbtechprojects.pibuddy.ui.activites
 
-import PiAdapter
+import ScanAdapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -155,7 +155,7 @@ class Scan_Activity : AppCompatActivity() {
 
         adapter.setOnItemClickListener{ item: Item<GroupieViewHolder>, view: View ->
 
-            val IP = item as PiAdapter
+            val IP = item as ScanAdapter
             //Log.d(TAG, IP.IP)
 
             intent= Intent(this@Scan_Activity,
@@ -180,7 +180,7 @@ class Scan_Activity : AppCompatActivity() {
         println("RecyclerviewRefresh called + $IPs")
         adapter.clear()
         IPs.forEach {
-            adapter.add(PiAdapter(it))
+            adapter.add(ScanAdapter(it))
 
         }
     }

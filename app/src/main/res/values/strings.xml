@@ -35,4 +35,5 @@
     <string name="returnwifiText">Wifi Connection Not Found Please Check Wifi</string>
     <string name="restart">Restart</string>
     <string name="power_off">Power Off</string>
+    <string name="waiting_deployment">Waiting Deployment ...</string>
 </resources>
