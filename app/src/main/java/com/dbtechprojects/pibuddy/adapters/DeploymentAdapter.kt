@@ -1,4 +1,5 @@
 import android.graphics.Color
+import android.widget.CheckBox
 import android.widget.TextView
 import com.dbtechprojects.pibuddy.R
 import com.xwray.groupie.GroupieViewHolder
@@ -7,10 +8,12 @@ import com.xwray.groupie.Item
 
 class DeploymentAdapter(val deploymentResult: DeploymentResult): Item<GroupieViewHolder>(){
 
+    private val checkedIPs = mutableListOf<String>()
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         val ipTextView = viewHolder.itemView.findViewById<TextView>(R.id.deployment_row_ip)
         val outputTextView = viewHolder.itemView.findViewById<TextView>(R.id.deployment_item_output_text)
-        val availabilityTextView = viewHolder.itemView.findViewById<TextView>(R.id.deployment_Available)
+        val checkBox = viewHolder.itemView.findViewById<CheckBox>(R.id.checkBox)
 
         ipTextView.text = deploymentResult.ip
 
@@ -19,15 +22,21 @@ class DeploymentAdapter(val deploymentResult: DeploymentResult): Item<GroupieVie
         }
 
         if (deploymentResult.connected){
-            availabilityTextView.text = "Available"
-            availabilityTextView.setTextColor(Color.GREEN)
+            outputTextView.text = "Available, waiting deployment..."
+            outputTextView.setTextColor(Color.GREEN)
         } else {
-            availabilityTextView.text = "Not Available"
-            availabilityTextView.setTextColor(Color.RED)
+            outputTextView.text = "Not Available"
+            outputTextView.setTextColor(Color.RED)
+        }
+
+        checkBox.setOnCheckedChangeListener { compoundButton, b ->
+            if (checkBox.isChecked) checkedIPs.add(deploymentResult.ip) else checkedIPs.remove(deploymentResult.ip)
         }
 
 
     }
+    fun getCheckedDevices() = checkedIPs as List<String>
+
 
     override fun getLayout(): Int {
         return R.layout.deployment_device_row
