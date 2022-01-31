@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:background="@color/GreySecondary">
 
         <ImageView
@@ -44,14 +44,17 @@
 
         <Button
             android:id="@+id/Nav_Header_Clear_Connection_Button"
-            android:layout_width="431dp"
-            android:layout_height="59dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/PiPrimary"
+            android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/clear_connections"
             app:backgroundTint="@color/PiPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.533"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2"
             tools:visibility="visible" />
 
 

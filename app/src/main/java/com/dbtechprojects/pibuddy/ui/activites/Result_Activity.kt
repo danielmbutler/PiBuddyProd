@@ -9,7 +9,6 @@ import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.VISIBLE
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -18,10 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.dbtechprojects.pibuddy.dialogs.CustomCommand
-import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityResultBinding
 import com.dbtechprojects.pibuddy.models.CommandResults
+import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.ui.viewmodels.ResultViewModel
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import org.json.JSONObject
@@ -146,14 +145,11 @@ class Result_Activity : AppCompatActivity() {
         binding.CustomCommandResultView.text = results.customCommand
         binding.DiskSpaceResultView.movementMethod = ScrollingMovementMethod()
 
-        if (results.customCommand != null) {
+        if (!results.customCommand.isNullOrEmpty()) {
             //Log.d(TAG, customCommandOutput)
             binding.CustomCommandTextTitle.visibility = VISIBLE
             binding.CustomCommandResultView.visibility = VISIBLE
         }
-
-
-
 
         showProgressBar(false)
 
@@ -203,16 +199,16 @@ class Result_Activity : AppCompatActivity() {
     // set up right help icon on toolbar
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.pi_buddy_toolbar, menu)
+        menuInflater.inflate(R.menu.pi_buddy_result_toolbar, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
-            R.id.toolbar_menu_help -> {
-                val dialog =
-                    HelpDialog()
-                dialog.show(supportFragmentManager, "Help")
+            R.id.toolbar_menu_result -> {
+                val intent = Intent(this,Shell_Activity::class.java)
+                intent.putExtra("Connection", Connection(IPAddress, username, password))
+                startActivity(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)

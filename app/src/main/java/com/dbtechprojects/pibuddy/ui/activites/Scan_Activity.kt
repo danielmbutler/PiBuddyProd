@@ -1,6 +1,6 @@
 package com.dbtechprojects.pibuddy.ui.activites
 
-import PiAdapter
+import ScanAdapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -60,13 +60,13 @@ class Scan_Activity : AppCompatActivity() {
         // check for Wifi Address
         //get IP and subnet mask (comes out in CIDR *.*.*.*/*)
         // verify network connectivity
-        getClientWifiAddress()
+        getClientWifiAddress(false)
 
 
 
     }
 
-    private fun getClientWifiAddress() {
+    private fun getClientWifiAddress(refresh: Boolean) {
         try{
             val connectivityManager =
                 applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -87,7 +87,7 @@ class Scan_Activity : AppCompatActivity() {
         if(clientAddress == "none"){
             Toast.makeText(this@Scan_Activity, "no Wifi found please check Wifi", Toast.LENGTH_LONG).show()
         } else {
-            initScanIpObserver()
+            if (!refresh)initScanIpObserver()
             val netAddresses = networkScanIP(clientAddress)
             // scan IPS and confirm activity
             viewModel.scanIPs(netAddresses)
@@ -126,16 +126,19 @@ class Scan_Activity : AppCompatActivity() {
     private fun setupClicks() {
 
         binding.ScanStopButton.setOnClickListener {
-            cancelled = true
-            viewModel.cancelScan()
-            val messagetext = "Scan Stopped"
-            binding.ScanningTextView.text = messagetext
+            if (!cancelled){
+                cancelled = true
+                viewModel.cancelScan()
+                val messagetext = "Scan Stopped"
+                binding.ScanningTextView.text = messagetext
 
-            binding.ScanStopButton.text = getString(R.string.RestartScan)
-            binding.ScanStopButton.setOnClickListener {
-                val intent = intent
-                finish()
-                startActivity(intent)
+                binding.ScanStopButton.text = getString(R.string.RestartScan)
+            } else {
+                getClientWifiAddress(true)
+                IPs.clear()
+                refreshRecyclerViewMessages()
+                cancelled = false
+                binding.ScanStopButton.text = getString(R.string.stop_scan)
             }
         }
 
@@ -152,7 +155,7 @@ class Scan_Activity : AppCompatActivity() {
 
         adapter.setOnItemClickListener{ item: Item<GroupieViewHolder>, view: View ->
 
-            val IP = item as PiAdapter
+            val IP = item as ScanAdapter
             //Log.d(TAG, IP.IP)
 
             intent= Intent(this@Scan_Activity,
@@ -177,7 +180,7 @@ class Scan_Activity : AppCompatActivity() {
         println("RecyclerviewRefresh called + $IPs")
         adapter.clear()
         IPs.forEach {
-            adapter.add(PiAdapter(it))
+            adapter.add(ScanAdapter(it))
 
         }
     }
@@ -218,5 +221,11 @@ class Scan_Activity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.addressCount.removeObservers(this)
+        viewModel.ips.removeObservers(this)
+        viewModel.cancelScan()
+    }
 
 }

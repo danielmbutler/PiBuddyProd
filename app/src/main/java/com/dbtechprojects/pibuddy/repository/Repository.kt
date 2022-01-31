@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.dbtechprojects.pibuddy.models.CommandResults
+import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.models.PingResult
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils
 import com.dbtechprojects.pibuddy.utilities.Resource
@@ -29,10 +30,14 @@ object Repository {
     val addressCount: LiveData<Int>
         get() = _addressCount
 
+    private val _commandResults = MutableLiveData<Repository.CommandResult>()
+    val commandResults: LiveData<Repository.CommandResult>
+        get() = _commandResults
+
     suspend fun pingTest(ip: String, scope: CoroutineScope): Resource<PingResult> {
        return suspendCoroutine<Resource<PingResult>> { Pingresult ->
             scope.launch(Dispatchers.IO){
-                val result = NetworkUtils.isPortOpen(ip, 22, 3000)
+                val result = NetworkUtils.isPortOpen(ip, 22, 5000)
 
 
                 Pingresult.resume(Resource.Success(PingResult(ip,result)))
@@ -57,6 +62,7 @@ object Repository {
         customCommand: String?,
         scope: CoroutineScope
     ): Resource<CommandResults> {
+        Log.d("customCommand", "custom command $customCommand")
 
         return suspendCoroutine<Resource<CommandResults>> {commandResult ->
             val resultsObject = CommandResults()
@@ -117,7 +123,7 @@ object Repository {
                             username,
                             password,
                             ipAddress,
-                            "cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS=\"\" '{print (\$13-\$2+\$15-\$4)*100/(\$13-\$2+\$15-\$4+\$16-\$5)}'"
+                            "mpstat | awk '\$12 ~ /[0-9.]+/ { print 100 - \$12\"%\" }'"
 
                         )
                     }
@@ -141,7 +147,7 @@ object Repository {
                     resultsObject.username = username
                     resultsObject.password = password
                     resultsObject.ipAddress = ipAddress
-                    Log.d(TAG, "runPiCommands: $resultsObject")
+                   // Log.d(TAG, "runPiCommands: $resultsObject")
                     commandResult.resume(Resource.Success(resultsObject))
                 }
             }
@@ -195,8 +201,31 @@ object Repository {
         }
     }
 
+    suspend fun runCommand(scope: CoroutineScope, connection: Connection, command: String) {
+
+        scope.launch(Dispatchers.IO) {
+                val result = async {
+                    NetworkUtils.executeRemoteCommand(
+                        connection.username,
+                        connection.password,
+                        connection.ipAddress,
+                        command
+                    )
+                }
+                Log.d("result" , "result : ${result.await()}")
+                _commandResults.postValue(CommandResult(connection.ipAddress, result = result.await()))
+            }
+    }
+
     fun cancelScan() {
         _scanRunning = false
     }
+
+    data class CommandResult(
+        val ip: String,
+        val result: String,
+    )
+
+   
 }
 

@@ -17,7 +17,11 @@ Networking Utility functions, validating IP Address, testing ports, and executin
 object NetworkUtils {
 
     private const val TAG = "NetworkUtils"
-     fun validate(ip: String): Boolean {
+
+    private var session: Session? = null
+    
+
+    fun validate(ip: String): Boolean {
         val PATTERN =
             "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
 
@@ -56,6 +60,39 @@ object NetworkUtils {
         }
     }
 
+    suspend fun runCommandInSession(command: String): Resource<String> {
+
+        if (session?.isConnected == false) try {
+            session?.connect()
+        } catch (ex: java.lang.Exception) {
+            Log.d("exc", "exc: $ex")
+            return Resource.Error(Constants.CONNECTION_ERROR)
+        }
+        var channel = session?.openChannel("exec") as ChannelExec?
+        channel?.setCommand(command)
+
+        val responseStream = ByteArrayOutputStream()
+
+        channel?.outputStream = responseStream
+        try {
+            channel?.connect(7500) //set session timeout
+        }catch (ex: java.lang.Exception){
+            return Resource.Error(Constants.CONNECTION_ERROR)
+        }
+
+
+        while (channel?.isConnected == true) {
+            Thread.sleep(100)
+            Timer().schedule(7500) {
+                channel!!.disconnect() //disconnect channel if command output lasts longer than 15secs
+            }
+        }
+
+
+        val responseString = String(responseStream.toByteArray())
+        return Resource.Success(responseString)
+    }
+
     suspend fun executeRemoteCommand(
         username: String,
         password: String,
@@ -66,8 +103,8 @@ object NetworkUtils {
         var session: Session? = null
         var channel: ChannelExec? = null
         try {
-            session = JSch().getSession(username.toString(), hostname.toString(), port)
-            session.setPassword(password.toString())
+            session = JSch().getSession(username, hostname, port)
+            session.setPassword(password)
             session.setConfig("StrictHostKeyChecking", "no")
             session.timeout = 15000
             session.connect()
@@ -93,6 +130,7 @@ object NetworkUtils {
             return (responseString)
         } catch (ce: JSchException) {
 
+            Log.d("exception", "ex: $ce")
 
             return "error - Please check Username/Password"
 
@@ -102,6 +140,31 @@ object NetworkUtils {
             }
             channel?.disconnect()
         }
+    }
+
+    suspend fun createSSHSession(
+        username: String,
+        password: String,
+        hostname: String,
+        port: Int = 22
+    ) {
+
+        try {
+            session = JSch().getSession(username, hostname, port)
+            session?.setPassword(password)
+            session?.setConfig("StrictHostKeyChecking", "no")
+            session?.timeout = 600000
+
+        } catch (ce: JSchException) {
+
+            Log.d("exception", "ex: $ce")
+
+        }
+    }
+
+    fun disconnectSession() {
+        session?.disconnect()
+        session = null
     }
 }
 

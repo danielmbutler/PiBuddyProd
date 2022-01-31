@@ -24,7 +24,8 @@
     <string name="RestartScan">Restart Scan</string>
     <string name="available_device">Available Device</string>
     <string name="todo">TODO</string>
-    <string name="result">Result</string>
+    <string name="result">Results</string>
+    <string name="shell">Shell</string>
     <string name="running_custom_command">Running Custom Command.....15 Second Timeout</string>
     <string name="log_out">Log out</string>
     <string name="help">Help</string>
@@ -34,4 +35,5 @@
     <string name="returnwifiText">Wifi Connection Not Found Please Check Wifi</string>
     <string name="restart">Restart</string>
     <string name="power_off">Power Off</string>
+    <string name="waiting_deployment">Waiting Deployment ...</string>
 </resources>

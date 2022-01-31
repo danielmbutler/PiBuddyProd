@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dbtechprojects.pibuddy.repository.SecureShellRepo
+import com.dbtechprojects.pibuddy.utilities.Constants
+import com.dbtechprojects.pibuddy.utilities.NetworkUtils
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils.executeRemoteCommand
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils.isPortOpen
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +24,8 @@ class ResultViewModel : ViewModel() {
     val powerOffAttemptMessage: LiveData<String>
         get() = _powerOffAttemptMessage
 
+
+
     fun restartButtonClick(ipaddress: String, username: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -35,7 +40,7 @@ class ResultViewModel : ViewModel() {
             Log.d("pingtest", pingtest.await().toString() + ipaddress)
 
             if (!pingtest.await()) {
-                _restartAttemptMessage.postValue("Connection Failure Please Retry..")
+                _restartAttemptMessage.postValue(Constants.CONNECTION_ERROR)
 
             } else {
                 // run command
@@ -52,7 +57,7 @@ class ResultViewModel : ViewModel() {
 
                 if (!testcommand.await().contains("hello")) {
 
-                    _restartAttemptMessage.postValue("Device Session failure, Please confirm username and password")
+                    _restartAttemptMessage.postValue(Constants.SESSION_ERROR)
 
                 } else {
 
@@ -66,7 +71,7 @@ class ResultViewModel : ViewModel() {
                         )
                     }
 
-                    _restartAttemptMessage.postValue("Your device is now rebooting....")
+                    _restartAttemptMessage.postValue(Constants.REBOOT_MESSAGE)
 
                 }
             }
@@ -88,7 +93,7 @@ class ResultViewModel : ViewModel() {
             //Log.d("pingtest", pingtest.await())
 
             if (!pingtest.await()) {
-                _powerOffAttemptMessage.postValue("Connection Failure Please Retry..")
+                _powerOffAttemptMessage.postValue(Constants.CONNECTION_ERROR)
 
             } else {
                 // run command
@@ -104,7 +109,7 @@ class ResultViewModel : ViewModel() {
                 //Log.d("testcommand", testcommand.await())
 
                 if (!testcommand.await().contains("hello")) {
-                    _powerOffAttemptMessage.postValue("Device Session failure, Please confirm username and password")
+                    _powerOffAttemptMessage.postValue(Constants.SESSION_ERROR)
 
                 } else {
 
@@ -117,10 +122,18 @@ class ResultViewModel : ViewModel() {
                             IPAddress, "sudo shutdown -P now"
                         )
                     }
-                    _powerOffAttemptMessage.postValue("Your device is now shutting down....")
+                    _powerOffAttemptMessage.postValue(Constants.SHUTTING_DOWN_MESSAGE)
 
                 }
             }
         }
     }
+
+    fun sshClick(ipaddress: String, username: String, password: String){
+        viewModelScope.launch(Dispatchers.IO) {
+
+            SecureShellRepo.setCommand("echo hello")
+        }
+    }
+
 }
