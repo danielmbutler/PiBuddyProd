@@ -10,3 +10,10 @@ data class Connection(
     val username: String,
     val password: String
 ): Parcelable
+
+fun MutableList<Connection>.findByIp(ipAddress: String): Connection? {
+    this.forEach {
+        if (it.ipAddress == ipAddress) return it
+    }
+    return null
+}

@@ -56,4 +56,16 @@
         app:layout_constraintRight_toLeftOf="@id/runCommandBtn"
         app:layout_constraintTop_toTopOf="@+id/runCommandBtn" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_deployment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recyclerview_deployment"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_deployment" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

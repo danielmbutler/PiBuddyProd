@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.dbtechprojects.pibuddy.models.CommandResults
+import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.models.PingResult
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils
 import com.dbtechprojects.pibuddy.utilities.Resource
@@ -28,6 +29,10 @@ object Repository {
     private val _addressCount = MutableLiveData<Int>()
     val addressCount: LiveData<Int>
         get() = _addressCount
+
+    private val _commandResults = MutableLiveData<Repository.CommandResult>()
+    val commandResults: LiveData<Repository.CommandResult>
+        get() = _commandResults
 
     suspend fun pingTest(ip: String, scope: CoroutineScope): Resource<PingResult> {
        return suspendCoroutine<Resource<PingResult>> { Pingresult ->
@@ -196,8 +201,29 @@ object Repository {
         }
     }
 
+    suspend fun runCommand(scope: CoroutineScope, connection: Connection, command: String) {
+
+        scope.launch(Dispatchers.IO) {
+                val result = async {
+                    NetworkUtils.executeRemoteCommand(
+                        connection.username,
+                        connection.password,
+                        connection.ipAddress,
+                        command
+                    )
+                }
+                Log.d("result" , "result : ${result.await()}")
+                _commandResults.postValue(CommandResult(connection.ipAddress, result = result.await()))
+            }
+    }
+
     fun cancelScan() {
         _scanRunning = false
     }
+
+    data class CommandResult(
+        val ip: String,
+        val result: String,
+    )
 }
 
