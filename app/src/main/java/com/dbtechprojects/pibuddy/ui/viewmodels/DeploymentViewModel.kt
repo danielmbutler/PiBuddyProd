@@ -32,6 +32,7 @@ class DeploymentViewModel : ViewModel() {
             }
         }
     }
+
     fun cancelScan(){
         Repository.cancelScan()
     }

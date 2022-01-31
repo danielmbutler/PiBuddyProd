@@ -1,4 +1,5 @@
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -33,11 +34,15 @@ class DeploymentAdapter(private var onClickListener: OnClickListener) : Recycler
 
             checkBox.setOnCheckedChangeListener { compoundButton, b ->
                 if (checkBox.isChecked) checkedIPs.add(item.ip) else checkedIPs.remove(item.ip)
+                Log.d("checked ips", "list: $checkedIPs")
+            }
+            binding.root.setOnClickListener {
+                onClickListener?.onClick(item)
             }
 
         }
 
-        fun setupOutput(item: DeploymentResult, outputTextView: TextView) {
+        private fun setupOutput(item: DeploymentResult, outputTextView: TextView) {
 
             item.output?.let { output ->
                 outputTextView.text = if (output.isEmpty()) "output empty" else  if (output.length < 10) "output: $output" else output

@@ -11,6 +11,8 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityDeploymentBinding
+import com.dbtechprojects.pibuddy.dialogs.DeployOutputDialog
+import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.models.findByIp
 import com.dbtechprojects.pibuddy.ui.viewmodels.DeploymentViewModel
@@ -127,6 +129,13 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
     }
 
     override fun onClick(item: DeploymentResult) {
+        item.output?.let {
+            if (it.isNotEmpty()){
+                val dialog =
+                    DeployOutputDialog(it)
+                dialog.show(supportFragmentManager, "Deploy")
+            }
+        }
 
     }
 
@@ -148,6 +157,12 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.commandResults.removeObservers(this)
+        viewModel.ips.removeObservers(this)
     }
 }
 
