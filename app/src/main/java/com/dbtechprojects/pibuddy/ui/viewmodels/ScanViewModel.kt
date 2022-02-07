@@ -18,8 +18,8 @@ class ScanViewModel : ViewModel() {
     val addressCount: LiveData<Int>
         get() = _addressCount
 
-    fun scanIPs(netAddresses: Array<String>){
-        Repository.scanIPs(netAddresses, viewModelScope)
+    fun scanIPs(netAddresses: Array<String>, port: Int){
+        Repository.scanIPs(netAddresses, viewModelScope, port)
     }
 
     fun cancelScan(){

@@ -4,6 +4,7 @@ import ScanAdapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.dbtechprojects.pibuddy.databinding.ActivityScanBinding
 import com.dbtechprojects.pibuddy.ui.viewmodels.ScanViewModel
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils
 import com.dbtechprojects.pibuddy.utilities.Resource
+import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -40,10 +42,12 @@ class Scan_Activity : AppCompatActivity() {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val IPs: MutableList<String> = mutableListOf()
     private var clientAddress = "none"
+    private var port: Int? = null
 
 
     private val viewModel: ScanViewModel by viewModels()
     private lateinit var binding: ActivityScanBinding
+    private lateinit var sharedPref: SharedPreferences
     
 
     @SuppressLint("NewApi")
@@ -53,6 +57,8 @@ class Scan_Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharedPref = SharedPref.getSharedPref(applicationContext)
+        port = sharedPref.getInt("port", 22)
         setupRV()
         setupClicks()
 
@@ -90,7 +96,7 @@ class Scan_Activity : AppCompatActivity() {
             if (!refresh)initScanIpObserver()
             val netAddresses = networkScanIP(clientAddress)
             // scan IPS and confirm activity
-            viewModel.scanIPs(netAddresses)
+            viewModel.scanIPs(netAddresses, port!!)
 
             
         }
@@ -113,7 +119,7 @@ class Scan_Activity : AppCompatActivity() {
         viewModel.addressCount.observe(this, Observer { count ->
             // update text view
             Log.d(TAG, "addresscount : $count ")
-            val addtext = "Scanning for Devices with port 22 open ...... $count addresses remaining"
+            val addtext = "Scanning for Devices with port $port open ...... $count addresses remaining"
 
             // if scan is not cancelled set text
             if (!cancelled){

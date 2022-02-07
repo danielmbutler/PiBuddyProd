@@ -26,7 +26,7 @@ class ResultViewModel : ViewModel() {
 
 
 
-    fun restartButtonClick(ipaddress: String, username: String, password: String) {
+    fun restartButtonClick(ipaddress: String, username: String, password: String, port: Int) {
         viewModelScope.launch(Dispatchers.IO) {
 
             //pingtest
@@ -49,7 +49,8 @@ class ResultViewModel : ViewModel() {
                     executeRemoteCommand(
                         username,
                         password,
-                        ipaddress, "echo hello"
+                        ipaddress, "echo hello",
+                        port
                     )
                 }
 
@@ -67,7 +68,8 @@ class ResultViewModel : ViewModel() {
                         executeRemoteCommand(
                             username,
                             password,
-                            ipaddress, "sudo systemctl start reboot.target"
+                            ipaddress, "sudo systemctl start reboot.target",
+                            port
                         )
                     }
 
@@ -79,7 +81,7 @@ class ResultViewModel : ViewModel() {
         }
     }
 
-    fun powerOffButtonClicked(username: String, password: String, IPAddress: String) {
+    fun powerOffButtonClicked(username: String, password: String, IPAddress: String, port: Int) {
         viewModelScope.launch(Dispatchers.IO) {
 
             //pingtest
@@ -102,7 +104,8 @@ class ResultViewModel : ViewModel() {
                     executeRemoteCommand(
                         username,
                         password,
-                        IPAddress, "echo hello"
+                        IPAddress, "echo hello",
+                        port
                     )
                 }
 
@@ -119,20 +122,14 @@ class ResultViewModel : ViewModel() {
                         executeRemoteCommand(
                             username,
                             password,
-                            IPAddress, "sudo shutdown -P now"
+                            IPAddress, "sudo shutdown -P now",
+                            port
                         )
                     }
                     _powerOffAttemptMessage.postValue(Constants.SHUTTING_DOWN_MESSAGE)
 
                 }
             }
-        }
-    }
-
-    fun sshClick(ipaddress: String, username: String, password: String){
-        viewModelScope.launch(Dispatchers.IO) {
-
-            SecureShellRepo.setCommand("echo hello")
         }
     }
 

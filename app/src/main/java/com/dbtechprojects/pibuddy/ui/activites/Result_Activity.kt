@@ -37,6 +37,7 @@ class Result_Activity : AppCompatActivity() {
     private lateinit var IPAddress: String
     private lateinit var username: String
     private lateinit var password: String
+    private var port: Int? = null
     private val viewModel: ResultViewModel by viewModels()
 
 
@@ -48,7 +49,8 @@ class Result_Activity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        pref = SharedPref(this).sharedPreferences
+        pref = SharedPref.getSharedPref(applicationContext)
+        port = pref.getInt("port", 22)
 
         // check for results
         intent.getParcelableExtra<CommandResults>("results")?.let { results ->
@@ -88,7 +90,8 @@ class Result_Activity : AppCompatActivity() {
                     viewModel.restartButtonClick(
                         username = username,
                         password = password,
-                        ipaddress = IPAddress
+                        ipaddress = IPAddress,
+                        port = port!!
                     )
 
                 }
@@ -109,7 +112,7 @@ class Result_Activity : AppCompatActivity() {
             builder.setMessage("Are you sure you want to Power OFF this device?")
                 .setCancelable(false)
                 .setPositiveButton("Yes") { dialog, id ->
-                    viewModel.powerOffButtonClicked(username, password, IPAddress)
+                    viewModel.powerOffButtonClicked(username, password, IPAddress, port!!)
                     dialog.dismiss()
                 }
                 .setNegativeButton("No") { dialog, id ->
@@ -207,7 +210,7 @@ class Result_Activity : AppCompatActivity() {
         return when (item.getItemId()) {
             R.id.toolbar_menu_result -> {
                 val intent = Intent(this,Shell_Activity::class.java)
-                intent.putExtra("Connection", Connection(IPAddress, username, password))
+                intent.putExtra("Connection", Connection(IPAddress, username, password, port!!))
                 startActivity(intent)
                 return true
             }

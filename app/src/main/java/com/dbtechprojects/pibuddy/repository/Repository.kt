@@ -8,6 +8,7 @@ import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.models.PingResult
 import com.dbtechprojects.pibuddy.utilities.NetworkUtils
 import com.dbtechprojects.pibuddy.utilities.Resource
+import com.dbtechprojects.pibuddy.utilities.SharedPref
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -34,10 +35,10 @@ object Repository {
     val commandResults: LiveData<Repository.CommandResult>
         get() = _commandResults
 
-    suspend fun pingTest(ip: String, scope: CoroutineScope): Resource<PingResult> {
+    suspend fun pingTest(ip: String, scope: CoroutineScope, port: Int): Resource<PingResult> {
        return suspendCoroutine<Resource<PingResult>> { Pingresult ->
             scope.launch(Dispatchers.IO){
-                val result = NetworkUtils.isPortOpen(ip, 22, 5000)
+                val result = NetworkUtils.isPortOpen(ip, port, 5000)
 
 
                 Pingresult.resume(Resource.Success(PingResult(ip,result)))
@@ -60,6 +61,7 @@ object Repository {
         username: String,
         password: String,
         customCommand: String?,
+        port: Int,
         scope: CoroutineScope
     ): Resource<CommandResults> {
         Log.d("customCommand", "custom command $customCommand")
@@ -72,7 +74,8 @@ object Repository {
                         username,
                         password,
                         ipAddress,
-                        "echo hello"
+                        "echo hello",
+                        port
                     )
                 }
 
@@ -97,7 +100,8 @@ object Repository {
                             username,
                             password,
                             ipAddress,
-                            "who | cut -d' ' -f1 | sort | uniq\n"
+                            "who | cut -d' ' -f1 | sort | uniq\n",
+                            port
                         )
                     }
 
@@ -106,7 +110,8 @@ object Repository {
                             username,
                             password,
                             ipAddress,
-                            "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t"
+                            "df -hl | grep \'root\' | awk \'BEGIN{print \"\"} {percent+=$5;} END{print percent}\' | column -t",
+                            port
                         )
                     }
                     //
@@ -115,7 +120,8 @@ object Repository {
                             username,
                             password,
                             ipAddress,
-                            "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)"
+                            "awk '/^Mem/ {printf(\"%u%%\", 100*\$3/\$2);}' <(free -m)",
+                            port
                         )
                     }
                     val CpuUsage = async {
@@ -123,8 +129,8 @@ object Repository {
                             username,
                             password,
                             ipAddress,
-                            "mpstat | awk '\$12 ~ /[0-9.]+/ { print 100 - \$12\"%\" }'"
-
+                            "mpstat | awk '\$12 ~ /[0-9.]+/ { print 100 - \$12\"%\" }'",
+                            port = port
                         )
                     }
                     customCommand?.let {
@@ -133,7 +139,8 @@ object Repository {
                                 username,
                                 password,
                                 ipAddress,
-                                it
+                                it,
+                                port
                             )
 
                         }
@@ -156,7 +163,7 @@ object Repository {
 
     }
 
-    fun scanIPs(netAddresses: Array<String>, scope: CoroutineScope) {
+    fun scanIPs(netAddresses: Array<String>, scope: CoroutineScope, port: Int) {
         // set scan to running
         _scanRunning = true
         var addresscount = netAddresses.count()
@@ -173,7 +180,7 @@ object Repository {
                     val pingtest = async {
                         NetworkUtils.isPortOpen(
                             it,
-                            22,
+                            port,
                             1000
                         )
 
@@ -201,7 +208,7 @@ object Repository {
         }
     }
 
-    suspend fun runCommand(scope: CoroutineScope, connection: Connection, command: String) {
+    suspend fun runCommand(scope: CoroutineScope, connection: Connection, command: String, port: Int) {
 
         scope.launch(Dispatchers.IO) {
                 val result = async {
@@ -209,7 +216,8 @@ object Repository {
                         connection.username,
                         connection.password,
                         connection.ipAddress,
-                        command
+                        command,
+                        port
                     )
                 }
                 Log.d("result" , "result : ${result.await()}")

@@ -8,7 +8,8 @@ import org.json.JSONObject
 data class Connection(
     val ipAddress: String,
     val username: String,
-    val password: String
+    val password: String,
+    val port : Int
 ): Parcelable
 
 fun MutableList<Connection>.findByIp(ipAddress: String): Connection? {

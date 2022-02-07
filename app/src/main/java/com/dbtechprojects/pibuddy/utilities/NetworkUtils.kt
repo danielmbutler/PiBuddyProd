@@ -98,7 +98,7 @@ object NetworkUtils {
         password: String,
         hostname: String,
         command: String,
-        port: Int = 22
+        port: Int
     ): String {
         var session: Session? = null
         var channel: ChannelExec? = null
@@ -146,7 +146,7 @@ object NetworkUtils {
         username: String,
         password: String,
         hostname: String,
-        port: Int = 22
+        port: Int
     ) {
 
         try {

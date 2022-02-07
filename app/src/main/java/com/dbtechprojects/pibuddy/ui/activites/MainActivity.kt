@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     val binding: ActivityMainBinding get() = _binding!!
     private lateinit var drawer : DrawerLayout
     private lateinit var navigationView: NavigationView
+    private var port :Int? = null
 
 
     private val TAG = "MainActivity"
@@ -68,8 +69,8 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        pref = SharedPref(this).sharedPreferences
-
+        pref = SharedPref.getSharedPref(applicationContext)
+        port = pref.getInt("port", 22)
         // verify network connectivity
         internetCheck()
         //setupDraw
@@ -124,7 +125,8 @@ class MainActivity : AppCompatActivity() {
                                             ipAddress = binding.IPAddressText.text.toString(),
                                             username = binding.UsernameText.text.toString(),
                                             password = binding.PasswordText.text.toString(),
-                                            customCommand = storedCommand
+                                            customCommand = storedCommand,
+                                            port!!
                                         )
 
 
@@ -135,7 +137,8 @@ class MainActivity : AppCompatActivity() {
                                         ipAddress = binding.IPAddressText.text.toString(),
                                         username = binding.UsernameText.text.toString(),
                                         password = binding.PasswordText.text.toString(),
-                                        customCommand = null
+                                        customCommand = null,
+                                        port!!
                                     )
 
                                 }
@@ -146,7 +149,8 @@ class MainActivity : AppCompatActivity() {
                                     ipAddress = binding.IPAddressText.text.toString(),
                                     username = binding.UsernameText.text.toString(),
                                     password = binding.PasswordText.text.toString(),
-                                    customCommand = null
+                                    customCommand = null,
+                                    port!!
                                 )
 
                             }
@@ -222,8 +226,9 @@ class MainActivity : AppCompatActivity() {
 
             if (validationTest == "success") {
                 binding.MainActivityTextDotLoader.visibility = VISIBLE
-
-                viewModel.pingTest(binding.IPAddressText.text.toString())
+                pref.getInt("port", 22).let {
+                    viewModel.pingTest(binding.IPAddressText.text.toString(), it)
+                }
 
             } else {
                 Toast.makeText(
@@ -312,7 +317,7 @@ class MainActivity : AppCompatActivity() {
         for ((key, value) in keys) {
             if (key == "adcount") {
                 pref.edit().remove("adcount").apply()
-            } else {
+            } else if (key != "port") {
                 menu.add(0, 0, 0, key).apply {
                     setOnMenuItemClickListener {
 
@@ -403,9 +408,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.toolbar_menu_help -> {
-                val dialog =
-                    HelpDialog()
-                dialog.show(supportFragmentManager, "Help")
+               val intent = Intent(this, Settings_Activity::class.java)
+               startActivity(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)

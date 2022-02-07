@@ -17,16 +17,16 @@ class DeploymentViewModel : ViewModel() {
         get() = _ips
     val commandResults: LiveData<Repository.CommandResult> = Repository.commandResults
 
-    fun runCommand(connection: Connection, command: String){
+    fun runCommand(connection: Connection, command: String, port: Int){
         viewModelScope.launch {
             Log.d("deployment", "runnning: $command")
-            Repository.runCommand(this, connection, command)
+            Repository.runCommand(this, connection, command, port)
         }
     }
 
-    fun testDevice(ipAddress :String){
+    fun testDevice(ipAddress :String, port: Int){
         viewModelScope.launch {
-            Repository.pingTest(ipAddress, viewModelScope).let { pingResult ->
+            Repository.pingTest(ipAddress, viewModelScope, port ).let { pingResult ->
                 Log.d("deployment", "command: ${pingResult.data}")
                 _ips.postValue(pingResult)
             }
