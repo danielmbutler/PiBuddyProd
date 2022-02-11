@@ -69,7 +69,7 @@ class HelpDialog (): DialogFragment() {
                 "<p><strong>Saving Connections</strong></p>\n" +
                 "<p><br></br></p>\n" +
                 "<p>Successful connections are saved in the side draw on the opening page, <strong>the details are stored on your Device</strong> and will be deleted along with the App.</p>\n" +
-                "<p><br><p>Ver 1.3.0 </p></br></p>\n" +
+                "<p><br><p>Ver 1.4.0 </p></br></p>\n" +
                 "<p><br></br></p>")
 
 

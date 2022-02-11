@@ -32,7 +32,7 @@ class CustomCommand (val IP: String): DialogFragment() {
             //Log.d(Result_Activity.TAG, command.toString())
             //Log.d(Result_Activity.TAG, IP)
 
-            val pref = SharedPref(requireContext()).sharedPreferences
+            val pref = SharedPref.getSharedPref(activity?.applicationContext!!)
 
             val editor = pref?.edit()
 

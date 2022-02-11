@@ -22,16 +22,17 @@ class MainViewModel : ViewModel() {
         get() = _commandResults
 
 
-    fun pingTest(ip: String) {
+    fun pingTest(ip: String, port: Int) {
         viewModelScope.launch {
-           _pingTest.postValue(Repository.pingTest(ip, viewModelScope))
+           _pingTest.postValue(Repository.pingTest(ip, viewModelScope, port))
         }
     }
 
     fun runPiCommand( ipAddress: String,
                       username: String,
                       password: String,
-                      customCommand: String?
+                      customCommand: String?,
+                      port: Int
     ){
         viewModelScope.launch {
            _commandResults.postValue(
@@ -40,7 +41,8 @@ class MainViewModel : ViewModel() {
                    ipAddress = ipAddress,
                    password = password,
                    customCommand = customCommand,
-                   scope = viewModelScope
+                   scope = viewModelScope,
+                   port = port
                )
            )
         }

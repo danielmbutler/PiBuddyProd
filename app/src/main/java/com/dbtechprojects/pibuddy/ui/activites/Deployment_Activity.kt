@@ -20,6 +20,7 @@ import com.dbtechprojects.pibuddy.utilities.Resource
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import findByIp
 import org.json.JSONObject
+import kotlin.properties.Delegates
 
 class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListener {
 
@@ -30,6 +31,7 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
     private val viewModel: DeploymentViewModel by viewModels()
     private val deploymentDevices: MutableList<DeploymentResult> = mutableListOf()
     private val savedDevices: MutableList<Connection> = mutableListOf()
+    private var port :Int? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +39,8 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
         _binding = ActivityDeploymentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupToolbar()
-        pref = SharedPref(this).sharedPreferences
-
+        pref = SharedPref.getSharedPref(applicationContext)
+        port = pref.getInt("port", 22)
 
         getAllDevices()
         setupRV()
@@ -57,16 +59,20 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
 
         for ((key, value) in keys) {
             //Log.d("onclick listner", key)
-            pref.getString(this.title.toString(), null)
-            val strJson = pref.getString(key, null)
+            if (key != "port"){
+                pref.getString(this.title.toString(), null)
+                val strJson = pref.getString(key, null)
 
-            val jresponse = JSONObject(strJson)
-            val UsernameFromJson = jresponse.getString("Username")
-            val PasswordFromJson = jresponse.getString("Password")
-            savedDevices.add(Connection(ipAddress = key, username = UsernameFromJson, password = PasswordFromJson))
+                val jresponse = JSONObject(strJson)
+                val UsernameFromJson = jresponse.getString("Username")
+                val PasswordFromJson = jresponse.getString("Password")
+                savedDevices.add(Connection(ipAddress = key, username = UsernameFromJson, password = PasswordFromJson,
+                    port ?: 22
+                ))
+            }
         }
 
-        savedDevices.forEach { viewModel.testDevice(it.ipAddress) }
+        savedDevices.forEach { viewModel.testDevice(it.ipAddress, port ?: 22) }
     }
 
     private fun initObservers(){
@@ -111,7 +117,7 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
 
         // run command
         checkedDevices.forEach {
-            savedDevices.findByIp(it)?.let { viewModel.runCommand(it, script) }
+            savedDevices.findByIp(it)?.let { viewModel.runCommand(it, script, port ?: 22) }
         }
         binding.runCommandBtn.isEnabled = false
         binding.progressBar.visibility = View.VISIBLE
