@@ -37,6 +37,12 @@
     <string name="returnwifiText">Wifi Connection Not Found Please Check Wifi</string>
     <string name="restart">Restart</string>
     <string name="power_off">Power Off</string>
-    <string name="waiting_deployment">Waiting Deployment ...</string>
+    <string name="waiting_deployment">Waiting Deployment...</string>
     <string name="change_default_ssh_port">Change Default SSH Port</string>
+    <string name="add_custom_button">Add Custom Button</string>
+    <string name="add_custom_command_result">Add Custom Command Output</string>
+    <string name="button_command">Button Command</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="button_name">Button Name</string>
+    <string name="custom_button_description">Add a custom button to the result view, the results of these commands will not be visible and should only be used for actions such as Power Off...</string>
 </resources>

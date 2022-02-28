@@ -133,4 +133,56 @@ class ResultViewModel : ViewModel() {
         }
     }
 
+    fun runCustomCommand(username: String, password: String, IPAddress: String, port: Int, command: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            //pingtest
+            val pingtest = async {
+                isPortOpen(
+                    IPAddress.toString(),
+                    22,
+                    3000
+                )
+            }
+            //Log.d("pingtest", pingtest.await())
+
+            if (!pingtest.await()) {
+                _powerOffAttemptMessage.postValue(Constants.CONNECTION_ERROR)
+
+            } else {
+                // run command
+
+                val testcommand = async {
+                    executeRemoteCommand(
+                        username,
+                        password,
+                        IPAddress, "echo hello",
+                        port
+                    )
+                }
+
+                //Log.d("testcommand", testcommand.await())
+
+                if (!testcommand.await().contains("hello")) {
+                    _powerOffAttemptMessage.postValue(Constants.SESSION_ERROR)
+
+                } else {
+
+                    //run real command
+
+                   val commandResult = async {
+                        executeRemoteCommand(
+                            username,
+                            password,
+                            IPAddress, command,
+                            port
+                        )
+                    }
+                    _powerOffAttemptMessage.postValue(Constants.RUNNING_COMMAND_MESSAGE)
+
+                }
+            }
+        }
+    }
+
 }
