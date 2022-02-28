@@ -92,6 +92,7 @@ class CustomButtonDialog (private val listener: CustomButtonListener): DialogFra
 
 
     override fun onClick(item: CustomButton) {
+        Log.d("item", "item : ${item.name}")
         commandNameEditText.setText(item.name)
         commandEditText.setText(item.command)
     }

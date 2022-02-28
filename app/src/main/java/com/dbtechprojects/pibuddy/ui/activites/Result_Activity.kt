@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -167,23 +168,6 @@ class Result_Activity : AppCompatActivity(), CustomButtonListener,
         }
 
         showProgressBar(false)
-
-        // store successfull connection in shared pref
-
-        val editor = pref.edit()
-
-
-        if (results.customCommand != null) {
-            val Pidata =
-                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}", "CustomCommand":"${results.customCommand}"}""")
-            editor.putString(IPAddress, Pidata.toString())
-            editor.apply()
-        } else {
-            val Pidata =
-                JSONObject("""{"Username":"${results.username}", "Password":"${results.password}"}""")
-            editor.putString(IPAddress, Pidata.toString())
-            editor.apply()
-        }
     }
 
     private fun setupActionBar(IP: String) {

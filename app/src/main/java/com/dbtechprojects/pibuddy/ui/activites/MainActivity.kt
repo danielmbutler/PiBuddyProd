@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                     binding.MainActivityTextDotLoader.visibility = View.INVISIBLE
                 }
                 is Resource.Success -> {
-                    Log.d(TAG, "results: $results")
+                    Log.d(TAG, "results main: ${results.data}")
                     val intent = Intent(this@MainActivity, Result_Activity::class.java)
                     intent.putExtra("results", results.data)
 
@@ -317,7 +317,7 @@ class MainActivity : AppCompatActivity() {
         for ((key, value) in keys) {
             if (key == "adcount") {
                 pref.edit().remove("adcount").apply()
-            } else if (key != "port") {
+            } else if (key != "port" && key != "buttons") {
                 menu.add(0, 0, 0, key).apply {
                     setOnMenuItemClickListener {
 

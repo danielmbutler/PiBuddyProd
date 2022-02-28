@@ -17,10 +17,10 @@ class CustomButtonAdapter(private val onClickListener: OnCustomButtonClick, priv
 
             binding.itemName.text = item.name
 
-            binding.root.setOnClickListener {
+            binding.itemName.setOnClickListener {
                 onClickListener?.onClick(item)
             }
-            binding.root.setOnLongClickListener {
+            binding.itemName.setOnLongClickListener {
                 val builder = AlertDialog.Builder(binding.root.context)
                 builder.setMessage("Are you sure you want to delete this custom button")
                     .setCancelable(false)

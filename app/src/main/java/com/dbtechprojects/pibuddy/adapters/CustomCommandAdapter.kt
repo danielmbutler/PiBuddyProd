@@ -1,4 +1,5 @@
 package com.dbtechprojects.pibuddy.adapters
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,8 @@ class CustomCommandAdapter(private val onClickListener: OnCustomCommandClick, pr
 
             binding.itemName.text = item.name
 
-            binding.root.setOnClickListener {
+            binding.itemName.setOnClickListener {
+                Log.d("item", "clicked")
                 onClickListener?.onClick(item)
             }
 

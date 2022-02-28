@@ -59,7 +59,7 @@ class Deployment_Activity : AppCompatActivity(), DeploymentAdapter.OnClickListen
 
         for ((key, value) in keys) {
             //Log.d("onclick listner", key)
-            if (key != "port"){
+            if (key != "port" && key != "buttons"){
                 pref.getString(this.title.toString(), null)
                 val strJson = pref.getString(key, null)
 
