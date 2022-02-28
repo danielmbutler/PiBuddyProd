@@ -150,7 +150,6 @@ class Result_Activity : AppCompatActivity() {
 
         if (!results.customCommand.isNullOrEmpty()) {
             //Log.d(TAG, customCommandOutput)
-            binding.CustomCommandTextTitle.visibility = VISIBLE
             binding.CustomCommandResultView.visibility = VISIBLE
         }
 
