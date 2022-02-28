@@ -11,6 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/result_constraint_layout"
         android:background="@color/white">
 
         <androidx.appcompat.widget.Toolbar
@@ -225,7 +226,22 @@
             app:backgroundTint="@color/GreySecondary"
             app:layout_constraintEnd_toEndOf="@+id/Result_View_RestartButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Result_View_PowerOffButton" />
+            app:layout_constraintTop_toBottomOf="@+id/customBtnRv" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/customBtnRv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintLeft_toLeftOf="@id/Result_View_PowerOffButton"
+            app:layout_constraintRight_toRightOf="@id/Result_View_RestartButton"
+            app:layout_constraintTop_toBottomOf="@id/Result_View_PowerOffButton"
+            app:spanCount="2"
+            android:visibility="gone"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_custom_button_result" />
 
 
         <Button

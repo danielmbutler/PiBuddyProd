@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.View.VISIBLE
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -16,17 +18,21 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.dbtechprojects.pibuddy.dialogs.CustomCommand
 import com.dbtechprojects.pibuddy.R
+import com.dbtechprojects.pibuddy.adapters.CustomButtonAdapter
 import com.dbtechprojects.pibuddy.databinding.ActivityResultBinding
-import com.dbtechprojects.pibuddy.models.CommandResults
-import com.dbtechprojects.pibuddy.models.Connection
+import com.dbtechprojects.pibuddy.dialogs.CustomButtonDialog
+import com.dbtechprojects.pibuddy.dialogs.CustomButtonListener
+import com.dbtechprojects.pibuddy.models.*
 import com.dbtechprojects.pibuddy.ui.viewmodels.ResultViewModel
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import org.json.JSONObject
 
 
-class Result_Activity : AppCompatActivity() {
+class Result_Activity : AppCompatActivity(), CustomButtonListener,
+    CustomButtonAdapter.OnCustomButtonClick, CustomButtonAdapter.OnCustomButtonDelete {
 
     companion object {
         val TAG = "Result_Activity"
@@ -59,6 +65,8 @@ class Result_Activity : AppCompatActivity() {
             setupClicks()
         }
 
+        addCustomButtons()
+
 
     }
 
@@ -77,6 +85,11 @@ class Result_Activity : AppCompatActivity() {
             val dialog = CustomCommand(IPAddress)
             dialog.show(supportFragmentManager, "CustomCommand")
 
+        }
+
+        binding.ResultViewAddCustomBtn.setOnClickListener {
+            val dialog = CustomButtonDialog(this)
+            dialog.show(supportFragmentManager, "CustomButton")
         }
 
         binding.ResultViewRestartButton.setOnClickListener {
@@ -208,12 +221,57 @@ class Result_Activity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
             R.id.toolbar_menu_result -> {
-                val intent = Intent(this,Shell_Activity::class.java)
+                val intent = Intent(this, Shell_Activity::class.java)
                 intent.putExtra("Connection", Connection(IPAddress, username, password, port!!))
                 startActivity(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onCustomButtonAdded() {
+        addCustomButtons()
+    }
+
+    private fun addCustomButtons() {
+        val buttons = pref.getString("buttons", null)
+        if (buttons != null) {
+
+            findViewById<RecyclerView>(R.id.customBtnRv).apply {
+                visibility = View.VISIBLE
+                adapter = CustomButtonAdapter(this@Result_Activity,this@Result_Activity, buttons.toCustomButtonList()?.list,  )
+            }
+        }
+    }
+
+    private fun runCustomCommand(command : String){
+        val builder = AlertDialog.Builder(this@Result_Activity)
+        builder.setMessage("Are you sure you want to Run this command")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { dialog, id ->
+                viewModel.runCustomCommand(username, password, IPAddress, port!!, command )
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, id ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    override fun onClick(item: CustomButton) {
+        runCustomCommand(item.command)
+    }
+
+    override fun onDelete(item: CustomButton) {
+        val buttons = pref.getString("buttons", null)?.toCustomButtonList()
+        buttons?.list?.remove(item)
+        val editor = pref?.edit()
+
+        editor.putString("buttons", buttons?.toJsonString())
+        editor.commit()
+        addCustomButtons()
     }
 }
