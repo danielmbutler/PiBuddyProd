@@ -23,8 +23,8 @@ android {
         applicationId "com.dbtechprojects.pibuddy"
         minSdkVersion 23
         targetSdkVersion 31
-        versionCode 5
-        versionName '1.4'
+        versionCode 6
+        versionName '1.5'
         multiDexEnabled true
         android.defaultConfig.vectorDrawables.useSupportLibrary true
 
