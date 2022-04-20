@@ -34,6 +34,7 @@ import com.dbtechprojects.pibuddy.utilities.Constants
 import com.dbtechprojects.pibuddy.utilities.Resource
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -44,11 +45,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var pref: SharedPreferences
     private val viewModel: MainViewModel by viewModels()
-    private  var _binding: ActivityMainBinding? = null
+    private var _binding: ActivityMainBinding? = null
     val binding: ActivityMainBinding get() = _binding!!
-    private lateinit var drawer : DrawerLayout
+    private lateinit var drawer: DrawerLayout
     private lateinit var navigationView: NavigationView
-    private var port :Int? = null
+    private var port: Int? = null
 
 
     private val TAG = "MainActivity"
@@ -177,44 +178,23 @@ class MainActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     Log.d(TAG, "results main: ${results.data}")
                     val intent = Intent(this@MainActivity, Result_Activity::class.java)
+                    val details = pref.getString(results.data?.ipAddress, null)
+                    if (details == null){
+                        // add connection
+                        val editor = pref.edit()
+                        val jsonObject = JSONObject()
+                        jsonObject.put("Username", results.data?.username)
+                        jsonObject.put("Password", results.data?.password)
+                        editor.putString(results.data?.ipAddress, jsonObject.toString())
+                        editor.commit()
+                    }
                     intent.putExtra("results", results.data)
-
-
                     binding.MainActivityTextDotLoader.visibility = INVISIBLE
                     binding.MainCustomCommandMessage.visibility = INVISIBLE
-
-                    val editor = pref.edit()
-
-                    val adcount = pref.getString("adcount", "")
-
-                    if (adcount.isNullOrEmpty()) {
-                        editor.putString("adcount", "1")
-                        editor.apply()
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Log.d("MainActivity", adcount)
-                        val newvalue = adcount.toInt() + 1
-                        editor.putString("adcount", newvalue.toString())
-                        if (adcount.toInt() >= 3) {
-                            // show ad
-                            Log.d("MainActvity", "Showing Ad")
-
-                            // in place logic till ads work
-                            editor.remove("adcount")
-                            editor.apply()
-                            startActivity(intent)
-                            finish()
-
-
-                        } else {
-                            editor.apply()
-                            startActivity(intent)
-                            finish()
-                        }
-
-                    }
+                    startActivity(intent)
+                    finish()
                 }
+
             }
         })
     }
@@ -249,7 +229,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
 
 
     private fun setupDraw() {
@@ -302,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupDrawItems(){
+    private fun setupDrawItems() {
 
         //get all preferences
 
@@ -347,10 +326,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        if (keys.isNotEmpty()){
+        if (keys.isNotEmpty()) {
             // script deployment
             menu.add("Script Deployment").apply {
-                icon = (ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_baseline_flash_on_24))
+                icon = (ContextCompat.getDrawable(
+                    this@MainActivity,
+                    R.drawable.ic_baseline_flash_on_24
+                ))
                 setOnMenuItemClickListener {
                     val intent = Intent(this@MainActivity, Deployment_Activity::class.java)
                     startActivity(intent)
@@ -408,8 +390,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.toolbar_menu_help -> {
-               val intent = Intent(this, Settings_Activity::class.java)
-               startActivity(intent)
+                val intent = Intent(this, Settings_Activity::class.java)
+                startActivity(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
