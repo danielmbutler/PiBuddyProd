@@ -44,5 +44,6 @@
     <string name="button_command">Button Command</string>
     <string name="suggestions">Suggestions</string>
     <string name="button_name">Button Name</string>
+    <string name="widget_des">Display CPU, MEMORY and DISK usage for your chosen device.</string>
     <string name="custom_button_description">Add a custom button to the result view, the results of these commands will not be visible and should only be used for actions such as Power Off...</string>
 </resources>
