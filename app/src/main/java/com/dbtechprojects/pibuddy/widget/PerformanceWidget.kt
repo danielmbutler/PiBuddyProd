@@ -153,8 +153,6 @@ fun MutableList<WidgetDevice>.getIps() : Array<String>{
     val items = mutableListOf<String>()
     this.forEach {
         items.add(it.ipAddress)
-        items.add(it.ipAddress)
-        items.add(it.ipAddress)
     }
     return items.toTypedArray()
 }
