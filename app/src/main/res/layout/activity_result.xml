@@ -9,9 +9,9 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/result_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/result_constraint_layout"
         android:background="@color/white">
 
         <androidx.appcompat.widget.Toolbar
@@ -29,22 +29,25 @@
 
         <TextView
             android:id="@+id/DiskSpace_Result_View"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/tile"
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/LoggedIn_Result_View"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Mem_Result_View" />
 
         <TextView
             android:id="@+id/LoggedIn_Result_View"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="12dp"
@@ -55,6 +58,8 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/DiskSpace_Result_View"
             app:layout_constraintTop_toBottomOf="@+id/Mem_Result_View" />
 
         <TextView
@@ -95,7 +100,7 @@
 
         <TextView
             android:id="@+id/Mem_Result_View"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="12dp"
@@ -106,14 +111,17 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/CPU_Result_View"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
         <TextView
             android:id="@+id/CPU_Result_View"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/tile"
             android:gravity="center"
             android:textAlignment="center"
@@ -121,6 +129,8 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/Mem_Result_View"
+            app:layout_constraintEnd_toStartOf="@+id/Mem_Result_View"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -183,9 +193,9 @@
             android:id="@+id/Main_Activity_text_dot_loader"
             android:layout_width="137dp"
             android:layout_height="37dp"
-            android:elevation="1dp"
             android:accessibilityLiveRegion="assertive"
             android:duplicateParentState="true"
+            android:elevation="1dp"
             app:LoadingDots_dots_color="@color/PiAlternate"
             app:LoadingDots_dots_count="4"
             app:LoadingDots_dots_size="9dp"
@@ -232,19 +242,19 @@
             android:id="@+id/customBtnRv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
             android:layout_marginTop="24dp"
+            android:layout_marginRight="2dp"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginLeft="2dp"
-            tools:visibility="visible"
-            android:layout_marginRight="2dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintLeft_toLeftOf="@id/Result_View_PowerOffButton"
             app:layout_constraintRight_toRightOf="@id/Result_View_RestartButton"
             app:layout_constraintTop_toBottomOf="@id/Result_View_PowerOffButton"
             app:spanCount="2"
             tools:itemCount="4"
-            tools:listitem="@layout/item_custom_button_result" />
+            tools:listitem="@layout/item_custom_button_result"
+            tools:visibility="visible" />
 
 
         <Button

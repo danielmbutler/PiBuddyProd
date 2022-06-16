@@ -8,6 +8,7 @@ import com.dbtechprojects.pibuddy.databinding.ActivityMainBinding
 import com.dbtechprojects.pibuddy.databinding.ActivitySettingsBinding
 import com.dbtechprojects.pibuddy.dialogs.ChangePortDialog
 import com.dbtechprojects.pibuddy.dialogs.HelpDialog
+import com.dbtechprojects.pibuddy.dialogs.WidgetDialog
 
 class Settings_Activity : AppCompatActivity() {
     private  var _binding: ActivitySettingsBinding? = null
@@ -28,6 +29,11 @@ class Settings_Activity : AppCompatActivity() {
             val dialog =
                 ChangePortDialog()
             dialog.show(supportFragmentManager, "ChangePort")
+        }
+        binding.SettingsWidgetButton.setOnClickListener {
+            val dialog =
+                WidgetDialog()
+            dialog.show(supportFragmentManager, "Widget")
         }
 
     }

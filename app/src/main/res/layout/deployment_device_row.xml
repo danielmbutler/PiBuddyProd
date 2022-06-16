@@ -44,13 +44,14 @@
 
     <TextView
         android:id="@+id/deployment_item_output_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:maxLength="30"
         android:text="@string/waiting_deployment"
         app:layout_constraintBottom_toBottomOf="@+id/deployment_row_ip"
+        app:layout_constraintEnd_toStartOf="@+id/checkBox"
         app:layout_constraintStart_toEndOf="@+id/deployment_row_ip"
         app:layout_constraintTop_toTopOf="@+id/deployment_row_ip" />
 
