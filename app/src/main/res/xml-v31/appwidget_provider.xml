@@ -1,0 +1,9 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="290dp"
+    android:minHeight="80dp"
+    android:updatePeriodMillis="30000"
+    android:description="@string/widget_des"
+    android:initialLayout="@layout/performance_widget"
+    android:previewLayout="@layout/performance_widget"
+    android:widgetCategory="home_screen">
+</appwidget-provider>

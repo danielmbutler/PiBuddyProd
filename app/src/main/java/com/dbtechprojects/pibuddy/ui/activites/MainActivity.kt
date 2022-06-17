@@ -25,20 +25,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
-import com.dbtechprojects.pibuddy.dialogs.HelpDialog
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.databinding.ActivityMainBinding
-import com.dbtechprojects.pibuddy.models.Connection
 import com.dbtechprojects.pibuddy.ui.viewmodels.MainViewModel
 import com.dbtechprojects.pibuddy.utilities.Constants
 import com.dbtechprojects.pibuddy.utilities.Resource
 import com.dbtechprojects.pibuddy.utilities.SharedPref
 import com.google.android.material.navigation.NavigationView
-import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
+
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import com.dbtechprojects.pibuddy.widget.PerformanceWidget
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,6 +62,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // register alarm to trigger widget update
+        val alarmManager =  this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarm = Intent(this, PerformanceWidget::class.java)
+        alarm.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE // Set appwidget update action
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, 0, alarm,
+            PendingIntent.FLAG_CANCEL_CURRENT
+        ) // get the broadcast pending intent
+
+        alarmManager.setRepeating(
+            AlarmManager.RTC, System.currentTimeMillis(),
+            10000, pendingIntent
+        )
 
         //set IP address if intent has IP (occurs from Scan Activity
         if (intent.getStringExtra("IPAddress") != null) {

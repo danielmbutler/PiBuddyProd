@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="290dp"
+    android:layout_height="100dp"
+    android:background="@drawable/widget_background">
+
+    <TextView
+        android:id="@+id/widget_cpu"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/roundedbutton"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="CPU\n55%" />
+
+    <TextView
+        android:id="@+id/widget_mem"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/roundedbutton"
+        android:fontFamily="monospace"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        tools:text="MEM\n55%" />
+
+    <TextView
+        android:id="@+id/widget_disk"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/roundedbutton"
+        android:fontFamily="monospace"
+        android:maxLines="3"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        tools:text="HDD\n55%" />
+
+</LinearLayout>
