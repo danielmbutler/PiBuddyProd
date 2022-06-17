@@ -2,15 +2,15 @@ package com.dbtechprojects.pibuddy.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.util.Log
-import android.view.View
 import android.widget.RemoteViews
 import com.dbtechprojects.pibuddy.R
 import com.dbtechprojects.pibuddy.repository.Repository
 import com.dbtechprojects.pibuddy.utilities.Resource
 import com.dbtechprojects.pibuddy.utilities.SharedPref
-import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,7 +19,17 @@ import org.json.JSONObject
 
 class PerformanceWidget : AppWidgetProvider() {
 
-    override fun onUpdate(
+    override fun onReceive(context: Context?, intent: Intent?) {
+        super.onReceive(context, intent)
+
+        val manager = AppWidgetManager.getInstance(context)
+        if (context != null) {
+            update(context, manager,  manager.getAppWidgetIds(ComponentName(context, PerformanceWidget::class.java)))
+        }
+
+    }
+
+    private fun update(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
@@ -27,6 +37,7 @@ class PerformanceWidget : AppWidgetProvider() {
         // Perform this loop procedure for each widget that belongs to this
         // provider.
         appWidgetIds.forEach { appWidgetId ->
+
             val sharedPref = SharedPref.getSharedPref(context)
             val devices = mutableListOf<WidgetDevice>()
 
